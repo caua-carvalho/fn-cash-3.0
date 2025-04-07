@@ -1,3 +1,7 @@
+<?php
+$_SESSION['id'] = 1; // Simulando um ID de usuário logado para fins de teste
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>

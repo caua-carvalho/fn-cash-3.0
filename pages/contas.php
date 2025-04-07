@@ -32,7 +32,7 @@ require_once 'dialog.php';
                 echo "<tr>
                      <td>" . htmlspecialchars($conta['Nome']) . "</td>
                      <td>" . htmlspecialchars($conta['Tipo']) . "</td>
-                     <td>" . number_format($conta['Saldo'], 2, ',', '.') . "</td>
+                     <td>R$ " . number_format($conta['Saldo'], 2, ',', '.') . "</td>
                      <td>" . htmlspecialchars($conta['Instituicao']) . "</td>
                      <td>
                      <a class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editarContaModal'
@@ -73,11 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo = $_POST['tipoConta'] ?? '';
     $saldo = $_POST['saldoConta'] ?? 0.00;
     $instituicao = $_POST['instituicaoConta'] ?? '';
+    $status = $_POST['statusConta'] ?? true;
 
     // Processa a ação solicitada
     switch ($acao) {
         case 'editarConta':
-            if (editarConta($id, $nome, $tipo, $saldo, $instituicao)) {
+            if (editarConta($id, $nome, $tipo, $saldo, $instituicao, $status)) {
                 confirmar("Conta editada com sucesso!", "contas.php");
             } else {
                 erro("Erro ao editar conta. Verifique os dados e tente novamente.");
@@ -85,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             break;
 
         case 'cadastrarConta':
-            if (cadastrarConta($nome, $tipo, $saldo, $instituicao)) {
+            if (cadastrarConta($nome, $tipo, $saldo, $instituicao, $status)) {
                 confirmar("Conta cadastrada com sucesso!", "contas.php");
             } else {
                 erro("Erro ao cadastrar conta. Verifique os dados e tente novamente.");

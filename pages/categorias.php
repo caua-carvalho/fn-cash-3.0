@@ -41,7 +41,10 @@ require_once 'dialog.php';
                         data-status='" . ($categoria['Ativa'] ? 'true' : 'false') . "'>
                         Editar
                      </a> 
-                     <a href='desativar_categoria.php?id=" . $categoria['ID_Categoria'] . "' class='btn btn-danger btn-sm'>Desativar</a>
+                     <a class='btn btn-danger btn-sm' data-toggle='modal' data-target='#excluirCategoriaModal'
+                        data-id='" . $categoria['ID_Categoria'] . "'>
+                        Excluir
+                     </a>
                      </td>
                      </tr>";
             }
@@ -84,6 +87,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 confirmar("Categoria cadastrada com sucesso!", "categorias.php");
             } else {
                 erro("Erro ao cadastrar categoria. Verifique os dados e tente novamente.");
+            }
+            break;
+        case 'excluirCategoria':
+            if (deletarCategoria($id)) {
+                confirmar("Categoria excluída com sucesso!", "categorias.php");
+            } else {
+                erro("Erro ao excluir categoria. Verifique os dados e tente novamente.");
             }
             break;
 

@@ -10,6 +10,8 @@ CREATE TABLE USUARIO (
     UltimoAcesso DATETIME
 );
 
+insert into USUARIO SET Nome = "adm", Email = "adm@gmail.com", Senha = "123", DataCadastro = "12-07-2007";
+
 CREATE TABLE CONTA (
     ID_Conta INT AUTO_INCREMENT PRIMARY KEY,
     Nome VARCHAR(100) NOT NULL,

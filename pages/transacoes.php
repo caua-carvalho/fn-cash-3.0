@@ -1,7 +1,7 @@
 <?php
+
 require_once 'header.php';
 require_once 'nav.php';
-require_once 'transacoes/funcoes.php';
 require_once 'transacoes/modal.php';
 require_once 'dialog.php';
 ?>
@@ -74,18 +74,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Obtém os dados enviados
-    $id = $_POST['transacaoId'] ?? null;
     $titulo = $_POST['tituloTransacao'] ?? '';
     $descricao = $_POST['descricaoTransacao'] ?? '';
     $valor = $_POST['valorTransacao'] ?? 0.00;
     $data = $_POST['dataTransacao'] ?? '';
     $tipo = $_POST['tipoTransacao'] ?? '';
     $status = $_POST['statusTransacao'] ?? '';
+    $idContaRemetente = $_POST['contaRemetente'] ?? null;
+    $idContaDestinataria = $_POST['contaDestinataria'] ?? null;
+    $idCategoria = $_POST['categoriaTransacao'] ?? null;
+    $id_usuario = $_SESSION['id_usuario'] ?? null;
 
     // Processa a ação solicitada
     switch ($acao) {
         case 'editarTransacao':
-            if (editarTransacao($id, $titulo, $descricao, $valor, $data, $tipo, $status)) {
+            if (editarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria)) { 
                 confirmar("Transação editada com sucesso!", "transacoes.php");
             } else {
                 erro("Erro ao editar transação. Verifique os dados e tente novamente.");
@@ -93,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             break;
 
         case 'cadastrarTransacao':
-            if (cadastrarTransacao($titulo, $descricao, $valor, $data, $tipo, $status)) {
+            if (cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria)) {
                 confirmar("Transação cadastrada com sucesso!", "transacoes.php");
             } else {
                 erro("Erro ao cadastrar transação. Verifique os dados e tente novamente.");

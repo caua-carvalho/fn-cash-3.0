@@ -1,3 +1,7 @@
+<?php
+require 'script.php';
+?>
+
 <div class="modal fade" id="transacaoModal" tabindex="-1" aria-labelledby="transacaoModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -9,29 +13,35 @@
                 </button>
             </div>
             <!-- Formulário para cadastrar nova transação -->
-            <form action="transacoes.php" method="POST">
+            <form action="teste.php" method="POST">
                 <input type="hidden" name="acao" value="cadastrarTransacao">
                 <div class="modal-body">
+                    
+
                     <!-- Campo para o título da transação -->
                     <div class="form-group">
                         <label for="tituloTransacao">Título</label>
                         <input type="text" class="form-control" id="tituloTransacao" name="tituloTransacao" required>
                     </div>
+
                     <!-- Campo para a descrição da transação -->
                     <div class="form-group">
                         <label for="descricaoTransacao">Descrição</label>
                         <textarea class="form-control" id="descricaoTransacao" name="descricaoTransacao" required></textarea>
                     </div>
+
                     <!-- Campo para o valor da transação -->
                     <div class="form-group">
                         <label for="valorTransacao">Valor</label>
                         <input type="number" class="form-control" id="valorTransacao" name="valorTransacao" step="0.01" required>
                     </div>
+
                     <!-- Campo para a data da transação -->
                     <div class="form-group">
                         <label for="dataTransacao">Data</label>
                         <input type="date" class="form-control" id="dataTransacao" name="dataTransacao" required>
                     </div>
+
                     <!-- Campo para selecionar o tipo da transação -->
                     <div class="form-group">
                         <label for="tipoTransacao">Tipo</label>
@@ -41,6 +51,7 @@
                             <option value="Transferência">Transferência</option>
                         </select>
                     </div>
+
                     <!-- Campo para selecionar o status da transação -->
                     <div class="form-group">
                         <label for="statusTransacao">Status</label>
@@ -49,6 +60,26 @@
                             <option value="Efetivada">Efetivada</option>
                             <option value="Cancelada">Cancelada</option>
                         </select>
+                    </div>
+
+                    <!-- Conta remetente -->
+                    <div class="form-group">
+                        <label for="nomeContaRemetente">Conta Remetente</label>
+                        <input type="text" class="form-control" id="contaRemetente" name="contaRemetente" required>
+                    </div>
+
+                    <!-- Conta destinatária (exibida apenas para transferências) -->
+                    <div class="form-group" id="contaDestinatariaGroup" style="display: none;">
+                        <label for="nomeContaDestinataria">Conta Destinatária</label>
+                        <input type="text" class="form-control" id="contaDestinataria" name="contaDestinataria">
+                    </div>
+
+                    <!-- Campo para selecionar a categoria da transação -->
+                    <div class="form-group">
+                        <label for="categoriaTransacao">Categoria</label>
+                        <select class="form-control" id="categoriaTransacao" name="categoriaTransacao" required>
+                            <option value="1">Alimentação</option>
+                            </select>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -16,15 +16,17 @@ function obterTransacoes() {
     return $transacoes;
 }
 
-function cadastrarTransacao($titulo, $descricao, $valor, $data, $tipo, $status, $idConta, $idCategoria = null, $idContaDestino = null) {
+function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria,$idContaRemetente, $idContaDestinataria) {
     global $conn;
-    $sql = "INSERT INTO TRANSACAO (Titulo, Descricao, Valor, Data, DataRegistro, Tipo, Status, ID_Conta, ID_Categoria, ID_ContaDestino) 
+    $idCategoria = intval($idCategoria);
+
+    $sql = "INSERT INTO TRANSACAO (Titulo, Descricao, Valor, Data, DataRegistro, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_ContaDestinataria, ID_Usuario) 
             VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdsssiii", $titulo, $descricao, $valor, $data, $tipo, $status, $idConta, $idCategoria, $idContaDestino);
+    $stmt->bind_param("ssdsssiiii", $titulo, $descricao, (float)$valor, $data, $tipo, $status, $idContaRemetente, $idCategoria, $idContaDestinataria, $id_usuario);
 
     if ($stmt->execute()) {
-        return $conn->insert_id; // Retorna o ID da nova transação inserida
+        return true; // Retorna o ID da nova transação inserida
     } else {
         return false; // Retorna false em caso de falha
     }

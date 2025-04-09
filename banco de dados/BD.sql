@@ -47,14 +47,17 @@ CREATE TABLE TRANSACAO (
     DataRegistro DATETIME NOT NULL,
     Tipo ENUM('Despesa', 'Receita', 'Transferência') NOT NULL,
     Status ENUM('Pendente', 'Efetivada', 'Cancelada') NOT NULL DEFAULT 'Efetivada',
-    ID_Conta INT NOT NULL,
+    ID_ContaRemetente INT NOT NULL,
     ID_Categoria INT,
-    ID_ContaDestino INT,
-    CONSTRAINT FK_Transacao_Conta FOREIGN KEY (ID_Conta) 
+    ID_ContaDestinataria INT,
+    ID_Usuario INT NOT NULL,
+    CONSTRAINT FK_Transacao_Usuario FOREIGN KEY (ID_Usuario) 
+        REFERENCES USUARIO(ID_Usuario) ON DELETE CASCADE,
+    CONSTRAINT FK_Transacao_Conta FOREIGN KEY (ID_ContaRemetente) 
         REFERENCES CONTA(ID_Conta) ON DELETE CASCADE,
     CONSTRAINT FK_Transacao_Categoria FOREIGN KEY (ID_Categoria) 
         REFERENCES CATEGORIA(ID_Categoria) ON DELETE SET NULL,
-    CONSTRAINT FK_Transacao_ContaDestino FOREIGN KEY (ID_ContaDestino) 
+    CONSTRAINT FK_Transacao_ContaDestino FOREIGN KEY (ID_ContaDestinataria) 
         REFERENCES CONTA(ID_Conta) ON DELETE SET NULL
 );
 

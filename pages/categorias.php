@@ -6,7 +6,7 @@ require_once 'categorias/script.php';
 require_once 'categorias/modal.php';
 require_once 'dialog.php';
 ?>
-
+<h1>teste</h1>
 <div class="container">
     <h2>Categorias</h2>
     
@@ -103,3 +103,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             break;
     }
 }
+?>

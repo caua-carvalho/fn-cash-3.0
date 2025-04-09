@@ -33,7 +33,7 @@ function editarCategoria($id, $nome, $tipo, $descricao, $status) {
     global $conn;
     $sql = "UPDATE CATEGORIA SET Nome = ?, Tipo = ?, Descricao = ?, Ativa = ? WHERE ID_Categoria = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssib", $nome, $tipo, $descricao, $id, $status);
+    $stmt->bind_param("sssii", $nome, $tipo, $descricao, $status, $id);
 
     return $stmt->execute(); // Retorna true em caso de sucesso ou false em caso de falha
 }

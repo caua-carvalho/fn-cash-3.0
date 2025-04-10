@@ -1,5 +1,7 @@
 <?php
 require 'script.php';
+require './contas/funcoes.php';
+require './categorias/funcoes.php';
 ?>
 
 <div class="modal fade" id="transacaoModal" tabindex="-1" aria-labelledby="transacaoModalLabel" aria-hidden="true">
@@ -64,22 +66,56 @@ require 'script.php';
 
                     <!-- Conta remetente -->
                     <div class="form-group">
-                        <label for="nomeContaRemetente">Conta Remetente</label>
-                        <input type="text" class="form-control" id="contaRemetente" name="contaRemetente" required>
+                        <label for="contaRemetente">Conta Remetente</label>
+                        <?php
+                        $contas = obterContas();
+                        if ($contas) {
+                            echo '<select class="form-control" id="contaRemetente" name="contaRemetente" required>';
+                            echo '<option value="">Selecione uma conta...</option>';
+                            foreach ($contas as $conta) {
+                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '</option>';
+                            }
+                            echo '</select>';
+                        } else {
+                            echo '<p class="text-danger">Nenhuma conta encontrada.</p>';
+                        }
+                        ?>
                     </div>
 
                     <!-- Conta destinatária (exibida apenas para transferências) -->
-                    <div class="form-group" id="contaDestinatariaGroup" style="display: none;">
-                        <label for="nomeContaDestinataria">Conta Destinatária</label>
-                        <input type="text" class="form-control" id="contaDestinataria" name="contaDestinataria">
+                    <div class="form-group">
+                        <label for="contaDestinataria">Conta destinatária</label>
+                        <?php
+                        $contas = obterContas();
+                        if ($contas) {
+                            echo '<select class="form-control" id="contaDestinataria" name="contaDestinataria" required>';
+                            echo '<option value="">Selecione uma conta...</option>';
+                            foreach ($contas as $conta) {
+                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '</option>';
+                            }
+                            echo '</select>';
+                        } else {
+                            echo '<p class="text-danger">Nenhuma conta encontrada.</p>';
+                        }
+                        ?>
                     </div>
 
                     <!-- Campo para selecionar a categoria da transação -->
                     <div class="form-group">
                         <label for="categoriaTransacao">Categoria</label>
-                        <select class="form-control" id="categoriaTransacao" name="categoriaTransacao" required>
-                            <option value="1">Alimentação</option>
-                            </select>
+                        <?php
+                        $categorias = obterCategorias();
+                        if ($categorias) {
+                            echo '<select class="form-control" id="categoriaTransacao" name="categoriaTransacao">';
+                            echo '<option value="">Selecione uma Categoria...</option>';
+                            foreach ($categorias as $categoria) {
+                                echo '<option value="' . $categoria['ID_Categoria'] . '">' . htmlspecialchars($categoria['Nome']) . '</option>';
+                            }
+                            echo '</select>';
+                        } else {
+                            echo '<p class="text-danger">Nenhuma categoria encontrada.</p>';
+                        }
+                        ?>
                     </div>
                 </div>
                 <div class="modal-footer">

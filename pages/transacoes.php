@@ -85,6 +85,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idCategoria = $_POST['categoriaTransacao'] ?? null;
     $id_usuario = $_SESSION['id_usuario'] ?? null;
 
+    // Validação básica
+    if (empty($titulo) || empty($descricao) || empty($valor) || empty($data) || empty($tipo) || empty($status) || empty($id_usuario)) {
+        erro("Todos os campos obrigatórios devem ser preenchidos.");
+        exit;
+    }
+
+    // Validação do tipo
+    if (!in_array($tipo, ['Despesa', 'Receita', 'Transferência'])) {
+        erro("Tipo de transação inválido.");
+        exit;
+    }
+
+    // Validação do status
+    if (!in_array($status, ['Pendente', 'Efetivada', 'Cancelada'])) {
+        erro("Status de transação inválido.");
+        exit;
+    }
+
     // Processa a ação solicitada
     switch ($acao) {
         case 'editarTransacao':

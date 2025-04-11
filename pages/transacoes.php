@@ -1,9 +1,14 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
+require_once 'transacoes/funcoes.php';
 require_once 'header.php';
 require_once 'nav.php';
 require_once 'transacoes/modal.php';
 require_once 'dialog.php';
+require_once '../conexao.php';
 ?>
 
 <div class="container">
@@ -83,24 +88,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idContaRemetente = $_POST['contaRemetente'] ?? null;
     $idContaDestinataria = $_POST['contaDestinataria'] ?? null;
     $idCategoria = $_POST['categoriaTransacao'] ?? null;
-    $id_usuario = $_SESSION['id_usuario'] ?? null;
-
-    // Validação básica
-    if (empty($titulo) || empty($descricao) || empty($valor) || empty($data) || empty($tipo) || empty($status) || empty($id_usuario)) {
-        erro("Todos os campos obrigatórios devem ser preenchidos.");
-        exit;
-    }
+    $id_usuario = $_SESSION['id'] ?? null;
 
     // Validação do tipo
     if (!in_array($tipo, ['Despesa', 'Receita', 'Transferência'])) {
-        erro("Tipo de transação inválido.");
+        echo '<script>alert("Tipo de transação inválido.")</script>';
         exit;
     }
 
     // Validação do status
     if (!in_array($status, ['Pendente', 'Efetivada', 'Cancelada'])) {
-        erro("Status de transação inválido.");
+        echo '<script>alert(" Status de transação inválido.")</script>';
         exit;
+    }
+
+    // Verifica se a conta remetente existe
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM CONTA WHERE ID_Conta = ?");
+    $stmt->bind_param("i", $idContaRemetente);
+    $stmt->execute();
+    $stmt->bind_result($contaRemetenteExiste);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (!$contaRemetenteExiste) {
+        echo '<script>alert("Conta remetente inválida.")</script>';
+        exit;
+    }
+
+    // Verifica se a categoria existe (se fornecida)
+    if ($idCategoria) {
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM CATEGORIA WHERE ID_Categoria = ?");
+        $stmt->bind_param("i", $idCategoria);
+        $stmt->execute();
+        $stmt->bind_result($categoriaExiste);
+        $stmt->fetch();
+        $stmt->close();
+
+        if (!$categoriaExiste) {
+            echo '<script>alert("Categoria inválida.")</script>';
+            exit;
+        }
     }
 
     // Processa a ação solicitada

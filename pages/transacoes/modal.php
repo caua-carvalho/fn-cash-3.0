@@ -15,7 +15,7 @@ require './categorias/funcoes.php';
                 </button>
             </div>
             <!-- Formulário para cadastrar nova transação -->
-            <form action="teste.php" method="POST">
+            <form action="transacoes.php" method="POST">
                 <input type="hidden" name="acao" value="cadastrarTransacao">
                 <div class="modal-body">
                     

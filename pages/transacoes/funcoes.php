@@ -16,20 +16,36 @@ function obterTransacoes() {
     return $transacoes;
 }
 
-function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria,$idContaRemetente, $idContaDestinataria) {
+function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria) {
     global $conn;
+
+    // Converte os valores para os tipos corretos
     $idCategoria = intval($idCategoria);
+    $valor = floatval($valor);
+    $idContaRemetente = intval($idContaRemetente);
+    $idContaDestinataria = intval($idContaDestinataria);
 
-    $sql = "INSERT INTO TRANSACAO (Titulo, Descricao, Valor, Data, DataRegistro, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_ContaDestinataria, ID_Usuario) 
-            VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?)";
+    // Query SQL
+    $sql = "INSERT INTO TRANSACAO (Titulo, Descricao, Valor, Data, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_ContaDestinataria, ID_Usuario) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    // Prepara a declaração
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdsssiiii", $titulo, $descricao, (float)$valor, $data, $tipo, $status, $idContaRemetente, $idCategoria, $idContaDestinataria, $id_usuario);
-
-    if ($stmt->execute()) {
-        return true; // Retorna o ID da nova transação inserida
-    } else {
-        return false; // Retorna false em caso de falha
+    if (!$stmt) {
+        die("Erro ao preparar a declaração SQL: " . $conn->error);
     }
+
+    // Vincula os parâmetros
+    if (!$stmt->bind_param("ssdsssiiii", $titulo, $descricao, $valor, $data, $tipo, $status, $idContaRemetente, $idCategoria, $idContaDestinataria, $id_usuario)) {
+        die("Erro ao vincular parâmetros: " . $stmt->error);
+    }
+
+    // Executa a declaração
+    if (!$stmt->execute()) {
+        die("Erro ao executar a declaração SQL: " . $stmt->error);
+    }
+
+    return true; // Retorna true em caso de sucesso
 }
 
 function editarTransacao($id, $titulo, $descricao, $valor, $data, $tipo, $status, $idConta, $idCategoria = null, $idContaDestino = null) {

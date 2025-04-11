@@ -44,7 +44,7 @@ CREATE TABLE TRANSACAO (
     Descricao VARCHAR(255) NOT NULL,
     Valor DECIMAL(15,2) NOT NULL,
     Data DATE NOT NULL,
-    DataRegistro DATETIME NOT NULL,
+    DataRegistro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     Tipo ENUM('Despesa', 'Receita', 'Transferência') NOT NULL,
     Status ENUM('Pendente', 'Efetivada', 'Cancelada') NOT NULL DEFAULT 'Efetivada',
     ID_ContaRemetente INT NOT NULL,

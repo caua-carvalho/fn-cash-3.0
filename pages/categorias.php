@@ -9,7 +9,7 @@ require_once 'dialog.php';
 
 <div class="container">
     <h2>Categorias</h2>
-    
+    <label for="ol">oal</label>
     <!-- Botão para cadastrar nova categoria -->
     <div class="mb-3">
         <button class="btn btn-success" data-toggle="modal" data-target="#categoriaModal">Cadastrar Nova Categoria</button>

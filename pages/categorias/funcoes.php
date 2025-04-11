@@ -3,7 +3,7 @@
 require_once "../conexao.php";
 require_once "dialog.php";
 
-$status = ($_POST['statusCategoria'] === 'true') ? 1 : 0;
+
 
 function obterCategorias() {
     global $conn;
@@ -21,6 +21,9 @@ function obterCategorias() {
 
 function cadastrarCategoria($nome, $tipo, $descricao, $status) {
     global $conn;
+
+    $status = ($_POST['statusCategoria'] === 'true') ? 1 : 0;
+
     $sql = "INSERT INTO CATEGORIA (Nome, Tipo, Descricao, Ativa, ID_Usuario) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sssii", $nome, $tipo, $descricao, $status, $_SESSION['id_usuario']);

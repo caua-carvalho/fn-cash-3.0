@@ -1,16 +1,18 @@
 <?php
+session_start();
 require_once 'header.php';
 require_once 'nav.php';
 require_once 'categorias/funcoes.php';
 require_once 'categorias/script.php';
 require_once 'categorias/modal.php';
 require_once 'dialog.php';
+
 ?>
 
 <div class="container">
     <h2>Categorias</h2>
     
-    <!-- Botão para cadastrar nova categoria -->
+    <!-- Botão para cadastrar nova categoria -->    
     <div class="mb-3">
         <button class="btn btn-success" data-toggle="modal" data-target="#categoriaModal">Cadastrar Nova Categoria</button>
     </div>

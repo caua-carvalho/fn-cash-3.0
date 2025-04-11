@@ -27,7 +27,7 @@ require_once 'dialog.php';
         </thead>
         <tbody>
             <?php
-            $categorias = obterCategorias();
+            $categorias = obterCategorias("Despesas");
             foreach ($categorias as $categoria) {
                 echo "<tr>
                      <td>" . htmlspecialchars($categoria['Nome']) . "</td>

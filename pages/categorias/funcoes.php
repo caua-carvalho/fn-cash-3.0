@@ -5,10 +5,18 @@ require_once "dialog.php";
 
 $status = ($_POST['statusCategoria'] === 'true') ? 1 : 0;
 
-function obterCategorias() {
+function obterCategorias($tipo) {
     global $conn;
-    $sql = "SELECT * FROM CATEGORIA ORDER BY Ativa DESC, ID_Categoria ASC";
-    $result = $conn->query($sql);
+    $sql = "SELECT * FROM CATEGORIA WHERE Tipo = ? ORDER BY Ativa DESC, ID_Categoria ASC";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $tipo);
+
+    if ($stmt->execute()) {
+        return confirmar("Categoria cadastrada com sucesso!", "categoria.php");
+    } else {
+        return erro("Erro ao cadastrar categoria: " . $conn->error); // Retorna false em caso de falha
+    }
+
     $categorias = array();
 
     if ($result->num_rows > 0) {

@@ -30,6 +30,14 @@
                         <label for="descricaoCategoria">Descrição</label>
                         <textarea class="form-control" id="descricaoCategoria" name="descricaoCategoria" rows="3"></textarea>
                     </div>
+                    <!-- Campo para selecionar o status da categoria -->
+                    <div class="form-group">
+                        <label for="statusCategoria">Status</label>
+                        <select class="form-control" id="statusCategoria" name="statusCategoria" required>
+                            <option value="true">Ativa</option>
+                            <option value="false">Inativa</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <!-- Botões para cancelar ou salvar -->

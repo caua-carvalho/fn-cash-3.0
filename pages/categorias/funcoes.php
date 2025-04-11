@@ -1,6 +1,9 @@
 <?php
 // Incluir o cabeçalho
 require_once "../conexao.php";
+require_once "dialog.php";
+
+$status = ($_POST['statusCategoria'] === 'true') ? 1 : 0;
 
 function obterCategorias() {
     global $conn;
@@ -16,16 +19,16 @@ function obterCategorias() {
     return $categorias;
 }
 
-function cadastrarCategoria($nome, $tipo, $descricao) {
+function cadastrarCategoria($nome, $tipo, $descricao, $status) {
     global $conn;
-    $sql = "INSERT INTO CATEGORIA (Nome, Tipo, Descricao, Ativa, ID_Usuario) VALUES (?, ?, ?, 1, ?)";
+    $sql = "INSERT INTO CATEGORIA (Nome, Tipo, Descricao, Ativa, ID_Usuario) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssi", $nome, $tipo, $descricao, $_SESSION['id']);
+    $stmt->bind_param("sssii", $nome, $tipo, $descricao, $status, $_SESSION['id_usuario']);
 
     if ($stmt->execute()) {
         return $conn->insert_id; // Retorna o ID da nova categoria inserida
     } else {
-        return false; // Retorna false em caso de falha
+        return erro("Erro ao cadastrar categoria: " . $conn->error); // Retorna false em caso de falha
     }
 }
 

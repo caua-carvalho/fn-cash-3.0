@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idContaRemetente = $_POST['contaRemetente'] ?? null;
     $idContaDestinataria = $_POST['contaDestinataria'] ?? null;
     $idCategoria = $_POST['categoriaTransacao'] ?? null;
-    $id_usuario = $_SESSION['id'] ?? null;
+    $id_usuario = $_SESSION['id_usuario'] ?? null;
 
     // Validação do tipo
     if (!in_array($tipo, ['Despesa', 'Receita', 'Transferência'])) {

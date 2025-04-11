@@ -20,7 +20,7 @@ function cadastrarConta($nome, $tipo, $saldo, $instituicao) {
     global $conn;
     $sql = "INSERT INTO CONTA (Nome, Tipo, Saldo, Instituicao, DataCriacao, ID_Usuario) VALUES (?, ?, ?, ?, NOW(), ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdsi", $nome, $tipo, $saldo, $instituicao, $_SESSION['id']);
+    $stmt->bind_param("ssdsi", $nome, $tipo, $saldo, $instituicao, $_SESSION['id_usuario']);
 
     if ($stmt->execute()) {
         return $conn->insert_id; // Retorna o ID da nova conta inserida

@@ -4,7 +4,26 @@ require_once "../conexao.php";
 
 function obterTransacoes() {
     global $conn;
-    $sql = "SELECT * FROM TRANSACAO ORDER BY ID_Transacao ASC";
+    $sql = "SELECT 
+                t.ID_Transacao,
+                t.Titulo,
+                t.Descricao,
+                t.Valor,
+                t.Data,
+                t.Tipo,
+                t.Status,
+                remetente.Nome AS ContaRemetente, -- Nome da conta remetente
+                destinataria.Nome AS ContaDestinataria, -- Nome da conta destinatária
+                t.ID_Categoria,
+                t.ID_Usuario
+            FROM 
+                TRANSACAO t
+            LEFT JOIN 
+                CONTA remetente ON t.ID_ContaRemetente = remetente.ID_Conta
+            LEFT JOIN 
+                CONTA destinataria ON t.ID_ContaDestinataria = destinataria.ID_Conta
+            ORDER BY 
+                t.ID_Transacao ASC";
     $result = $conn->query($sql);
     $transacoes = array();
 
@@ -24,6 +43,14 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $ti
     $valor = floatval($valor);
     $idContaRemetente = intval($idContaRemetente);
     $idContaDestinataria = intval($idContaDestinataria);
+
+    // Verifica se a conta remetente existe
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM CONTA WHERE ID_Conta = ?");
+    $stmt->bind_param("i", $idContaRemetente);
+    $stmt->execute();
+    $stmt->bind_result($contaRemetenteExiste);
+    $stmt->fetch();
+    $stmt->close();
 
     // Query SQL
     $sql = "INSERT INTO TRANSACAO (Titulo, Descricao, Valor, Data, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_ContaDestinataria, ID_Usuario) 

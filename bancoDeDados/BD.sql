@@ -10,8 +10,8 @@ CREATE TABLE USUARIO (
     UltimoAcesso DATETIME
 );
 
-insert into USUARIO SET Nome = "adm", Email = "adm@gmail.com", Senha = SHA2("123", 256), DataCadastro = "2007-07-12";
-
+INSERT INTO USUARIO (Nome, Email, Senha, DataCadastro) 
+VALUES ('adm', 'adm@gmail.com', SHA2('123', 256), CURDATE());
 
 CREATE TABLE CONTA (
     ID_Conta INT AUTO_INCREMENT PRIMARY KEY,
@@ -67,7 +67,7 @@ CREATE TABLE CONTA_RECORRENTE (
     Descricao VARCHAR(255) NOT NULL,
     Valor DECIMAL(15,2) NOT NULL,
     DataInicio DATE NOT NULL,
-    Periodicidade ENUM('Diário', 'Semanal', 'Mensal', 'Anual') NOT NULL,
+    Periodicidade ENUM('Diário', 'Semanal',sau 'Mensal', 'Anual') NOT NULL,
     DataFim DATE,
     Ativo BOOLEAN NOT NULL DEFAULT TRUE,
     ID_Categoria INT,
@@ -124,9 +124,7 @@ CREATE TABLE INVESTIMENTO (
         REFERENCES USUARIO(ID_Usuario) ON DELETE CASCADE
 );
 
-
 -- Trigger para atualizar o saldo da conta após a inserção de uma transação
-
 DELIMITER $$
 
 CREATE TRIGGER AtualizarSaldoConta
@@ -150,6 +148,7 @@ END$$
 
 DELIMITER ;
 
+
 -- Trigger para atualizar o saldo da conta após a inserção de uma transferência
 DELIMITER $$
 
@@ -171,3 +170,5 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+select * from CONTA;

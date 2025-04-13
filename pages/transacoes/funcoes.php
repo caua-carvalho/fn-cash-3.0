@@ -38,11 +38,18 @@ function obterTransacoes() {
 function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria) {
     global $conn;
 
+    if ($idContaRemetente == $idContaDestinataria) {
+        erro('Conta remetente e destinatária não podem ser iguais.'); 
+        exit;
+    }
+
     // Converte os valores para os tipos corretos
     $idCategoria = intval($idCategoria);
     $valor = floatval($valor);
     $idContaRemetente = intval($idContaRemetente);
     $idContaDestinataria = intval($idContaDestinataria);
+
+    
 
     // Verifica se a conta remetente existe
     $stmt = $conn->prepare("SELECT COUNT(*) FROM CONTA WHERE ID_Conta = ?");

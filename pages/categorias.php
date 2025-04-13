@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 require_once 'header.php';
 require_once 'nav.php';
@@ -6,6 +10,7 @@ require_once 'categorias/funcoes.php';
 require_once 'categorias/script.php';
 require_once 'categorias/modal.php';
 require_once 'dialog.php';
+
 
 ?>
 

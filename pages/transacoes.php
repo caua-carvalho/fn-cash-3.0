@@ -1,10 +1,14 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once 'transacoes/funcoes.php';
 require_once 'header.php';
 require_once 'nav.php';
 require_once 'transacoes/modal.php';
 require_once 'dialog.php';
 require_once '../conexao.php';
+
 ?>
 
 <div class="container">
@@ -40,17 +44,17 @@ require_once '../conexao.php';
              <td><span style='background-color: " . ($transacao['Tipo'] === 'Receita' ? 'green' : ($transacao['Tipo'] === 'Despesa' ? 'red' : 'blue')) . "; color: white; padding: 2px 8px; border-radius: 5px; font-size: 12px;'>" . htmlspecialchars($transacao['Tipo']) . "</span></td>
              <td>" . htmlspecialchars($transacao['Status']) . "</td>
              <td>" . htmlspecialchars($transacao['ContaRemetente']) . "</td>
-             <td>" . htmlspecialchars($transacao['ContaDestinataria']) . "</td>
+             <td>" . ($transacao['Tipo'] === 'Transferência' ? htmlspecialchars($transacao['ContaDestinataria']) : '-') . "</td>
              <td>
              <a class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editarTransacaoModal'
             data-id='" . $transacao['ID_Transacao'] . "'
             data-titulo='" . htmlspecialchars($transacao['Titulo']) . "'
             data-valor='" . $transacao['Valor'] . "'
             data-data='" . $transacao['Data'] . "'
-            data-tipo='" . $transacao['Tipo'] . "'
+            data-tipo='" . htmlspecialchars($transacao['Tipo']) . "'
             data-status='" . $transacao['Status'] . "'
             data-conta-remetente='" . htmlspecialchars($transacao['ContaRemetente']) . "'
-            data-conta-destinataria='" . htmlspecialchars($transacao['ContaDestinataria']) . "'>
+            data-conta-destinataria='" . ($transacao['Tipo'] === 'Transferência' ? htmlspecialchars($transacao['ContaDestinataria']) : '-') . "'>
             Editar
              </a> 
              <a class='btn btn-danger btn-sm' data-toggle='modal' data-target='#excluirTransacaoModal'
@@ -85,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo = $_POST['tipoTransacao'] ?? '';
     $status = $_POST['statusTransacao'] ?? '';
     $idContaRemetente = $_POST['contaRemetente'] ?? null;
-    $idContaDestinataria = $_POST['contaDestinataria'] ?? null;
+    $idContaDestinataria = ($tipo === 'Transferência') ? intval($_POST['contaDestinataria']) : null;
     $idCategoria = $_POST['categoriaTransacao'] ?? null;
     $id_usuario = $_SESSION['id_usuario'] ?? null;
 

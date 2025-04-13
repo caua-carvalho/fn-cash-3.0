@@ -35,10 +35,10 @@ function obterTransacoes() {
     return $transacoes;
 }
 
-function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria) {
+function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria = null) {
     global $conn;
 
-    if ($idContaRemetente == $idContaDestinataria) {
+    if ($idContaRemetente == $idContaDestinataria && $tipo === 'Transferência') {
         erro('Conta remetente e destinatária não podem ser iguais.'); 
         exit;
     }
@@ -47,9 +47,7 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $ti
     $idCategoria = intval($idCategoria);
     $valor = floatval($valor);
     $idContaRemetente = intval($idContaRemetente);
-    $idContaDestinataria = intval($idContaDestinataria);
-
-    
+    $idContaDestinataria = !empty($idContaDestinataria) ? intval($idContaDestinataria) : null;
 
     // Verifica se a conta remetente existe
     $stmt = $conn->prepare("SELECT COUNT(*) FROM CONTA WHERE ID_Conta = ?");
@@ -58,6 +56,11 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $ti
     $stmt->bind_result($contaRemetenteExiste);
     $stmt->fetch();
     $stmt->close();
+
+    if (!$contaRemetenteExiste) {
+        erro("Conta remetente inválida.");
+        exit;
+    }
 
     // Query SQL
     $sql = "INSERT INTO TRANSACAO (Titulo, Descricao, Valor, Data, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_ContaDestinataria, ID_Usuario) 
@@ -70,9 +73,19 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $ti
     }
 
     // Vincula os parâmetros
-    if (!$stmt->bind_param("ssdsssiiii", $titulo, $descricao, $valor, $data, $tipo, $status, $idContaRemetente, $idCategoria, $idContaDestinataria, $id_usuario)) {
-        die("Erro ao vincular parâmetros: " . $stmt->error);
-    }
+    $stmt->bind_param(
+        "ssdsssiiii",
+        $titulo,
+        $descricao,
+        $valor,
+        $data,
+        $tipo,
+        $status,
+        $idContaRemetente,
+        $idCategoria,
+        $idContaDestinataria,
+        $id_usuario
+    );
 
     // Executa a declaração
     if (!$stmt->execute()) {

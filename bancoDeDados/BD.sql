@@ -123,3 +123,51 @@ CREATE TABLE INVESTIMENTO (
     CONSTRAINT FK_Investimento_Usuario FOREIGN KEY (ID_Usuario) 
         REFERENCES USUARIO(ID_Usuario) ON DELETE CASCADE
 );
+
+
+-- Trigger para atualizar o saldo da conta após a inserção de uma transação
+
+DELIMITER $$
+
+CREATE TRIGGER AtualizarSaldoConta
+AFTER INSERT ON TRANSACAO
+FOR EACH ROW
+BEGIN
+    -- Atualiza o saldo da conta remetente para despesas
+    IF NEW.Tipo = 'Despesa' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo - NEW.Valor
+        WHERE ID_Conta = NEW.ID_ContaRemetente;
+    END IF;
+
+    -- Atualiza o saldo da conta remetente para receitas
+    IF NEW.Tipo = 'Receita' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo + NEW.Valor
+        WHERE ID_Conta = NEW.ID_ContaRemetente;
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- Trigger para atualizar o saldo da conta após a inserção de uma transferência
+DELIMITER $$
+
+CREATE TRIGGER AtualizarSaldoTransferencia
+AFTER INSERT ON TRANSACAO
+FOR EACH ROW
+BEGIN
+    -- Subtrai o valor da conta remetente
+    IF NEW.Tipo = 'Transferência' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo - NEW.Valor
+        WHERE ID_Conta = NEW.ID_ContaRemetente;
+
+        -- Adiciona o valor à conta destinatária
+        UPDATE CONTA
+        SET Saldo = Saldo + NEW.Valor
+        WHERE ID_Conta = NEW.ID_ContaDestinataria;
+    END IF;
+END$$
+
+DELIMITER ;

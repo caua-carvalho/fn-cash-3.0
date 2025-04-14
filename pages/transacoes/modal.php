@@ -29,7 +29,7 @@ require './categorias/funcoes.php';
                     <!-- Campo para a descrição da transação -->
                     <div class="form-group">
                         <label for="descricaoTransacao">Descrição</label>
-                        <textarea class="form-control" id="descricaoTransacao" name="descricaoTransacao" required></textarea>
+                        <textarea class="form-control" id="descricaoTransacao" name="descricaoTransacao"></textarea>
                     </div>
 
                     <!-- Campo para o valor da transação -->
@@ -152,7 +152,7 @@ require './categorias/funcoes.php';
                     <!-- Campo para a descrição da transação -->
                     <div class="form-group">
                         <label for="editarDescricaoTransacao">Descrição</label>
-                        <textarea class="form-control" id="editarDescricaoTransacao" name="descricaoTransacao" required></textarea>
+                        <textarea class="form-control" id="editarDescricaoTransacao" name="descricaoTransacao"></textarea>
                     </div>
                     <!-- Campo para o valor da transação -->
                     <div class="form-group">
@@ -181,6 +181,40 @@ require './categorias/funcoes.php';
                             <option value="Efetivada">Efetivada</option>
                             <option value="Cancelada">Cancelada</option>
                         </select>
+                    </div>
+                    <!-- Campo para selecionar a conta remetente -->
+                    <div class="form-group">
+                        <label for="editarContaRemetente">Conta Remetente</label>
+                        <?php
+                        $contas = obterContas();
+                        if ($contas) {
+                            echo '<select class="form-control" id="editarContaRemetente" name="contaRemetente" required>';
+                            echo '<option value="">Selecione uma conta...</option>';
+                            foreach ($contas as $conta) {
+                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '</option>';
+                            }
+                            echo '</select>';
+                        } else {
+                            echo '<p class="text-danger">Nenhuma conta encontrada.</p>';
+                        }
+                        ?>
+                    </div>
+                    <!-- Campo para selecionar a conta destinatária -->
+                    <div class="form-group">
+                        <label for="editarContaDestinataria">Conta Destinatária</label>
+                        <?php
+                        $contas = obterContas();
+                        if ($contas) {
+                            echo '<select class="form-control" id="editarContaDestinataria" name="contaDestinataria" required>';
+                            echo '<option value="">Selecione uma conta...</option>';
+                            foreach ($contas as $conta) {
+                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '</option>';
+                            }
+                            echo '</select>';
+                        } else {
+                            echo '<p class="text-danger">Nenhuma conta encontrada.</p>';
+                        }
+                        ?>
                     </div>
                 </div>
                 <div class="modal-footer">

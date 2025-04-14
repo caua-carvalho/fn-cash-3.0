@@ -67,7 +67,7 @@ CREATE TABLE CONTA_RECORRENTE (
     Descricao VARCHAR(255) NOT NULL,
     Valor DECIMAL(15,2) NOT NULL,
     DataInicio DATE NOT NULL,
-    Periodicidade ENUM('Diário', 'Semanal',sau 'Mensal', 'Anual') NOT NULL,
+    Periodicidade ENUM('Diário', 'Semanal', 'Mensal', 'Anual') NOT NULL,
     DataFim DATE,
     Ativo BOOLEAN NOT NULL DEFAULT TRUE,
     ID_Categoria INT,
@@ -132,14 +132,14 @@ AFTER INSERT ON TRANSACAO
 FOR EACH ROW
 BEGIN
     -- Atualiza o saldo da conta remetente para despesas
-    IF NEW.Tipo = 'Despesa' THEN
+    IF TRIM(NEW.Tipo) = 'Despesa' THEN
         UPDATE CONTA
         SET Saldo = Saldo - NEW.Valor
         WHERE ID_Conta = NEW.ID_ContaRemetente;
     END IF;
 
     -- Atualiza o saldo da conta remetente para receitas
-    IF NEW.Tipo = 'Receita' THEN
+    IF TRIM(NEW.Tipo) = 'Receita' THEN
         UPDATE CONTA
         SET Saldo = Saldo + NEW.Valor
         WHERE ID_Conta = NEW.ID_ContaRemetente;

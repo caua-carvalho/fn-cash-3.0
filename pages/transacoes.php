@@ -43,19 +43,22 @@ require_once '../conexao.php';
              <td>" . htmlspecialchars($transacao['Data']) . "</td>
              <td><span style='background-color: " . ($transacao['Tipo'] === 'Receita' ? 'green' : ($transacao['Tipo'] === 'Despesa' ? 'red' : 'blue')) . "; color: white; padding: 2px 8px; border-radius: 5px; font-size: 12px;'>" . htmlspecialchars($transacao['Tipo']) . "</span></td>
              <td>" . htmlspecialchars($transacao['Status']) . "</td>
-             <td>" . htmlspecialchars($transacao['ContaRemetente']) . "</td>
-             <td>" . ($transacao['Tipo'] === 'Transferência' ? htmlspecialchars($transacao['ContaDestinataria']) : '-') . "</td>
+             <td>" . htmlspecialchars($transacao['NomeContaRemetente']) . "</td>
+             <td>" . ($transacao['Tipo'] === 'Transferência' ? htmlspecialchars($transacao['NomeContaDestinataria']) : '-') . "</td>
              <td>
              <a class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editarTransacaoModal'
-            data-id='" . $transacao['ID_Transacao'] . "'
-            data-titulo='" . htmlspecialchars($transacao['Titulo']) . "'
-            data-valor='" . $transacao['Valor'] . "'
-            data-data='" . $transacao['Data'] . "'
-            data-tipo='" . htmlspecialchars($transacao['Tipo']) . "'
-            data-status='" . $transacao['Status'] . "'
-            data-conta-remetente='" . htmlspecialchars($transacao['ContaRemetente']) . "'
-            data-conta-destinataria='" . ($transacao['Tipo'] === 'Transferência' ? htmlspecialchars($transacao['ContaDestinataria']) : '-') . "'>
-            Editar
+                data-id='" . $transacao['ID_Transacao'] . "'
+                data-titulo='" . htmlspecialchars($transacao['Titulo']) . "'
+                data-descricao='" . htmlspecialchars($transacao['Descricao']) . "'
+                data-valor='" . $transacao['Valor'] . "'
+                data-data='" . $transacao['Data'] . "'
+                data-tipo='" . htmlspecialchars($transacao['Tipo']) . "'
+                data-status='" . $transacao['Status'] . "'
+                data-conta-remetente-id='" . htmlspecialchars($transacao['ID_ContaRemetente']) . "'
+                data-conta-remetente-nome='" . htmlspecialchars($transacao['NomeContaRemetente']) . "'
+                data-conta-destinataria-id='" . htmlspecialchars($transacao['ID_ContaDestinataria']) . "'
+                data-conta-destinataria-nome='" . htmlspecialchars($transacao['NomeContaDestinataria']) . "'>
+                Editar
              </a> 
              <a class='btn btn-danger btn-sm' data-toggle='modal' data-target='#excluirTransacaoModal'
             data-id='" . $transacao['ID_Transacao'] . "'>

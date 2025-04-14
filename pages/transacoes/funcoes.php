@@ -5,25 +5,14 @@ require_once "../conexao.php";
 function obterTransacoes() {
     global $conn;
     $sql = "SELECT 
-                t.ID_Transacao,
-                t.Titulo,
-                t.Descricao,
-                t.Valor,
-                t.Data,
-                t.Tipo,
-                t.Status,
-                remetente.Nome AS ContaRemetente, -- Nome da conta remetente
-                destinataria.Nome AS ContaDestinataria, -- Nome da conta destinatária
-                t.ID_Categoria,
-                t.ID_Usuario
-            FROM 
-                TRANSACAO t
-            LEFT JOIN 
-                CONTA remetente ON t.ID_ContaRemetente = remetente.ID_Conta
-            LEFT JOIN 
-                CONTA destinataria ON t.ID_ContaDestinataria = destinataria.ID_Conta
-            ORDER BY 
-                t.ID_Transacao ASC";
+                t.*, 
+                cr.ID_Conta AS ID_ContaRemetente, 
+                cr.Nome AS NomeContaRemetente, 
+                cd.ID_Conta AS ID_ContaDestinataria, 
+                cd.Nome AS NomeContaDestinataria
+            FROM TRANSACAO t
+            LEFT JOIN CONTA cr ON t.ID_ContaRemetente = cr.ID_Conta
+            LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta";
     $result = $conn->query($sql);
     $transacoes = array();
 
@@ -95,9 +84,9 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $ti
     return true; // Retorna true em caso de sucesso
 }
 
-function editarTransacao($id, $titulo, $descricao, $valor, $data, $tipo, $status, $idConta, $idCategoria = null, $idContaDestino = null) {
+function editarTransacao($id, $titulo, $descricao, $valor, $data, $tipo, $status, $idConta, $idCategoria, $idContaDestinataria, $ID_ContaRemetente ) {
     global $conn;
-    $sql = "UPDATE TRANSACAO SET Titulo = ?, Descricao = ?, Valor = ?, Data = ?, Tipo = ?, Status = ?, ID_Conta = ?, ID_Categoria = ?, ID_ContaDestino = ? 
+    $sql = "UPDATE TRANSACAO SET Titulo = ?, Descricao = ?, Valor = ?, Data = ?, Tipo = ?, Status = ?, ID_Conta = ?, ID_Categoria = ?, ID_ContaDestinataria = ?, ID_ContaRemetente = ?, ID_Usuario = ? 
             WHERE ID_Transacao = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssdsssiiii", $titulo, $descricao, $valor, $data, $tipo, $status, $idConta, $idCategoria, $idContaDestino, $id);

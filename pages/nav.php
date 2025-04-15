@@ -21,7 +21,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="orcamentos.php" class="nav-link text-white">
+            <a href="orcamento.php" class="nav-link text-white">
                 <i class="bi bi-pie-chart"></i> Orçamentos
             </a>
         </li>

@@ -17,12 +17,13 @@ CREATE TABLE CONTA (
     ID_Conta INT AUTO_INCREMENT PRIMARY KEY,
     Nome VARCHAR(100) NOT NULL,
     Tipo ENUM('Corrente', 'Poupança', 'Cartão de Crédito', 'Investimento', 'Dinheiro', 'Outros') NOT NULL,
-    Saldo DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    Saldo DECIMAL(15 , 2 ) NOT NULL DEFAULT 0.00,
     Instituicao VARCHAR(100) NOT NULL,
     DataCriacao DATE NOT NULL,
     ID_Usuario INT NOT NULL,
-    CONSTRAINT FK_Conta_Usuario FOREIGN KEY (ID_Usuario) 
-        REFERENCES USUARIO(ID_Usuario) ON DELETE CASCADE
+    CONSTRAINT FK_Conta_Usuario FOREIGN KEY (ID_Usuario)
+        REFERENCES USUARIO (ID_Usuario)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE CATEGORIA (
@@ -67,7 +68,7 @@ CREATE TABLE CONTA_RECORRENTE (
     Descricao VARCHAR(255) NOT NULL,
     Valor DECIMAL(15,2) NOT NULL,
     DataInicio DATE NOT NULL,
-    Periodicidade ENUM('Diário', 'Semanal', 'Mensal', 'Anual') NOT NULL,
+    Periodicidade ENUM('Diário', 'Semanal',sau 'Mensal', 'Anual') NOT NULL,
     DataFim DATE,
     Ativo BOOLEAN NOT NULL DEFAULT TRUE,
     ID_Categoria INT,
@@ -83,17 +84,21 @@ CREATE TABLE CONTA_RECORRENTE (
 
 CREATE TABLE ORCAMENTO (
     ID_Orcamento INT AUTO_INCREMENT PRIMARY KEY,
+    Titulo varchar(255) not null,
     Valor DECIMAL(15,2) NOT NULL,
     Inicio date not null,
     Fim date not null,
-    Descricao VARCHAR(255),
+    Descricao VARCHAR(255) default '-',
+    Ativo boolean default true,
     ID_Categoria INT NOT NULL,
     ID_Usuario INT NOT NULL,
     CONSTRAINT FK_Orcamento_Categoria FOREIGN KEY (ID_Categoria) 
         REFERENCES CATEGORIA(ID_Categoria) ON DELETE CASCADE,
     CONSTRAINT FK_Orcamento_Usuario FOREIGN KEY (ID_Usuario) 
         REFERENCES USUARIO(ID_Usuario) ON DELETE CASCADE
-)
+);
+select * from ORCAMENTO;
+drop table ORCAMENTO;
 
 CREATE TABLE META_FINANCEIRA (
     ID_Meta INT AUTO_INCREMENT PRIMARY KEY,
@@ -133,14 +138,14 @@ AFTER INSERT ON TRANSACAO
 FOR EACH ROW
 BEGIN
     -- Atualiza o saldo da conta remetente para despesas
-    IF TRIM(NEW.Tipo) = 'Despesa' THEN
+    IF NEW.Tipo = 'Despesa' THEN
         UPDATE CONTA
         SET Saldo = Saldo - NEW.Valor
         WHERE ID_Conta = NEW.ID_ContaRemetente;
     END IF;
 
     -- Atualiza o saldo da conta remetente para receitas
-    IF TRIM(NEW.Tipo) = 'Receita' THEN
+    IF NEW.Tipo = 'Receita' THEN
         UPDATE CONTA
         SET Saldo = Saldo + NEW.Valor
         WHERE ID_Conta = NEW.ID_ContaRemetente;
@@ -172,4 +177,84 @@ END$$
 
 DELIMITER ;
 
-select * from CONTA;
+DELIMITER $$
+
+CREATE TRIGGER AtualizarSaldoTransacao
+AFTER UPDATE ON TRANSACAO
+FOR EACH ROW
+BEGIN
+    -- Se o tipo ou valor da transação mudou, é necessário ajustar o saldo
+
+    -- 1. Reverter efeito da transação antiga
+    IF OLD.Tipo = 'Despesa' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo + OLD.Valor
+        WHERE ID_Conta = OLD.ID_ContaRemetente;
+    ELSEIF OLD.Tipo = 'Receita' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo - OLD.Valor
+        WHERE ID_Conta = OLD.ID_ContaRemetente;
+    ELSEIF OLD.Tipo = 'Transferência' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo + OLD.Valor
+        WHERE ID_Conta = OLD.ID_ContaRemetente;
+
+        UPDATE CONTA
+        SET Saldo = Saldo - OLD.Valor
+        WHERE ID_Conta = OLD.ID_ContaDestinataria;
+    END IF;
+
+    -- 2. Aplicar efeito da nova transação
+    IF NEW.Tipo = 'Despesa' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo - NEW.Valor
+        WHERE ID_Conta = NEW.ID_ContaRemetente;
+    ELSEIF NEW.Tipo = 'Receita' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo + NEW.Valor
+        WHERE ID_Conta = NEW.ID_ContaRemetente;
+    ELSEIF NEW.Tipo = 'Transferência' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo - NEW.Valor
+        WHERE ID_Conta = NEW.ID_ContaRemetente;
+
+        UPDATE CONTA
+        SET Saldo = Saldo + NEW.Valor
+        WHERE ID_Conta = NEW.ID_ContaDestinataria;
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER ReverterSaldoTransacao
+AFTER DELETE ON TRANSACAO
+FOR EACH ROW
+BEGIN
+    -- Se a transação deletada for uma DESPESA, devolve o valor à conta
+    IF OLD.Tipo = 'Despesa' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo + OLD.Valor
+        WHERE ID_Conta = OLD.ID_ContaRemetente;
+
+    -- Se for uma RECEITA, subtrai o valor da conta
+    ELSEIF OLD.Tipo = 'Receita' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo - OLD.Valor
+        WHERE ID_Conta = OLD.ID_ContaRemetente;
+
+    -- Se for uma TRANSFERÊNCIA, devolve valor às contas envolvidas
+    ELSEIF OLD.Tipo = 'Transferência' THEN
+        UPDATE CONTA
+        SET Saldo = Saldo + OLD.Valor
+        WHERE ID_Conta = OLD.ID_ContaRemetente;
+
+        UPDATE CONTA
+        SET Saldo = Saldo - OLD.Valor
+        WHERE ID_Conta = OLD.ID_ContaDestinataria;
+    END IF;
+END$$
+
+DELIMITER ;
+

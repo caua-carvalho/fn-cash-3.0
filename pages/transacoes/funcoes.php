@@ -12,7 +12,8 @@ function obterTransacoes() {
                 cd.Nome AS NomeContaDestinataria
             FROM TRANSACAO t
             LEFT JOIN CONTA cr ON t.ID_ContaRemetente = cr.ID_Conta
-            LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta";
+            LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
+            ORDER BY t.Data DESC";
     $result = $conn->query($sql);
     $transacoes = array();
 
@@ -84,12 +85,12 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $ti
     return true; // Retorna true em caso de sucesso
 }
 
-function editarTransacao($id, $titulo, $descricao, $valor, $data, $tipo, $status, $idConta, $idCategoria, $idContaDestinataria, $ID_ContaRemetente ) {
+function editarTransacao($ID_Usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $ID_ContaRemetente, $ID_ContaDestinataria, $ID_Transacao) {
     global $conn;
-    $sql = "UPDATE TRANSACAO SET Titulo = ?, Descricao = ?, Valor = ?, Data = ?, Tipo = ?, Status = ?, ID_Conta = ?, ID_Categoria = ?, ID_ContaDestinataria = ?, ID_ContaRemetente = ?, ID_Usuario = ? 
+    $sql = "UPDATE TRANSACAO SET Titulo = ?, Descricao = ?, Valor = ?, Data = ?, Tipo = ?, Status = ?, ID_Categoria = ?, ID_ContaDestinataria = ?, ID_ContaRemetente = ?, ID_Usuario = ? 
             WHERE ID_Transacao = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdsssiiii", $titulo, $descricao, $valor, $data, $tipo, $status, $idConta, $idCategoria, $idContaDestino, $id);
+    $stmt->bind_param("ssdsssiiiii", $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $ID_ContaDestinataria, $ID_ContaRemetente, $ID_Usuario, $ID_Transacao);
 
     return $stmt->execute(); // Retorna true em caso de sucesso ou false em caso de falha
 }

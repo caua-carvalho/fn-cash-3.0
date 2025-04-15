@@ -66,6 +66,7 @@
 
                 // Preenche os campos do modal com os valores obtidos
                 document.getElementById('editarTransacaoId').value = id;
+                document.getElementById('editarTransacaoId').value = id;
                 document.getElementById('editarTituloTransacao').value = titulo;
                 document.getElementById('editarDescricaoTransacao').value = descricao;
                 document.getElementById('editarValorTransacao').value = valor;
@@ -100,4 +101,5 @@
             });
         });
     });
+
 </script>

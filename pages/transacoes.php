@@ -44,7 +44,7 @@ require_once '../conexao.php';
              <td><span style='background-color: " . ($transacao['Tipo'] === 'Receita' ? 'green' : ($transacao['Tipo'] === 'Despesa' ? 'red' : 'blue')) . "; color: white; padding: 2px 8px; border-radius: 5px; font-size: 12px;'>" . htmlspecialchars($transacao['Tipo']) . "</span></td>
              <td>" . htmlspecialchars($transacao['Status']) . "</td>
              <td>" . htmlspecialchars($transacao['NomeContaRemetente']) . "</td>
-             <td>" . ($transacao['Tipo'] === 'Transferência' ? htmlspecialchars($transacao['NomeContaDestinataria']) : '-') . "</td>
+             <td>" . ($transacao['NomeContaDestinataria'] !== null ? htmlspecialchars($transacao['NomeContaDestinataria']) : '-') . "</td>
              <td>
              <a class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editarTransacaoModal'
                 data-id='" . $transacao['ID_Transacao'] . "'
@@ -56,13 +56,13 @@ require_once '../conexao.php';
                 data-status='" . $transacao['Status'] . "'
                 data-conta-remetente-id='" . htmlspecialchars($transacao['ID_ContaRemetente']) . "'
                 data-conta-remetente-nome='" . htmlspecialchars($transacao['NomeContaRemetente']) . "'
-                data-conta-destinataria-id='" . htmlspecialchars($transacao['ID_ContaDestinataria']) . "'
-                data-conta-destinataria-nome='" . htmlspecialchars($transacao['NomeContaDestinataria']) . "'>
+                data-conta-destinataria-id='" . ($transacao['ID_ContaDestinataria'] !== null ? htmlspecialchars($transacao['ID_ContaDestinataria']) : '') . "'
+                data-conta-destinataria-nome='" . ($transacao['NomeContaDestinataria'] !== null ? htmlspecialchars($transacao['NomeContaDestinataria']) : '-') . "'>
                 Editar
              </a> 
              <a class='btn btn-danger btn-sm' data-toggle='modal' data-target='#excluirTransacaoModal'
-            data-id='" . $transacao['ID_Transacao'] . "'>
-            Excluir
+                data-id='" . $transacao['ID_Transacao'] . "'>
+                Excluir
              </a>
              </td>
              </tr>";
@@ -84,87 +84,95 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Obtém os dados enviados
-    $titulo = $_POST['tituloTransacao'] ?? '';
-    $descricao = $_POST['descricaoTransacao'] ?? '';
-    $valor = $_POST['valorTransacao'] ?? 0.00;
-    $data = $_POST['dataTransacao'] ?? '';
-    $tipo = $_POST['tipoTransacao'] ?? '';
-    $status = $_POST['statusTransacao'] ?? '';
-    $idContaRemetente = $_POST['contaRemetente'] ?? null;
-    $idContaDestinataria = ($tipo === 'Transferência') ? intval($_POST['contaDestinataria']) : null;
-    $idCategoria = $_POST['categoriaTransacao'] ?? null;
-    $id_usuario = $_SESSION['id_usuario'] ?? null;
+    if ($acao === 'excluirTransacao') {
+        // Para exclusão, apenas o ID da transação é necessário
+        $idTransacao = $_POST['transacaoId'] ?? null;
 
-    // Validação do tipo
-    if (!in_array($tipo, ['Despesa', 'Receita', 'Transferência'])) {
-        echo '<script>alert("Tipo de transação inválido.")</script>';
-        exit;
-    }
+        if (!$idTransacao) {
+            erro("ID da transação não fornecido.");
+            exit;
+        }
 
-    // Validação do status
-    if (!in_array($status, ['Pendente', 'Efetivada', 'Cancelada'])) {
-        echo '<script>alert(" Status de transação inválido.")</script>';
-        exit;
-    }
+        if (deletarTransacao($idTransacao)) {
+            confirmar("Transação excluída com sucesso!", "transacoes.php");
+        } else {
+            erro("Erro ao excluir transação. Verifique os dados e tente novamente.");
+        }
+    } else {
+        // Obtém os dados enviados para outras ações
+        $titulo = $_POST['tituloTransacao'] ?? '';
+        $descricao = $_POST['descricaoTransacao'] ?? '';
+        $valor = $_POST['valorTransacao'] ?? 0.00;
+        $data = $_POST['dataTransacao'] ?? '';
+        $tipo = $_POST['tipoTransacao'] ?? '';
+        $status = $_POST['statusTransacao'] ?? '';
+        $idContaRemetente = $_POST['contaRemetente'] ?? null;
+        $idContaDestinataria = ($tipo === 'Transferência') ? intval($_POST['contaDestinataria']) : null;
+        $idCategoria = $_POST['categoriaTransacao'] ?? null;
+        $id_usuario = $_SESSION['id_usuario'] ?? null;
 
-    // Verifica se a conta remetente existe
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM CONTA WHERE ID_Conta = ?");
-    $stmt->bind_param("i", $idContaRemetente);
-    $stmt->execute();
-    $stmt->bind_result($contaRemetenteExiste);
-    $stmt->fetch();
-    $stmt->close();
+        // Validação do tipo
+        if (!in_array($tipo, ['Despesa', 'Receita', 'Transferência'])) {
+            echo '<script>alert("Tipo de transação inválido.")</script>';
+            exit;
+        }
 
-    if (!$contaRemetenteExiste) {
-        echo '<script>alert("Conta remetente inválida.")</script>';
-        exit;
-    }
+        // Validação do status
+        if (!in_array($status, ['Pendente', 'Efetivada', 'Cancelada'])) {
+            echo '<script>alert("Status de transação inválido.")</script>';
+            exit;
+        }
 
-    // Verifica se a categoria existe (se fornecida)
-    if ($idCategoria) {
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM CATEGORIA WHERE ID_Categoria = ?");
-        $stmt->bind_param("i", $idCategoria);
+        // Verifica se a conta remetente existe
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM CONTA WHERE ID_Conta = ?");
+        $stmt->bind_param("i", $idContaRemetente);
         $stmt->execute();
-        $stmt->bind_result($categoriaExiste);
+        $stmt->bind_result($contaRemetenteExiste);
         $stmt->fetch();
         $stmt->close();
 
-        if (!$categoriaExiste) {
-            echo '<script>alert("Categoria inválida.")</script>';
+        if (!$contaRemetenteExiste) {
+            echo '<script>alert("Conta remetente inválida.")</script>';
             exit;
         }
-    }
 
-    // Processa a ação solicitada
-    switch ($acao) {
-        case 'editarTransacao':
-            if (editarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria)) { 
-                confirmar("Transação editada com sucesso!", "transacoes.php");
-            } else {
-                erro("Erro ao editar transação. Verifique os dados e tente novamente.");
+        // Verifica se a categoria existe (se fornecida)
+        if ($idCategoria) {
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM CATEGORIA WHERE ID_Categoria = ?");
+            $stmt->bind_param("i", $idCategoria);
+            $stmt->execute();
+            $stmt->bind_result($categoriaExiste);
+            $stmt->fetch();
+            $stmt->close();
+
+            if (!$categoriaExiste) {
+                echo '<script>alert("Categoria inválida.")</script>';
+                exit;
             }
-            break;
+        }
 
-        case 'cadastrarTransacao':
-            if (cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria)) {
-                confirmar("Transação cadastrada com sucesso!", "transacoes.php");
-            } else {
-                erro("Erro ao cadastrar transação. Verifique os dados e tente novamente.");
-            }
-            break;
+        // Processa a ação solicitada
+        switch ($acao) {
+            case 'editarTransacao':
+                if (editarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria, $_POST['idTransacao'])) { 
+                    confirmar("Transação editada com sucesso!", "transacoes.php");
+                } else {
+                    erro("Erro ao editar transação. Verifique os dados e tente novamente.");
+                }
+                break;
 
-        case 'excluirTransacao':
-            if (deletarTransacao($id)) {
-                confirmar("Transação excluída com sucesso!", "transacoes.php");
-            } else {
-                erro("Erro ao excluir transação. Verifique os dados e tente novamente.");
-            }
-            break;
+            case 'cadastrarTransacao':
+                if (cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria)) {
+                    confirmar("Transação cadastrada com sucesso!", "transacoes.php");
+                } else {
+                    erro("Erro ao cadastrar transação. Verifique os dados e tente novamente.");
+                }
+                break;
 
-        default:
-            erro("Ação inválida.");
-            break;
+            default:
+                erro("Ação inválida.");
+                break;
+        }
     }
 }
 ?>

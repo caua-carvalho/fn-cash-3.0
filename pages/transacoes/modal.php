@@ -143,7 +143,7 @@ require './categorias/funcoes.php';
                 <input type="hidden" name="acao" value="editarTransacao">
                 <div class="modal-body">
                     <!-- Campo oculto para armazenar o ID da transação -->
-                    <input type="hidden" id="editarTransacaoId" name="transacaoId">
+                    <input type="hidden" id="editarTransacaoId" name="idTransacao">
                     <!-- Campo para o título da transação -->
                     <div class="form-group">
                         <label for="editarTituloTransacao">Título</label>
@@ -238,7 +238,7 @@ require './categorias/funcoes.php';
                 </button>
             </div>
             <!-- Formulário para exclusão de transação -->
-            <form action="transacoes.php" method="POST">
+            <form action="transacoes.php" method="POST" id="excluirTransacaoForm">
                 <input type="hidden" name="acao" value="excluirTransacao">
                 <input type="hidden" id="excluirTransacaoId" name="transacaoId">
                 <div class="modal-body">

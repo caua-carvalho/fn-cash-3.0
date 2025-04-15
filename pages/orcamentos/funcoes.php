@@ -3,7 +3,9 @@ require_once '../conexao.php';
 
 function obterOrcamentos() {
     global $conn;
-    $sql = "SELECT o.*, c.Nome AS NomeCategoria 
+    $sql = "SELECT o.*, c.Nome AS NomeCategoria, 
+                   DATE_FORMAT(o.Inicio, '%d-%m-%Y') AS Inicio, 
+                   DATE_FORMAT(o.Fim, '%d-%m-%Y') AS Fim
             FROM ORCAMENTO o
             JOIN CATEGORIA c ON o.ID_Categoria = c.ID_Categoria";
     $result = $conn->query($sql);
@@ -17,11 +19,11 @@ function obterOrcamentos() {
     return $orcamentos;
 }
 
-function cadastrarOrcamento($idCategoria, $valorPlanejado, $periodo, $status) {
+function cadastrarOrcamento($idUsuario, $idCategoria, $titulo, $valorPlanejado, $inicio, $fim, $status) {
     global $conn;
-    $sql = "INSERT INTO ORCAMENTO (ID_Categoria, ValorPlanejado, Periodo, Ativo) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO ORCAMENTO (ID_Usuario, ID_Categoria, Titulo, Valor, Inicio, Fim, Ativo) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("idss", $idCategoria, $valorPlanejado, $periodo, $status);
+    $stmt->bind_param("iisdsss", $idUsuario, $idCategoria, $titulo, $valorPlanejado, $inicio, $fim, $status);
 
     return $stmt->execute();
 }

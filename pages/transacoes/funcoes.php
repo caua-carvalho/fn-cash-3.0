@@ -25,6 +25,19 @@ function obterTransacoes() {
     return $transacoes;
 }
 
+function obterSaldoConta($idConta) {
+    global $conn;
+    $sql = "SELECT Saldo FROM CONTA WHERE ID_Conta = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $idConta);
+    $stmt->execute();
+    $stmt->bind_result($saldo);
+    $stmt->fetch();
+    $stmt->close();
+
+    return $saldo;
+}
+
 function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPagamento, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria = null) {
     global $conn;
 
@@ -49,6 +62,11 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPaga
 
     if (!$contaRemetenteExiste) {
         erro("Conta remetente inválida.");
+        exit;
+    }
+
+    if (($tipo === 'Despesa' || $tipo === 'Transferência') && obterSaldoConta($idContaRemetente) < $valor) {
+        erro("Saldo insuficiente na conta remetente.");
         exit;
     }
 

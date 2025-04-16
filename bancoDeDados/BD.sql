@@ -45,6 +45,7 @@ CREATE TABLE TRANSACAO (
     Titulo varchar(150) not null,
     Descricao VARCHAR(255) NOT NULL,
     Valor DECIMAL(15,2) NOT NULL,
+    FormaPagamento ENUM('debito', 'credito', 'dinheiro') NOT NULL,
     Data DATE NOT NULL,
     DataRegistro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     Tipo ENUM('Despesa', 'Receita', 'Transferência') NOT NULL,

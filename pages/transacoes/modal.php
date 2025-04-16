@@ -38,6 +38,16 @@ require './categorias/funcoes.php';
                         <input type="number" class="form-control" id="valorTransacao" name="valorTransacao" step="0.01" required>
                     </div>
 
+                    <!-- Campo para selecionar a forma de pagamento -->
+                    <div class="form-group">
+                        <label for="formaPagamento">Forma de Pagamento</label>
+                        <select class="form-control" id="formaPagamento" name="formaPagamento" required>
+                            <option value="dinheiro">Dinheiro</option>
+                            <option value="debito">Débito</option>
+                            <option value="credito">Crédito</option>
+                        </select>
+                    </div>
+
                     <!-- Campo para a data da transação -->
                     <div class="form-group">
                         <label for="dataTransacao">Data</label>

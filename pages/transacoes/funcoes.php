@@ -25,7 +25,7 @@ function obterTransacoes() {
     return $transacoes;
 }
 
-function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria = null) {
+function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPagamento, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria = null) {
     global $conn;
 
     if ($idContaRemetente == $idContaDestinataria && $tipo === 'Transferência') {
@@ -53,8 +53,8 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $ti
     }
 
     // Query SQL
-    $sql = "INSERT INTO TRANSACAO (Titulo, Descricao, Valor, Data, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_ContaDestinataria, ID_Usuario) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO TRANSACAO (Titulo, Descricao, Valor, FormaPagamento, Data, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_ContaDestinataria, ID_Usuario) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     // Prepara a declaração
     $stmt = $conn->prepare($sql);
@@ -64,10 +64,11 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $ti
 
     // Vincula os parâmetros
     $stmt->bind_param(
-        "ssdsssiiii",
+        "ssdssssiiii",
         $titulo,
         $descricao,
         $valor,
+        $formaPagamento,
         $data,
         $tipo,
         $status,

@@ -103,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $titulo = $_POST['tituloTransacao'] ?? '';
         $descricao = $_POST['descricaoTransacao'] ?? '';
         $valor = $_POST['valorTransacao'] ?? 0.00;
+        $formaPagamento = $_POST['formaPagamento'] ?? '';
         $data = $_POST['dataTransacao'] ?? '';
         $tipo = $_POST['tipoTransacao'] ?? '';
         $status = $_POST['statusTransacao'] ?? '';
@@ -162,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
 
             case 'cadastrarTransacao':
-                if (cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria)) {
+                if (cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPagamento, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria)) {
                     confirmar("Transação cadastrada com sucesso!", "transacoes.php");
                 } else {
                     erro("Erro ao cadastrar transação. Verifique os dados e tente novamente.");

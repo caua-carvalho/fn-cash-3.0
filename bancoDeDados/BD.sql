@@ -69,7 +69,7 @@ CREATE TABLE CONTA_RECORRENTE (
     Descricao VARCHAR(255) NOT NULL,
     Valor DECIMAL(15,2) NOT NULL,
     DataInicio DATE NOT NULL,
-    Periodicidade ENUM('Diário', 'Semanal',sau 'Mensal', 'Anual') NOT NULL,
+    Periodicidade ENUM('Diário', 'Semanal','Mensal', 'Anual') NOT NULL,
     DataFim DATE,
     Ativo BOOLEAN NOT NULL DEFAULT TRUE,
     ID_Categoria INT,

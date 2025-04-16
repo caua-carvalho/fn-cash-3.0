@@ -83,7 +83,8 @@ require './categorias/funcoes.php';
                             echo '<select class="form-control" id="contaRemetente" name="contaRemetente" required>';
                             echo '<option value="">Selecione uma conta...</option>';
                             foreach ($contas as $conta) {
-                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '</option>';
+                                $saldo = number_format($conta['Saldo'], 2, ',', '.'); // Formata o saldo
+                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '    R$ ' . $saldo . '</option>';
                             }
                             echo '</select>';
                         } else {
@@ -101,7 +102,8 @@ require './categorias/funcoes.php';
                             echo '<select class="form-control" id="contaDestinataria" name="contaDestinataria" required>';
                             echo '<option value="">Selecione uma conta...</option>';
                             foreach ($contas as $conta) {
-                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '</option>';
+                                $saldo = number_format($conta['Saldo'], 2, ',', '.'); // Formata o saldo
+                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '    R$ ' . $saldo . '</option>';
                             }
                             echo '</select>';
                         } else {

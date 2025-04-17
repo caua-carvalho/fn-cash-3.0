@@ -107,8 +107,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = $_POST['dataTransacao'] ?? '';
         $tipo = $_POST['tipoTransacao'] ?? '';
         $status = $_POST['statusTransacao'] ?? '';
-        $idContaRemetente = $_POST['contaRemetente'] ?? null;
-        $idContaDestinataria = ($tipo === 'Transferência') ? intval($_POST['contaDestinataria']) : null;
+        $idContaRemetente = $_POST['editarContaRemetente'] ?? null;
+        $idContaDestinataria = ($tipo === 'Transferência') ? intval($_POST['editarContaDestinataria']) : null;
         $idCategoria = $_POST['categoriaTransacao'] ?? null;
         $id_usuario = $_SESSION['id_usuario'] ?? null;
 
@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
 
         if (!$contaRemetenteExiste) {
-            echo '<script>alert("Conta remetente inválida.")</script>';
+            echo '<script>alert("Conta remetente inválida. id = "' . $idContaRemetente . ')</script>';
             exit;
         }
 

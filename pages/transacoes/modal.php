@@ -200,10 +200,11 @@ require './categorias/funcoes.php';
                         <?php
                         $contas = obterContas();
                         if ($contas) {
-                            echo '<select class="form-control" id="editarContaRemetente" name="contaRemetente" required>';
+                            echo '<select class="form-control" id="editarContaRemetente" name="editarContaRemetente" required>';
                             echo '<option value="">Selecione uma conta...</option>';
                             foreach ($contas as $conta) {
-                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '</option>';
+                                $saldo = number_format($conta['Saldo'], 2, ',', '.'); // Formata o saldo
+                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '    R$ ' . $saldo . '</option>';
                             }
                             echo '</select>';
                         } else {
@@ -217,10 +218,11 @@ require './categorias/funcoes.php';
                         <?php
                         $contas = obterContas();
                         if ($contas) {
-                            echo '<select class="form-control" id="editarContaDestinataria" name="contaDestinataria" required>';
+                            echo '<select class="form-control" id="editarContaDestinataria" name="editarContaDestinataria" required>';
                             echo '<option value="">Selecione uma conta...</option>';
                             foreach ($contas as $conta) {
-                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '</option>';
+                                $saldo = number_format($conta['Saldo'], 2, ',', '.'); // Formata o saldo
+                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '    R$ ' . $saldo . '</option>';
                             }
                             echo '</select>';
                         } else {

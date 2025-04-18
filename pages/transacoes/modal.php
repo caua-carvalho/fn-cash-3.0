@@ -88,7 +88,7 @@ require './categorias/funcoes.php';
                             }
                             echo '</select>';
                         } else {
-                            echo '<p class="text-danger">Nenhuma conta encontrada.</p>';
+                            echo '<p class="text-danger">Nenhuma conta encontrada. <a href="contas.php" class="text-primary">Adicionar Conta</a></p>';
                         }
                         ?>
                     </div>
@@ -107,7 +107,7 @@ require './categorias/funcoes.php';
                             }
                             echo '</select>';
                         } else {
-                            echo '<p class="text-danger">Nenhuma conta encontrada.</p>';
+                            echo '<p class="text-danger">Nenhuma conta encontrada. <a href="contas.php" class="text-primary">Adicionar Conta</a></p>';
                         }
                         ?>
                     </div>

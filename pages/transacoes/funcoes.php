@@ -41,16 +41,15 @@ function obterSaldoConta($idConta) {
 function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPagamento, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria = null) {
     global $conn;
 
-    if ($idContaRemetente == $idContaDestinataria && $tipo === 'Transferência') {
-        erro('Conta remetente e destinatária não podem ser iguais.'); 
-        exit;
-    }
-
-    // Converte os valores para os tipos corretos
-    $idCategoria = intval($idCategoria);
-    $valor = floatval($valor);
+    // Converte os valores para inteiros
     $idContaRemetente = intval($idContaRemetente);
     $idContaDestinataria = !empty($idContaDestinataria) ? intval($idContaDestinataria) : null;
+
+    // Verifica se as contas são iguais em caso de transferência
+    if ($tipo === 'Transferência' && $idContaRemetente === $idContaDestinataria) {
+        erro('Conta remetente e destinatária não podem ser iguais.');
+        exit;
+    }
 
     // Verifica se a conta remetente existe
     $stmt = $conn->prepare("SELECT COUNT(*) FROM CONTA WHERE ID_Conta = ?");
@@ -60,27 +59,26 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPaga
     $stmt->fetch();
     $stmt->close();
 
-    if (!$contaRemetenteExiste) {
-        erro("Conta remetente inválida.");
+    if ($contaRemetenteExiste === 0) { // Verifica se a conta não existe
+        echo '<script>alert("Conta remetente inválida. ID = ' . htmlspecialchars($idContaRemetente) . '")</script>';
         exit;
     }
 
+    // Verifica saldo para despesas ou transferências
     if (($tipo === 'Despesa' || $tipo === 'Transferência') && obterSaldoConta($idContaRemetente) < $valor) {
         erro("Saldo insuficiente na conta remetente.");
         exit;
     }
 
-    // Query SQL
+    // Query SQL para inserir a transação
     $sql = "INSERT INTO TRANSACAO (Titulo, Descricao, Valor, FormaPagamento, Data, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_ContaDestinataria, ID_Usuario) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    // Prepara a declaração
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         die("Erro ao preparar a declaração SQL: " . $conn->error);
     }
 
-    // Vincula os parâmetros
     $stmt->bind_param(
         "ssdssssiiii",
         $titulo,
@@ -96,12 +94,11 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPaga
         $id_usuario
     );
 
-    // Executa a declaração
     if (!$stmt->execute()) {
         die("Erro ao executar a declaração SQL: " . $stmt->error);
     }
 
-    return true; // Retorna true em caso de sucesso
+    return true;
 }
 
 function editarTransacao($ID_Usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $ID_ContaRemetente, $ID_ContaDestinataria, $ID_Transacao) {

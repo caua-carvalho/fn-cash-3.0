@@ -26,4 +26,5 @@ if (!isset($_SESSION['id_usuario'])) {
 
     <!-- CSS CUSTOM -->
      <link rel="stylesheet" href="../css/style.css">
+	 <link rel="stylesheet" href="../css/sidebar.css">
 </head>

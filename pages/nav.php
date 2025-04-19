@@ -1,50 +1,76 @@
 <body>
+<script src="../JavaSscript/sidebar.js"></script>
 <nav id="sidebar" class="sidebar bg-dark text-white vh-100">
-    <div class="sidebar-header text-center py-3">
-        <h2>FN Cash</h2>
-        <p>Gerenciador Financeiro</p>
+<div class="logo_details">
+      <i class="bx bxl-audible icon"></i>
+      <div class="logo_name">Code Effect</div>
+      <i class="bx bx-menu" id="btn"></i>
     </div>
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a href="dashboard.php" class="nav-link text-white">
-                <i class="bi bi-speedometer2"></i> Dashboard
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="transacoes.php" class="nav-link text-white">
-                <i class="bi bi-arrow-left-right"></i> Transações
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="contas.php" class="nav-link text-white">
-                <i class="bi bi-wallet2"></i> Contas
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="orcamento.php" class="nav-link text-white">
-                <i class="bi bi-pie-chart"></i> Orçamentos
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="metas.php" class="nav-link text-white">
-                <i class="bi bi-bullseye"></i> Metas
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="relatorios.php" class="nav-link text-white">
-                <i class="bi bi-bar-chart"></i> Relatórios
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="categorias.php" class="nav-link text-white">
-                <i class="bi bi-tags"></i> Categorias
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="logout.php" class="nav-link text-white">
-                <i class="bi bi-box-arrow-right"></i> Sair
-            </a>
-        </li>
+    <ul class="nav-list">
+      <li>
+        <i class="bx bx-search"></i>
+        <input type="text" placeholder="Search...">
+         <span class="tooltip">Search</span>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bx bx-grid-alt"></i>
+          <span class="link_name">Dashboard</span>
+        </a>
+        <span class="tooltip">Dashboard</span>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bx bx-user"></i>
+          <span class="link_name">User</span>
+        </a>
+        <span class="tooltip">User</span>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bx bx-chat"></i>
+          <span class="link_name">Message</span>
+        </a>
+        <span class="tooltip">Message</span>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bx bx-pie-chart-alt-2"></i>
+          <span class="link_name">Analytics</span>
+        </a>
+        <span class="tooltip">Analytics</span>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bx bx-folder"></i>
+          <span class="link_name">File Manger</span>
+        </a>
+        <span class="tooltip">File Manger</span>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bx bx-cart-alt"></i>
+          <span class="link_name">Order</span>
+        </a>
+        <span class="tooltip">Order</span>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bx bx-cog"></i>
+          <span class="link_name">Settings</span>
+        </a>
+        <span class="tooltip">Settings</span>
+      </li>
+      <li class="profile">
+        <div class="profile_details">
+          <img src="profile.jpeg" alt="profile image">
+          <div class="profile_content">
+            <div class="name">Anna Jhon</div>
+            <div class="designation">Admin</div>
+          </div>
+        </div>
+        <i class="bx bx-log-out" id="log_out"></i>
+      </li>
     </ul>
 </nav>
 <div class="main-content">

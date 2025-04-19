@@ -1,8 +1,9 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 :root{
-  --color-default:#004f83;
-  --color-second:#0067ac;
+  --color-default:#07A262;
+  --color-second:#055336;
   --color-white:#fff;
   --color-body:#e4e9f7;
   --color-light:#e0e0e0;
@@ -20,7 +21,7 @@ body{
   min-height: 100vh;
 }
 
-.sidebar{
+nav{
   min-height: 100vh;
   width: 78px;
   padding: 6px 14px;
@@ -32,25 +33,25 @@ body{
   left: 0;
 }
 
-.sidebar.open{
+nav.open{
   width: 250px;
 }
 
-.sidebar .logo_details{
+nav .logo_details{
   height: 60px;
   display: flex;
   align-items: center;
   position: relative;
 }
 
-.sidebar .logo_details .icon{
+nav .logo_details .icon{
   opacity: 0;
   transition: all 0.5s ease ;
 }
 
 
 
-.sidebar .logo_details .logo_name{
+nav .logo_details .logo_name{
   color:var(--color-white);
   font-size: 22px;
   font-weight: 600;
@@ -58,12 +59,12 @@ body{
   transition: all .5s ease;
 }
 
-.sidebar.open .logo_details .icon,
-.sidebar.open .logo_details .logo_name{
+nav.open .logo_details .icon,
+nav.open .logo_details .logo_name{
   opacity: 1;
 }
 
-.sidebar .logo_details #btn{
+nav .logo_details #btn{
   position: absolute;
   top:50%;
   right: 0;
@@ -74,11 +75,11 @@ body{
   transition: all .5s ease;
 }
 
-.sidebar.open .logo_details #btn{
+nav.open .logo_details #btn{
   text-align: right;
 }
 
-.sidebar i{
+nav i{
   color:var(--color-white);
   height: 60px;
   line-height: 60px;
@@ -87,18 +88,18 @@ body{
   text-align: center;
 }
 
-.sidebar .nav-list{
+nav .nav-list{
   margin-top: 20px;
   height: 100%;
 }
 
-.sidebar li{
+nav li{
   position: relative;
   margin:8px 0;
   list-style: none;
 }
 
-.sidebar li .tooltip{
+nav li .tooltip{
   position: absolute;
   top:-20px;
   left:calc(100% + 15px);
@@ -114,7 +115,7 @@ body{
   pointer-events: none;
 }
 
-.sidebar li:hover .tooltip{
+nav li:hover .tooltip{
   opacity: 1;
   pointer-events: auto;
   transition: all 0.4s ease;
@@ -122,11 +123,11 @@ body{
   transform: translateY(-50%);
 }
 
-.sidebar.open li .tooltip{
+nav.open li .tooltip{
   display: none;
 }
 
-.sidebar input{
+nav input{
   font-size: 15px;
   color: var(--color-white);
   font-weight: 400;
@@ -139,26 +140,17 @@ body{
   transition: all .5s ease;
 }
 
-.sidebar input::placeholder{
+nav input::placeholder{
   color:var(--color-light)
 }
 
-.sidebar.open input{
+nav.open input{
   width: 100%;
   padding: 0 20px 0 50px;
 }
 
-.sidebar .bx-search{
-  position: absolute;
-  top:50%;
-  left:0;
-  transform: translateY(-50%);
-  font-size: 22px;
-  background-color: var(--color-second);
-  color: var(--color-white);
-}
 
-.sidebar li a{
+nav li a{
   display: flex;
   height: 100%;
   width: 100%;
@@ -170,7 +162,7 @@ body{
   z-index: 12;
 }
 
-.sidebar li a::after{
+nav li a::after{
   content: "";
   position: absolute;
   width: 100%;
@@ -183,12 +175,12 @@ body{
   z-index: -2;
 }
 
-.sidebar li a:hover::after{
+nav li a:hover::after{
   transform: scaleX(1);
   color:var(--color-default)
 }
 
-.sidebar li a .link_name{
+nav li a .link_name{
   color:var(--color-white);
   font-size: 15px;
   font-weight: 400;
@@ -199,25 +191,25 @@ body{
   opacity: 0;
 }
 
-.sidebar li a:hover .link_name,
-.sidebar li a:hover i{
+nav li a:hover .link_name,
+nav li a:hover i{
   transition: all 0.5s ease;
   color:var(--color-default)
 }
 
-.sidebar.open li a .link_name{
+nav.open li a .link_name{
   opacity: 1;
   pointer-events: auto;
 }
 
-.sidebar li i{
+nav li i{
   height: 35px;
   line-height: 35px;
   font-size: 18px;
   border-radius: 5px;
 }
 
-.sidebar li.profile{
+nav li.profile{
   position: fixed;
   height: 60px;
   width: 78px;
@@ -228,17 +220,17 @@ body{
   transition: all .5s ease;
 }
 
-.sidebar.open li.profile{
+nav.open li.profile{
   width: 250px;
 }
 
-.sidebar .profile .profile_details{
+nav .profile .profile_details{
   display: flex;
   align-items: center;
   flex-wrap:  nowrap;
 }
 
-.sidebar li img{
+nav li img{
   height: 45px;
   width: 45px;
   object-fit: cover;
@@ -246,19 +238,19 @@ body{
   margin-right: 10px;
 }
 
-.sidebar li.profile .name,
-.sidebar li.profile .designation{
+nav li.profile .name,
+nav li.profile .designation{
   font-size: 15px;
   font-weight: 400;
   color:var(--color-white);
   white-space: nowrap;
 }
 
-.sidebar li.profile .designation{
+nav li.profile .designation{
   font-size: 12px;
 }
 
-.sidebar .profile #log_out{
+nav .profile #log_out{
   position: absolute;
   top:50%;
   right: 0;
@@ -272,31 +264,7 @@ body{
   transition: all 0.5s ease;
 }
 
-.sidebar.open .profile #log_out{
+nav.open .profile #log_out{
   width: 50px;
   background: none;
-}
-
-.home-section{
-  position: relative;
-  background-color: var(--color-body);
-  min-height: 100vh;
-  top:0;
-  left:78px;
-  width: calc(100% - 78px);
-  transition: all .5s ease;
-  z-index: 2;
-}
-
-.home-section .text{
-  display: inline-block;
-  color:var(--color-default);
-  font-size: 25px;
-  font-weight: 500;
-  margin: 18px;
-}
-
-.sidebar.open ~ .home-section{
-  left:250px;
-  width: calc(100% - 250px);
 }

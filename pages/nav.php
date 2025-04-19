@@ -1,5 +1,5 @@
 <body>
-<script src="../JavaSscript/sidebar.js"></script>
+<script src="../JavaScript/sidebar.js"></script>
 <nav id="sidebar" class="sidebar bg-dark text-white vh-100">
 <div class="logo_details">
       <i class="bx bxl-audible icon"></i>

@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->bind_result($contaRemetenteExiste);
     $stmt->fetch();
-    $stmt->close();
+    $stmt->close(); 
 
     if (!empty($_POST['categoriaTransacao'])) {
         $stmt = $conn->prepare("SELECT COUNT(*) FROM CATEGORIA WHERE ID_Categoria = ?");

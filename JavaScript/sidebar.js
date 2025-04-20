@@ -1,23 +1,16 @@
-window.onload = function(){
-    const sidebar = document.querySelector(".sidebar");
-    const closeBtn = document.querySelector("#btn");
-    const searchBtn = document.querySelector(".bx-search")
+const toggleBtn = document.getElementById("toggleSidebar");
+  const sidebar = document.getElementById("sidebar");
 
-    closeBtn.addEventListener("click",function(){
-        sidebar.classList.toggle("open")
-        menuBtnChange()
-    })
-
-    searchBtn.addEventListener("click",function(){
-        sidebar.classList.toggle("open")
-        menuBtnChange()
-    })
-
-    function menuBtnChange(){
-        if(sidebar.classList.contains("open")){
-            closeBtn.classList.replace("bx-menu","bx-menu-alt-right")
-        }else{
-            closeBtn.classList.replace("bx-menu-alt-right","bx-menu")
-        }
+  toggleBtn.addEventListener("click", () => {
+    // Abrindo
+    if (sidebar.classList.contains("collapsed")) {
+      sidebar.classList.remove("collapsed");
+      sidebar.classList.remove("hide-text");
+    } else {
+      // Fechando: primeiro colapsa, depois esconde o texto
+      sidebar.classList.add("collapsed");
+      setTimeout(() => {
+        sidebar.classList.add("hide-text");
+      }, 300); // mesmo tempo da transição de width
     }
-}
+  });

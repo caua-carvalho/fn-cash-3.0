@@ -1,270 +1,87 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
-:root{
-  --color-default:#07A262;
-  --color-second:#055336;
-  --color-white:#fff;
-  --color-body:#e4e9f7;
-  --color-light:#e0e0e0;
-}
-
-
-*{
-  padding: 0%;
-  margin: 0%;
+* {
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
 }
 
-body{
-  min-height: 100vh;
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-nav{
-  min-height: 100vh;
-  width: 78px;
-  padding: 6px 14px;
-  z-index: 99;
-  background-color: var(--color-default);
-  transition: all .5s ease;
-  position: fixed;
-  top:0;
-  left: 0;
-}
-
-nav.open{
-  width: 250px;
-}
-
-nav .logo_details{
-  height: 60px;
+.wrapper {
   display: flex;
-  align-items: center;
+  transition: all 0.3s ease;
+  min-height: 100vh;
+}
+
+#sidebar {
+  width: 200px;
+  background: #013220;
+  color: white;
+  transition: width 0.3s ease;
   position: relative;
+  overflow-x: hidden;
+  margin-right: 2rem;
 }
 
-nav .logo_details .icon{
-  opacity: 0;
-  transition: all 0.5s ease ;
+#sidebar.collapsed {
+  width: 60px;
 }
 
-
-
-nav .logo_details .logo_name{
-  color:var(--color-white);
-  font-size: 22px;
-  font-weight: 600;
-  opacity: 0;
-  transition: all .5s ease;
-}
-
-nav.open .logo_details .icon,
-nav.open .logo_details .logo_name{
-  opacity: 1;
-}
-
-nav .logo_details #btn{
+#sidebar .toggle-btn {
   position: absolute;
-  top:50%;
-  right: 0;
-  transform: translateY(-50%);
-  font-size: 23px;
-  text-align: center;
+  top: 10px;
+  right: 10px;
+  background: #013220;
+  color: white;
+  border: none;
+  padding: 5px 10px;
   cursor: pointer;
-  transition: all .5s ease;
+  border-radius: 0 5px 5px 0;
 }
 
-nav.open .logo_details #btn{
-  text-align: right;
-}
-
-nav i{
-  color:var(--color-white);
-  height: 60px;
-  line-height: 60px;
-  min-width: 50px;
-  font-size: 25px;
-  text-align: center;
-}
-
-nav .nav-list{
-  margin-top: 20px;
-  height: 100%;
-}
-
-nav li{
-  position: relative;
-  margin:8px 0;
+#sidebar ul {
   list-style: none;
+  padding: 0;
+  margin: 60px 0 0 0;
 }
 
-nav li .tooltip{
-  position: absolute;
-  top:-20px;
-  left:calc(100% + 15px);
-  z-index: 3;
-  background-color: var(--color-white);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-  padding: 6px 14px;
-  font-size: 15px;
-  font-weight: 400;
-  border-radius: 5px;
+#sidebar ul li {
+  padding: 15px 20px;
   white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-}
-
-nav li:hover .tooltip{
-  opacity: 1;
-  pointer-events: auto;
-  transition: all 0.4s ease;
-  top:50%;
-  transform: translateY(-50%);
-}
-
-nav.open li .tooltip{
-  display: none;
-}
-
-nav input{
-  font-size: 15px;
-  color: var(--color-white);
-  font-weight: 400;
-  outline: none;
-  height: 35px;
-  width: 35px;
-  border:none;
-  border-radius: 5px;
-  background-color: var(--color-second);
-  transition: all .5s ease;
-}
-
-nav input::placeholder{
-  color:var(--color-light)
-}
-
-nav.open input{
-  width: 100%;
-  padding: 0 20px 0 50px;
-}
-
-
-nav li a{
-  display: flex;
-  height: 100%;
-  width: 100%;
-  align-items: center;
-  text-decoration: none;
-  background-color: var(--color-default);
-  position: relative;
-  transition: all .5s ease;
-  z-index: 12;
-}
-
-nav li a::after{
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  transform: scaleX(0);
-  background-color: var(--color-white);
-  border-radius: 5px;
-  transition: transform 0.3s ease-in-out;
-  transform-origin: left;
-  z-index: -2;
-}
-
-nav li a:hover::after{
-  transform: scaleX(1);
-  color:var(--color-default)
-}
-
-nav li a .link_name{
-  color:var(--color-white);
-  font-size: 15px;
-  font-weight: 400;
-  white-space: nowrap;
-  pointer-events: auto;
-  transition: all 0.4s ease;
-  pointer-events: none;
-  opacity: 0;
-}
-
-nav li a:hover .link_name,
-nav li a:hover i{
-  transition: all 0.5s ease;
-  color:var(--color-default)
-}
-
-nav.open li a .link_name{
-  opacity: 1;
-  pointer-events: auto;
-}
-
-nav li i{
-  height: 35px;
-  line-height: 35px;
-  font-size: 18px;
-  border-radius: 5px;
-}
-
-nav li.profile{
-  position: fixed;
-  height: 60px;
-  width: 78px;
-  left: 0;
-  bottom:-8px;
-  padding:10px 14px;
-  overflow: hidden;
-  transition: all .5s ease;
-}
-
-nav.open li.profile{
-  width: 250px;
-}
-
-nav .profile .profile_details{
   display: flex;
   align-items: center;
-  flex-wrap:  nowrap;
 }
 
-nav li img{
-  height: 45px;
-  width: 45px;
-  object-fit: cover;
-  border-radius: 50%;
+#sidebar ul li i {
   margin-right: 10px;
 }
 
-nav li.profile .name,
-nav li.profile .designation{
-  font-size: 15px;
-  font-weight: 400;
-  color:var(--color-white);
-  white-space: nowrap;
+#sidebar ul li span {
+  transition: opacity 0.3s ease;
+  opacity: 1;
+  display: inline-block;
 }
 
-nav li.profile .designation{
-  font-size: 12px;
+#sidebar.collapsed ul li span {
+  opacity: 0;
+  transition-delay: 0.05s;
 }
 
-nav .profile #log_out{
-  position: absolute;
-  top:50%;
-  right: 0;
-  transform: translateY(-50%);
-  background-color: var(--color-second);
+#sidebar.collapsed.hide-text ul li span {
+  display: none;
+}
+
+#content {
+  flex: 1;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+  margin-left: 250px;
+}
+
+#sidebar.collapsed ~ #content {
+  margin-left: 60px;
+}
+
+#main-content {
   width: 100%;
-  height: 60px;
-  line-height: 60px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.5s ease;
-}
-
-nav.open .profile #log_out{
-  width: 50px;
-  background: none;
 }

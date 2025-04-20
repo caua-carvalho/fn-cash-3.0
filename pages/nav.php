@@ -1,78 +1,17 @@
-<body>
-<script src="../JavaScript/sidebar.js"></script>
-<nav id="sidebar" class="sidebar bg-dark text-white vh-100">
-<div class="logo_details">
-      <i class="bx bxl-audible icon"></i>
-      <div class="logo_name">Code Effect</div>
-      <i class="bx bx-menu" id="btn"></i>
-    </div>
-    <ul class="nav-list">
-      <li>
-        <i class="bx bx-search"></i>
-        <input type="text" placeholder="Search...">
-         <span class="tooltip">Search</span>
-      </li>
-      <li>
-        <a href="#">
-          <i class="bx bx-grid-alt"></i>
-          <span class="link_name">Dashboard</span>
-        </a>
-        <span class="tooltip">Dashboard</span>
-      </li>
-      <li>
-        <a href="#">
-          <i class="bx bx-user"></i>
-          <span class="link_name">User</span>
-        </a>
-        <span class="tooltip">User</span>
-      </li>
-      <li>
-        <a href="#">
-          <i class="bx bx-chat"></i>
-          <span class="link_name">Message</span>
-        </a>
-        <span class="tooltip">Message</span>
-      </li>
-      <li>
-        <a href="#">
-          <i class="bx bx-pie-chart-alt-2"></i>
-          <span class="link_name">Analytics</span>
-        </a>
-        <span class="tooltip">Analytics</span>
-      </li>
-      <li>
-        <a href="#">
-          <i class="bx bx-folder"></i>
-          <span class="link_name">File Manger</span>
-        </a>
-        <span class="tooltip">File Manger</span>
-      </li>
-      <li>
-        <a href="#">
-          <i class="bx bx-cart-alt"></i>
-          <span class="link_name">Order</span>
-        </a>
-        <span class="tooltip">Order</span>
-      </li>
-      <li>
-        <a href="#">
-          <i class="bx bx-cog"></i>
-          <span class="link_name">Settings</span>
-        </a>
-        <span class="tooltip">Settings</span>
-      </li>
-      <li class="profile">
-        <div class="profile_details">
-          <img src="profile.jpeg" alt="profile image">
-          <div class="profile_content">
-            <div class="name">Anna Jhon</div>
-            <div class="designation">Admin</div>
-          </div>
-        </div>
-        <i class="bx bx-log-out" id="log_out"></i>
-      </li>
+
+<div class="wrapper">
+  <nav id="sidebar">
+    <button class="toggle-btn" id="toggleSidebar">☰</button>
+    <ul>
+      <li><i class="bi bi-house-door"></i><span>Home</span></li>
+      <li><i class="bi bi-plug"></i><span>Plugins</span></li>
+      <li><i class="bi bi-people"></i><span>Usuários</span></li>
+      <li><i class="bi bi-cash-coin"></i><span>Transações</span></li>
+      <li><i class="bi bi-tags"></i><span>Categoria</span></li>
+      <li><i class="bi bi-wallet2"></i><span>Conta</span></li>
+      <li><i class="bi bi-graph-up"></i><span>Orçamento</span></li>
     </ul>
-</nav>
-<div class="main-content">
+  </nav>
 
-
+  <div id="main-content">
+    

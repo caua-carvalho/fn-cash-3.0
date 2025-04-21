@@ -3,11 +3,20 @@ require_once '../conexao.php';
 
 function obterOrcamentos() {
     global $conn;
-    $sql = "SELECT o.*, c.Nome AS NomeCategoria, 
-                   DATE_FORMAT(o.Inicio, '%d-%m-%Y') AS Inicio, 
-                   DATE_FORMAT(o.Fim, '%d-%m-%Y') AS Fim
+
+    $sql = "SELECT 
+                o.*, 
+                c.Nome AS NomeCategoria,
+                DATE_FORMAT(o.Inicio, '%d-%m-%Y') AS Inicio, 
+                DATE_FORMAT(o.Fim, '%d-%m-%Y') AS Fim,
+                COALESCE(g.TotalGasto, 0) AS GastoAtual,
+                (o.Valor - COALESCE(g.TotalGasto, 0)) AS SaldoDisponivel
             FROM ORCAMENTO o
-            JOIN CATEGORIA c ON o.ID_Categoria = c.ID_Categoria";
+            JOIN CATEGORIA c ON o.ID_Categoria = c.ID_Categoria
+            LEFT JOIN GastoPorCategoria g 
+                ON g.ID_Categoria = o.ID_Categoria 
+                AND g.ID_Usuario = o.ID_Usuario";
+
     $result = $conn->query($sql);
     $orcamentos = [];
 
@@ -18,6 +27,7 @@ function obterOrcamentos() {
     }
     return $orcamentos;
 }
+
 
 function cadastrarOrcamento($idUsuario, $idCategoria, $titulo, $valorPlanejado, $inicio, $fim, $status) {
     global $conn;

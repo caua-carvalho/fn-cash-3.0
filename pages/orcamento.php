@@ -38,6 +38,7 @@ require_once 'dialog.php';
                 <th>Título</th>
                 <th>Categoria</th>
                 <th>Valor Planejado</th>
+                <th>Valor utilizado</th>
                 <th>Período</th>
                 <th>Descrição</th>
                 <th>Status</th>
@@ -52,6 +53,7 @@ require_once 'dialog.php';
                      <td>" . htmlspecialchars($orcamento['Titulo']) . "</td>
                      <td>" . htmlspecialchars($orcamento['NomeCategoria']) . "</td>
                      <td>R$ " . number_format($orcamento['Valor'], 2, ',', '.') . "</td>
+                     <td>R$ " . number_format($orcamento['GastoAtual'], 2, ',', '.') . "</td>
                      <td>" . htmlspecialchars($orcamento['Inicio']) . " a " . htmlspecialchars($orcamento['Fim']) . "</td>
                      <td>" . htmlspecialchars($orcamento['Descricao']) . "</td>
                      <td>" . ($orcamento['Ativo'] ? 'Ativo' : 'Inativo') . "</td>

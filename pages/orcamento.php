@@ -10,17 +10,6 @@ require_once 'orcamentos/funcoes.php';
 require_once 'orcamentos/script.php';
 include_once 'orcamentos/modal.php';
 require_once 'dialog.php';
-
-
-// /opt/lampp/htdocs/fn-cash-3.0/pages/orcamento.php
-// on line
-// 99
-
-
-// Fatal error
-// : Uncaught mysqli_sql_exception: Column count doesn't match value count at row 1 in /opt/lampp/htdocs/fn-cash-3.0/pages/orcamentos/funcoes.php:23 Stack trace: #0 /opt/lampp/htdocs/fn-cash-3.0/pages/orcamentos/funcoes.php(23): mysqli->prepare('INSERT INTO ORC...') #1 /opt/lampp/htdocs/fn-cash-3.0/pages/orcamento.php(99): cadastrarOrcamento('5', 'teste', '10000', NULL, '', '1') #2 {main} thrown in
-// /opt/lampp/htdocs/fn-cash-3.0/pages/orcamentos/funcoes.php
-
 ?>
 
 <div class="container">

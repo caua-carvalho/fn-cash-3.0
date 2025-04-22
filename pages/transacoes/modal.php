@@ -200,7 +200,7 @@ require './categorias/funcoes.php';
                         <?php
                         $contas = obterContas();
                         if ($contas) {
-                            echo '<select class="form-control" id="editarContaRemetente" name="editarContaRemetente" required>';
+                            echo '<select class="form-control" id="editarContaRemetente" name="contaRemetente" required>';
                             echo '<option value="">Selecione uma conta...</option>';
                             foreach ($contas as $conta) {
                                 $saldo = number_format($conta['Saldo'], 2, ',', '.'); // Formata o saldo
@@ -218,7 +218,7 @@ require './categorias/funcoes.php';
                         <?php
                         $contas = obterContas();
                         if ($contas) {
-                            echo '<select class="form-control" id="editarContaDestinataria" name="editarContaDestinataria" required>';
+                            echo '<select class="form-control" id="editarContaDestinataria" name="contaDestinataria" required>';
                             echo '<option value="">Selecione uma conta...</option>';
                             foreach ($contas as $conta) {
                                 $saldo = number_format($conta['Saldo'], 2, ',', '.'); // Formata o saldo

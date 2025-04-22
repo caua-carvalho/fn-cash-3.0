@@ -69,7 +69,7 @@ CREATE TABLE CONTA_RECORRENTE (
     Descricao VARCHAR(255) NOT NULL,
     Valor DECIMAL(15,2) NOT NULL,
     DataInicio DATE NOT NULL,
-    Periodicidade ENUM('Diário', 'Semanal','Mensal', 'Anual') NOT NULL,
+    Periodicidade ENUM('Diário', 'Semanal', 'Mensal', 'Anual') NOT NULL,
     DataFim DATE,
     Ativo BOOLEAN NOT NULL DEFAULT TRUE,
     ID_Categoria INT,
@@ -172,3 +172,23 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+CREATE VIEW GastoPorCategoria AS
+SELECT 
+    ID_Categoria,
+    ID_Usuario,
+    SUM(CASE 
+        WHEN Tipo = 'Despesa' AND Status = 'Efetivada' THEN Valor 
+        ELSE 0 
+    END) AS TotalGasto
+FROM TRANSACAO
+GROUP BY ID_Categoria, ID_Usuario;
+
+SELECT 
+    O.Titulo,
+    O.Valor AS ValorOrcamento,
+    COALESCE(G.TotalGasto, 0) AS GastoAtual,
+    (O.Valor - COALESCE(G.TotalGasto, 0)) AS SaldoDisponivel
+FROM ORCAMENTO O
+LEFT JOIN GastoPorCategoria G ON O.ID_Categoria = G.ID_Categoria AND O.ID_Usuario = G.ID_Usuario
+WHERE O.Ativo = TRUE;

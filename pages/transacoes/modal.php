@@ -198,16 +198,30 @@ require './categorias/funcoes.php';
                     <div class="form-group">
                         <label for="editarContaRemetente">Conta Remetente</label>
                         <?php
+                        $transacao = obterTransacoesPorId($idTransacao); // função que busca os dados da transação que está sendo editada
                         $contas = obterContas();
+                        
                         if ($contas) {
                             echo '<select class="form-control" id="editarContaRemetente" name="contaRemetente" required>';
                             echo '<option value="">Selecione uma conta...</option>';
                             foreach ($contas as $conta) {
-                                $saldo = number_format($conta['Saldo'], 2, ',', '.'); // Formata o saldo
-                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '    R$ ' . $saldo . '</option>';
+                                $saldo = $conta['Saldo'];
+                        
+                                // Se a conta for a da transação que está sendo editada, ajusta o saldo
+                                if ($conta['ID_Conta'] == $transacao['ID_ContaRemetente']) {
+                                    if ($transacao['Tipo'] == 'Receita') {
+                                        $saldo += $transacao['Valor'];
+                                    } elseif ($transacao['Tipo'] == 'Despesa' || $transacao['Tipo'] == 'Transferência') {
+                                        $saldo -= $transacao['Valor'];
+                                    }
+                                }
+                        
+                                $saldoFormatado = number_format($saldo, 2, ',', '.');
+                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . ' R$ ' . $saldoFormatado . '</option>';
                             }
                             echo '</select>';
-                        } else {
+                        }
+                         else {
                             echo '<p class="text-danger">Nenhuma conta encontrada.</p>';
                         }
                         ?>
@@ -216,16 +230,30 @@ require './categorias/funcoes.php';
                     <div class="form-group">
                         <label for="editarContaDestinataria">Conta Destinatária</label>
                         <?php
+                        $transacao = obterTransacoesPorId($idTransacao); // função que busca os dados da transação que está sendo editada
                         $contas = obterContas();
+                        
                         if ($contas) {
                             echo '<select class="form-control" id="editarContaDestinataria" name="contaDestinataria" required>';
                             echo '<option value="">Selecione uma conta...</option>';
                             foreach ($contas as $conta) {
-                                $saldo = number_format($conta['Saldo'], 2, ',', '.'); // Formata o saldo
-                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '    R$ ' . $saldo . '</option>';
+                                $saldo = $conta['Saldo'];
+                        
+                                // Se a conta for a da transação que está sendo editada, ajusta o saldo
+                                if ($conta['ID_Conta'] == $transacao['ID_ContaDestinataria']) {
+                                    if ($transacao['Tipo'] == 'Receita') {
+                                        $saldo -= $transacao['Valor'];
+                                    } elseif ($transacao['Tipo'] == 'Despesa' || $transacao['Tipo'] == 'Transferência') {
+                                        $saldo += $transacao['Valor'];
+                                    }
+                                }
+                        
+                                $saldoFormatado = number_format($saldo, 2, ',', '.');
+                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . ' R$ ' . $saldoFormatado . '</option>';
                             }
                             echo '</select>';
-                        } else {
+                        }
+                         else {
                             echo '<p class="text-danger">Nenhuma conta encontrada.</p>';
                         }
                         ?>

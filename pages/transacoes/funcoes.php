@@ -25,6 +25,32 @@ function obterTransacoes() {
     return $transacoes;
 }
 
+function obterTransacoesPorId($id_transacao){
+    global $conn;
+    $sql = "SELECT 
+                t.*, 
+                t.ID_Usuario, 
+                cr.ID_Conta AS ID_ContaRemetente, 
+                cr.Nome AS NomeContaRemetente, 
+                cd.ID_Conta AS ID_ContaDestinataria, 
+                cd.Nome AS NomeContaDestinataria
+            FROM TRANSACAO t
+            LEFT JOIN CONTA cr ON t.ID_ContaRemetente = cr.ID_Conta
+            LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
+            WHERE t.ID_Transacao = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id_transacao);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $transacao = null;
+
+    if ($result->num_rows > 0) {
+        $transacao = $result->fetch_assoc();
+    }
+
+    return $transacao;
+}
+
 function obterSaldoConta($idConta) {
     global $conn;
     $sql = "SELECT Saldo FROM CONTA WHERE ID_Conta = ?";

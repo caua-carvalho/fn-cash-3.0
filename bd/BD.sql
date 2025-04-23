@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS fncash;
 CREATE DATABASE fncash;
 USE fncash;
 
@@ -125,7 +126,6 @@ CREATE TABLE INVESTIMENTO (
     CONSTRAINT FK_Investimento_Usuario FOREIGN KEY (ID_Usuario) 
         REFERENCES USUARIO(ID_Usuario) ON DELETE CASCADE
 );
-
 -- Inserções na tabela USUARIO
 INSERT INTO USUARIO (Nome, Email, Senha, DataCadastro) 
 VALUES ('adm', 'adm@gmail.com', SHA2('123', 256), CURDATE());
@@ -135,50 +135,49 @@ INSERT INTO CONTA (Nome, Tipo, Saldo, Instituicao, DataCriacao, ID_Usuario)
 VALUES ('Conta Corrente João', 'Corrente', 1000.00, 'Banco A', CURDATE(), 1);
 
 INSERT INTO CONTA (Nome, Tipo, Saldo, Instituicao, DataCriacao, ID_Usuario) 
-VALUES ('Poupança Maria', 'Poupança', 5000.00, 'Banco B', CURDATE(), 2);
+VALUES ('Poupança Maria', 'Poupança', 5000.00, 'Banco B', CURDATE(), 1);
 
 -- Inserções na tabela CATEGORIA
 INSERT INTO CATEGORIA (Nome, Tipo, Descricao, ID_Usuario) 
 VALUES ('Alimentação', 'Despesa', 'Gastos com alimentação', 1);
 
 INSERT INTO CATEGORIA (Nome, Tipo, Descricao, ID_Usuario) 
-VALUES ('Salário', 'Receita', 'Recebimento de salário', 2);
+VALUES ('Salário', 'Receita', 'Recebimento de salário', 1);
 
 -- Inserções na tabela TRANSACAO
 INSERT INTO TRANSACAO (Titulo, Descricao, Valor, FormaPagamento, Data, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_Usuario) 
 VALUES ('Compra Supermercado', 'Compra de alimentos', 200.00, 'debito', CURDATE(), 'Despesa', 'Efetivada', 1, 1, 1);
 
 INSERT INTO TRANSACAO (Titulo, Descricao, Valor, FormaPagamento, Data, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_Usuario) 
-VALUES ('Recebimento Salário', 'Salário mensal', 3000.00, 'credito', CURDATE(), 'Receita', 'Efetivada', 2, 2, 2);
+VALUES ('Recebimento Salário', 'Salário mensal', 3000.00, 'credito', CURDATE(), 'Receita', 'Efetivada', 1, 2, 1);
 
 -- Inserções na tabela CONTA_RECORRENTE
 INSERT INTO CONTA_RECORRENTE (Descricao, Valor, DataInicio, Periodicidade, ID_Categoria, ID_Conta, ID_Usuario) 
 VALUES ('Assinatura Streaming', 50.00, CURDATE(), 'Mensal', 1, 1, 1);
 
 INSERT INTO CONTA_RECORRENTE (Descricao, Valor, DataInicio, Periodicidade, ID_Categoria, ID_Conta, ID_Usuario) 
-VALUES ('Plano de Saúde', 300.00, CURDATE(), 'Mensal', 1, 2, 2);
+VALUES ('Plano de Saúde', 300.00, CURDATE(), 'Mensal', 1, 1, 1);
 
 -- Inserções na tabela ORCAMENTO
 INSERT INTO ORCAMENTO (Titulo, Valor, Inicio, Fim, ID_Categoria, ID_Usuario) 
 VALUES ('Orçamento Alimentação', 1000.00, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 MONTH), 1, 1);
 
 INSERT INTO ORCAMENTO (Titulo, Valor, Inicio, Fim, ID_Categoria, ID_Usuario) 
-VALUES ('Orçamento Transporte', 500.00, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 MONTH), 1, 2);
+VALUES ('Orçamento Transporte', 500.00, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 MONTH), 1, 1);
 
 -- Inserções na tabela META_FINANCEIRA
 INSERT INTO META_FINANCEIRA (Nome, Descricao, ValorAlvo, DataInicio, ID_Usuario) 
 VALUES ('Viagem Internacional', 'Economizar para viagem', 10000.00, CURDATE(), 1);
 
 INSERT INTO META_FINANCEIRA (Nome, Descricao, ValorAlvo, DataInicio, ID_Usuario) 
-VALUES ('Comprar Carro', 'Economizar para um carro novo', 20000.00, CURDATE(), 2);
+VALUES ('Comprar Carro', 'Economizar para um carro novo', 20000.00, CURDATE(), 1);
 
 -- Inserções na tabela INVESTIMENTO
 INSERT INTO INVESTIMENTO (Nome, Tipo, ValorInicial, ValorAtual, DataInicio, ID_Conta, ID_Usuario) 
 VALUES ('Ações Empresa X', 'Ações', 5000.00, 5500.00, CURDATE(), 1, 1);
 
 INSERT INTO INVESTIMENTO (Nome, Tipo, ValorInicial, ValorAtual, DataInicio, ID_Conta, ID_Usuario) 
-VALUES ('Fundo Imobiliário Y', 'Fundos', 10000.00, 10500.00, CURDATE(), 2, 2);
-
+VALUES ('Fundo Imobiliário Y', 'Fundos', 10000.00, 10500.00, CURDATE(), 1, 1);
 DELIMITER $$
 
 CREATE TRIGGER atualiza_saldo_apos_insert
@@ -251,72 +250,64 @@ BEGIN
     DECLARE dataAtual DATE;
     SET dataAtual = CURDATE();
 
-    -- Só processa se algum campo relevante mudou
-    IF (OLD.Valor <> NEW.Valor OR OLD.Tipo <> NEW.Tipo OR OLD.Status <> NEW.Status OR OLD.Data <> NEW.Data OR OLD.ID_ContaRemetente <> NEW.ID_ContaRemetente OR OLD.ID_ContaDestinataria <> NEW.ID_ContaDestinataria) THEN
+    IF (OLD.Valor <> NEW.Valor 
+        OR OLD.Tipo <> NEW.Tipo 
+        OR OLD.Status <> NEW.Status 
+        OR OLD.Data <> NEW.Data 
+        OR OLD.ID_ContaRemetente <> NEW.ID_ContaRemetente 
+        OR OLD.ID_ContaDestinataria <> NEW.ID_ContaDestinataria) THEN
 
-        -- PRIMEIRO: desfaz efeito da transação antiga (se era efetivada ou pendente e data <= hoje)
+        -- Desfaz efeito da transação antiga
         IF OLD.Status = 'Efetivada' OR (OLD.Status = 'Pendente' AND OLD.Data <= dataAtual) THEN
 
-            -- Receita
             IF OLD.Tipo = 'Receita' THEN
                 UPDATE CONTA
                 SET Saldo = Saldo - OLD.Valor
                 WHERE ID_Conta = OLD.ID_ContaRemetente;
 
-            -- Despesa
             ELSEIF OLD.Tipo = 'Despesa' THEN
                 UPDATE CONTA
                 SET Saldo = Saldo + OLD.Valor
                 WHERE ID_Conta = OLD.ID_ContaRemetente;
 
-            -- Transferência
             ELSEIF OLD.Tipo = 'Transferência' THEN
-                -- volta o valor pra conta remetente
                 UPDATE CONTA
                 SET Saldo = Saldo + OLD.Valor
                 WHERE ID_Conta = OLD.ID_ContaRemetente;
 
-                -- tira o valor da conta destinatária
                 UPDATE CONTA
                 SET Saldo = Saldo - OLD.Valor
                 WHERE ID_Conta = OLD.ID_ContaDestinataria;
-            END IF;
 
+            END IF;
         END IF;
 
-        -- DEPOIS: aplica o efeito da nova transação (se for efetivada ou pendente com data <= hoje)
+        -- Aplica efeito da nova transação
         IF NEW.Status = 'Efetivada' OR (NEW.Status = 'Pendente' AND NEW.Data <= dataAtual) THEN
 
-            -- Receita
             IF NEW.Tipo = 'Receita' THEN
                 UPDATE CONTA
                 SET Saldo = Saldo + NEW.Valor
                 WHERE ID_Conta = NEW.ID_ContaRemetente;
 
-            -- Despesa
             ELSEIF NEW.Tipo = 'Despesa' THEN
                 UPDATE CONTA
                 SET Saldo = Saldo - NEW.Valor
                 WHERE ID_Conta = NEW.ID_ContaRemetente;
 
-            -- Transferência
             ELSEIF NEW.Tipo = 'Transferência' THEN
-                -- tira valor da conta remetente
                 UPDATE CONTA
                 SET Saldo = Saldo - NEW.Valor
                 WHERE ID_Conta = NEW.ID_ContaRemetente;
 
-                -- adiciona valor na conta destinatária
                 UPDATE CONTA
                 SET Saldo = Saldo + NEW.Valor
                 WHERE ID_Conta = NEW.ID_ContaDestinataria;
-            END IF;
 
+            END IF;
         END IF;
 
     END IF;
-
-END$$
+END $$
 
 DELIMITER ;
-

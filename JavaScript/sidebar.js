@@ -1,16 +1,17 @@
-const toggleBtn = document.getElementById("toggleSidebar");
+document.addEventListener("DOMContentLoaded", function () {
   const sidebar = document.getElementById("sidebar");
+  const toggleButton = document.getElementById("toggleSidebar");
 
-  toggleBtn.addEventListener("click", () => {
-    // Abrindo
-    if (sidebar.classList.contains("collapsed")) {
-      sidebar.classList.remove("collapsed");
-      sidebar.classList.remove("hide-text");
-    } else {
-      // Fechando: primeiro colapsa, depois esconde o texto
-      sidebar.classList.add("collapsed");
-      setTimeout(() => {
-        sidebar.classList.add("hide-text");
-      }, 300); // mesmo tempo da transição de width
-    }
+  // Carrega estado salvo
+  if (localStorage.getItem("sidebar-collapsed") === "true") {
+    sidebar.classList.add("collapsed");
+  }
+
+  toggleButton.addEventListener("click", function () {
+    sidebar.classList.toggle("collapsed");
+
+    // Salva estado no localStorage
+    const isCollapsed = sidebar.classList.contains("collapsed");
+    localStorage.setItem("sidebar-collapsed", isCollapsed);
   });
+});

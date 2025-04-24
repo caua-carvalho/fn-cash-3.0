@@ -1,51 +1,36 @@
+<?php
+$documento = pathinfo(basename($_SERVER['REQUEST_URI']), PATHINFO_FILENAME);
+?>
+
 <div class="wrapper">
     <nav id="sidebar">
-        <button class="toggle-btn" id="toggleSidebar">☰</button>
+        <button class="menu-toggle" id="toggleSidebar">☰</button>
         <ul>
             <li>
-                <a href="categorias.php" class="text-white icone-sidebar">
-                    <i class="bi bi-house-door fs-10"></i>
-                    <span>Home</span>
-                </a>
-            </li>
-            <li>
-                <a href="plugins.php" class="text-white icone-sidebar">
-                    <i class="bi bi-plug fs-4"></i>
-                    <span>Plugins</span>
-                </a>
-            </li>
-            <li>
-                <a href="usuarios.php" class="text-white icone-sidebar">
-                    <i class="bi bi-people fs-6"></i>
-                    <span>Usuários</span>
-                </a>
-            </li>
-            <li>
-                <a href="transacoes.php" class="text-white icone-sidebar">
-                    <i class="bi bi-cash-coin"></i>
-                    <span>Transações</span>
-                </a>
-            </li>
-            <li>
-                <a href="categoria.php" class="text-white icone-sidebar">
+                <a href="categorias.php" class="text-white icone-sidebar <?php if ($documento == 'categorias') echo 'active'; ?>">
                     <i class="bi bi-tags"></i>
-                    <span>Categoria</span>
+                    <span>Categorias</span>
                 </a>
             </li>
             <li>
-                <a href="conta.php" class="text-white icone-sidebar">
+                <a href="contas.php" class="text-white icone-sidebar <?php if ($documento == 'contas') echo 'active'; ?>">
                     <i class="bi bi-wallet2"></i>
-                    <span>Conta</span>
+                    <span>Contas</span>
                 </a>
             </li>
             <li>
-                <a href="orcamento.php" class="text-white icone-sidebar">
+                <a href="transacoes.php" class="text-white icone-sidebar <?php if ($documento == 'transacoes') echo 'active'; ?>">
+                    <i class="bi bi-shuffle"></i>
+                    <span>Transacoes</span>
+                </a>
+            </li>
+            <li>
+                <a href="orcamento.php" class="text-white icone-sidebar <?php if ($documento == 'orcamento') echo 'active'; ?>">
                     <i class="bi bi-graph-up"></i>
-                    <span>Orçamento</span>
+                    <span>Orcamentos</span>
                 </a>
             </li>
         </ul>
     </nav>
 
     <div id="main-content">
-    

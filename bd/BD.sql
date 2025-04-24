@@ -1,4 +1,5 @@
-CREATE DATABASE fncash;
+DROP DATABASE IF EXISTS fncash;
+CREATE DATABASE fncash CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE fncash;
 
 CREATE TABLE USUARIO (
@@ -135,49 +136,49 @@ INSERT INTO CONTA (Nome, Tipo, Saldo, Instituicao, DataCriacao, ID_Usuario)
 VALUES ('Conta Corrente João', 'Corrente', 1000.00, 'Banco A', CURDATE(), 1);
 
 INSERT INTO CONTA (Nome, Tipo, Saldo, Instituicao, DataCriacao, ID_Usuario) 
-VALUES ('Poupança Maria', 'Poupança', 5000.00, 'Banco B', CURDATE(), 2);
+VALUES ('Poupança Maria', 'Poupança', 5000.00, 'Banco B', CURDATE(), 1);
 
 -- Inserções na tabela CATEGORIA
 INSERT INTO CATEGORIA (Nome, Tipo, Descricao, ID_Usuario) 
 VALUES ('Alimentação', 'Despesa', 'Gastos com alimentação', 1);
 
 INSERT INTO CATEGORIA (Nome, Tipo, Descricao, ID_Usuario) 
-VALUES ('Salário', 'Receita', 'Recebimento de salário', 2);
+VALUES ('Salário', 'Receita', 'Recebimento de salário', 1);
 
 -- Inserções na tabela TRANSACAO
 INSERT INTO TRANSACAO (Titulo, Descricao, Valor, FormaPagamento, Data, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_Usuario) 
 VALUES ('Compra Supermercado', 'Compra de alimentos', 200.00, 'debito', CURDATE(), 'Despesa', 'Efetivada', 1, 1, 1);
 
 INSERT INTO TRANSACAO (Titulo, Descricao, Valor, FormaPagamento, Data, Tipo, Status, ID_ContaRemetente, ID_Categoria, ID_Usuario) 
-VALUES ('Recebimento Salário', 'Salário mensal', 3000.00, 'credito', CURDATE(), 'Receita', 'Efetivada', 2, 2, 2);
+VALUES ('Recebimento Salário', 'Salário mensal', 3000.00, 'credito', CURDATE(), 'Receita', 'Efetivada', 1, 2, 1);
 
 -- Inserções na tabela CONTA_RECORRENTE
 INSERT INTO CONTA_RECORRENTE (Descricao, Valor, DataInicio, Periodicidade, ID_Categoria, ID_Conta, ID_Usuario) 
 VALUES ('Assinatura Streaming', 50.00, CURDATE(), 'Mensal', 1, 1, 1);
 
 INSERT INTO CONTA_RECORRENTE (Descricao, Valor, DataInicio, Periodicidade, ID_Categoria, ID_Conta, ID_Usuario) 
-VALUES ('Plano de Saúde', 300.00, CURDATE(), 'Mensal', 1, 2, 2);
+VALUES ('Plano de Saúde', 300.00, CURDATE(), 'Mensal', 1, 1, 1);
 
 -- Inserções na tabela ORCAMENTO
 INSERT INTO ORCAMENTO (Titulo, Valor, Inicio, Fim, ID_Categoria, ID_Usuario) 
 VALUES ('Orçamento Alimentação', 1000.00, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 MONTH), 1, 1);
 
 INSERT INTO ORCAMENTO (Titulo, Valor, Inicio, Fim, ID_Categoria, ID_Usuario) 
-VALUES ('Orçamento Transporte', 500.00, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 MONTH), 1, 2);
+VALUES ('Orçamento Transporte', 500.00, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 MONTH), 1, 1);
 
 -- Inserções na tabela META_FINANCEIRA
 INSERT INTO META_FINANCEIRA (Nome, Descricao, ValorAlvo, DataInicio, ID_Usuario) 
 VALUES ('Viagem Internacional', 'Economizar para viagem', 10000.00, CURDATE(), 1);
 
 INSERT INTO META_FINANCEIRA (Nome, Descricao, ValorAlvo, DataInicio, ID_Usuario) 
-VALUES ('Comprar Carro', 'Economizar para um carro novo', 20000.00, CURDATE(), 2);
+VALUES ('Comprar Carro', 'Economizar para um carro novo', 20000.00, CURDATE(), 1);
 
 -- Inserções na tabela INVESTIMENTO
 INSERT INTO INVESTIMENTO (Nome, Tipo, ValorInicial, ValorAtual, DataInicio, ID_Conta, ID_Usuario) 
 VALUES ('Ações Empresa X', 'Ações', 5000.00, 5500.00, CURDATE(), 1, 1);
 
 INSERT INTO INVESTIMENTO (Nome, Tipo, ValorInicial, ValorAtual, DataInicio, ID_Conta, ID_Usuario) 
-VALUES ('Fundo Imobiliário Y', 'Fundos', 10000.00, 10500.00, CURDATE(), 2, 2);
+VALUES ('Fundo Imobiliário Y', 'Fundos', 10000.00, 10500.00, CURDATE(), 1, 1);
 
 DELIMITER $$
 
@@ -243,6 +244,7 @@ FROM ORCAMENTO O
 LEFT JOIN GastoPorCategoria G ON O.ID_Categoria = G.ID_Categoria AND O.ID_Usuario = G.ID_Usuario
 WHERE O.Ativo = TRUE;
 
+DELIMITER $$
 
 CREATE TRIGGER atualiza_saldo_apos_update
 AFTER UPDATE ON TRANSACAO
@@ -316,7 +318,7 @@ BEGIN
 
     END IF;
 
-END$$
+END $$
 
 DELIMITER ;
 

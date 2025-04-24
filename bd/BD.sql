@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS fncash;
-CREATE DATABASE fncash;
+CREATE DATABASE fncash CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE fncash;
 
 CREATE TABLE USUARIO (
@@ -126,6 +126,7 @@ CREATE TABLE INVESTIMENTO (
     CONSTRAINT FK_Investimento_Usuario FOREIGN KEY (ID_Usuario) 
         REFERENCES USUARIO(ID_Usuario) ON DELETE CASCADE
 );
+
 -- Inserções na tabela USUARIO
 INSERT INTO USUARIO (Nome, Email, Senha, DataCadastro) 
 VALUES ('adm', 'adm@gmail.com', SHA2('123', 256), CURDATE());
@@ -178,6 +179,71 @@ VALUES ('Ações Empresa X', 'Ações', 5000.00, 5500.00, CURDATE(), 1, 1);
 
 INSERT INTO INVESTIMENTO (Nome, Tipo, ValorInicial, ValorAtual, DataInicio, ID_Conta, ID_Usuario) 
 VALUES ('Fundo Imobiliário Y', 'Fundos', 10000.00, 10500.00, CURDATE(), 1, 1);
+
+DELIMITER $$
+
+CREATE TRIGGER atualiza_saldo_apos_insert
+AFTER INSERT ON TRANSACAO
+FOR EACH ROW
+BEGIN
+    DECLARE dataAtual DATE;
+
+    SET dataAtual = CURDATE();
+
+    -- Só entra se for Efetivada ou Pendente com Data <= hoje
+    IF NEW.Status = 'Efetivada' OR (NEW.Status = 'Pendente' AND NEW.Data <= dataAtual) THEN
+
+        -- Se for Receita (entrada de dinheiro)
+        IF NEW.Tipo = 'Receita' THEN
+            UPDATE CONTA
+            SET Saldo = Saldo + NEW.Valor
+            WHERE ID_Conta = NEW.ID_ContaRemetente;
+
+        -- Se for Despesa (saída de dinheiro)
+        ELSEIF NEW.Tipo = 'Despesa' THEN
+            UPDATE CONTA
+            SET Saldo = Saldo - NEW.Valor
+            WHERE ID_Conta = NEW.ID_ContaRemetente;
+
+        -- Se for Transferência
+        ELSEIF NEW.Tipo = 'Transferência' THEN
+            -- Sai valor da conta remetente
+            UPDATE CONTA
+            SET Saldo = Saldo - NEW.Valor
+            WHERE ID_Conta = NEW.ID_ContaRemetente;
+
+            -- Entra valor na conta destinatária
+            UPDATE CONTA
+            SET Saldo = Saldo + NEW.Valor
+            WHERE ID_Conta = NEW.ID_ContaDestinataria;
+        END IF;
+
+    END IF;
+
+END $$
+
+DELIMITER ;
+
+CREATE VIEW GastoPorCategoria AS
+SELECT 
+    ID_Categoria,
+    ID_Usuario,
+    SUM(CASE 
+        WHEN Tipo = 'Despesa' AND Status = 'Efetivada' THEN Valor 
+        ELSE 0 
+    END) AS TotalGasto
+FROM TRANSACAO
+GROUP BY ID_Categoria, ID_Usuario;
+
+SELECT 
+    O.Titulo,
+    O.Valor AS ValorOrcamento,
+    COALESCE(G.TotalGasto, 0) AS GastoAtual,
+    (O.Valor - COALESCE(G.TotalGasto, 0)) AS SaldoDisponivel
+FROM ORCAMENTO O
+LEFT JOIN GastoPorCategoria G ON O.ID_Categoria = G.ID_Categoria AND O.ID_Usuario = G.ID_Usuario
+WHERE O.Ativo = TRUE;
+
 DELIMITER $$
 
 CREATE TRIGGER atualiza_saldo_apos_update
@@ -187,64 +253,72 @@ BEGIN
     DECLARE dataAtual DATE;
     SET dataAtual = CURDATE();
 
-    IF (OLD.Valor <> NEW.Valor 
-        OR OLD.Tipo <> NEW.Tipo 
-        OR OLD.Status <> NEW.Status 
-        OR OLD.Data <> NEW.Data 
-        OR OLD.ID_ContaRemetente <> NEW.ID_ContaRemetente 
-        OR OLD.ID_ContaDestinataria <> NEW.ID_ContaDestinataria) THEN
+    -- Só processa se algum campo relevante mudou
+    IF (OLD.Valor <> NEW.Valor OR OLD.Tipo <> NEW.Tipo OR OLD.Status <> NEW.Status OR OLD.Data <> NEW.Data OR OLD.ID_ContaRemetente <> NEW.ID_ContaRemetente OR OLD.ID_ContaDestinataria <> NEW.ID_ContaDestinataria) THEN
 
-        -- Desfaz efeito da transação antiga
+        -- PRIMEIRO: desfaz efeito da transação antiga (se era efetivada ou pendente e data <= hoje)
         IF OLD.Status = 'Efetivada' OR (OLD.Status = 'Pendente' AND OLD.Data <= dataAtual) THEN
 
+            -- Receita
             IF OLD.Tipo = 'Receita' THEN
                 UPDATE CONTA
                 SET Saldo = Saldo - OLD.Valor
                 WHERE ID_Conta = OLD.ID_ContaRemetente;
 
+            -- Despesa
             ELSEIF OLD.Tipo = 'Despesa' THEN
                 UPDATE CONTA
                 SET Saldo = Saldo + OLD.Valor
                 WHERE ID_Conta = OLD.ID_ContaRemetente;
 
+            -- Transferência
             ELSEIF OLD.Tipo = 'Transferência' THEN
+                -- volta o valor pra conta remetente
                 UPDATE CONTA
                 SET Saldo = Saldo + OLD.Valor
                 WHERE ID_Conta = OLD.ID_ContaRemetente;
 
+                -- tira o valor da conta destinatária
                 UPDATE CONTA
                 SET Saldo = Saldo - OLD.Valor
                 WHERE ID_Conta = OLD.ID_ContaDestinataria;
-
             END IF;
+
         END IF;
 
-        -- Aplica efeito da nova transação
+        -- DEPOIS: aplica o efeito da nova transação (se for efetivada ou pendente com data <= hoje)
         IF NEW.Status = 'Efetivada' OR (NEW.Status = 'Pendente' AND NEW.Data <= dataAtual) THEN
 
+            -- Receita
             IF NEW.Tipo = 'Receita' THEN
                 UPDATE CONTA
                 SET Saldo = Saldo + NEW.Valor
                 WHERE ID_Conta = NEW.ID_ContaRemetente;
 
+            -- Despesa
             ELSEIF NEW.Tipo = 'Despesa' THEN
                 UPDATE CONTA
                 SET Saldo = Saldo - NEW.Valor
                 WHERE ID_Conta = NEW.ID_ContaRemetente;
 
+            -- Transferência
             ELSEIF NEW.Tipo = 'Transferência' THEN
+                -- tira valor da conta remetente
                 UPDATE CONTA
                 SET Saldo = Saldo - NEW.Valor
                 WHERE ID_Conta = NEW.ID_ContaRemetente;
 
+                -- adiciona valor na conta destinatária
                 UPDATE CONTA
                 SET Saldo = Saldo + NEW.Valor
                 WHERE ID_Conta = NEW.ID_ContaDestinataria;
-
             END IF;
+
         END IF;
 
     END IF;
+
 END $$
 
 DELIMITER ;
+

@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  outline: none;
 }
 
 body {
@@ -48,6 +49,13 @@ body {
   font-size: 20px;
 }
 
+.menu-toggle:hover  {
+  background: #014d2c;
+}
+.menu-toggle:focus {
+  outline: none;
+}
+
 #sidebar ul {
   list-style: none;
   padding: 0;
@@ -56,7 +64,7 @@ body {
 
 #sidebar ul li {
   padding-bottom: 20px;
-  padding-left: 15px;
+  padding-left: 8px;
   white-space: nowrap;
   display: flex;
   align-items: center;

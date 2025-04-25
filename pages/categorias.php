@@ -34,6 +34,7 @@ require_once 'dialog.php';
                      <td><span style='background-color: " . ($categoria['Tipo'] === 'Receita' ? 'green' : 'red') . "; color: white; padding: 2px 8px; border-radius: 5px; font-size: 12px;'>" . ($categoria['Tipo'] === 'receita' ? 'Receita' : 'Despesa') . "</span></td>
                      <td>" . ($categoria['Ativa'] ? 'Ativa' : 'Desativada') . "</td>
                      <td>
+
                      <a class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editarCategoriaModal'
                         data-id='" . $categoria['ID_Categoria'] . "'
                         data-nome='" . htmlspecialchars($categoria['Nome']) . "'
@@ -41,11 +42,13 @@ require_once 'dialog.php';
                         data-descricao='" . htmlspecialchars($categoria['Descricao']) . "'
                         data-status='" . ($categoria['Ativa'] ? 'true' : 'false') . "'>
                         Editar
-                     </a> 
+                     </a>
+                
                      <a class='btn btn-danger btn-sm' data-toggle='modal' data-target='#excluirCategoriaModal'
                         data-id='" . $categoria['ID_Categoria'] . "'>
                         Excluir
                      </a>
+
                      </td>
                      </tr>";
             }

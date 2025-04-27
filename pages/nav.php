@@ -1,4 +1,4 @@
-<?php
+<?phpcontainer
 $documento = pathinfo(basename($_SERVER['REQUEST_URI']), PATHINFO_FILENAME);
 ?>
 

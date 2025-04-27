@@ -25,6 +25,7 @@ if (!isset($_SESSION['id_usuario'])) {
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- CSS CUSTOM -->
-     <link rel="stylesheet" href="../css/style.css">
-	 <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/style.css">
+	<link rel="stylesheet" href="sidebar/sidebar.css">
+	
 </head>

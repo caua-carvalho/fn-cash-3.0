@@ -1,7 +1,7 @@
 <?php
 require_once 'transacoes/funcoes.php';
 require_once 'header.php';
-require_once 'nav.php';
+require_once 'sidebar.php';
 require_once 'transacoes/modal.php';
 require_once 'dialog.php';
 require_once '../conexao.php';

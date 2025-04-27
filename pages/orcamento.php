@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once 'header.php';
-require_once 'nav.php';
+require_once 'sidebar.php';
 require_once 'orcamentos/funcoes.php';
 require_once 'orcamentos/script.php';
 include_once 'orcamentos/modal.php';

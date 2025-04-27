@@ -1,5 +1,4 @@
-    </div>
-</div>
-<script src="../JavaScript/sidebar.js"></script>
+</main>
+<script src="sidebar/sidebar.js"></script>
 </body>
 </html>

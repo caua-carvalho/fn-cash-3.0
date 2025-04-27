@@ -1,6 +1,6 @@
 <?php
 require_once 'header.php';
-require_once 'nav.php';
+require_once 'sidebar.php';
 require_once 'contas/funcoes.php';
 require_once 'contas/modal.php';
 require_once 'dialog.php';

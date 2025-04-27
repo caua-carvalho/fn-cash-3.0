@@ -14,7 +14,7 @@ CREATE TABLE USUARIO (
 CREATE TABLE CONTA (
     ID_Conta INT AUTO_INCREMENT PRIMARY KEY,
     Nome VARCHAR(100) NOT NULL,
-    Tipo ENUM('Corrente', 'Poupança', 'Cartão de Crédito', 'Investimento', 'Dinheiro', 'Outros') NOT NULL,
+    Tipo ENUM('Corrente', 'Poupança', 'Cartão de Crédito', 'VR/VA', 'Investimento', 'Dinheiro', 'Outros') NOT NULL,
     Saldo DECIMAL(15 , 2 ) NOT NULL DEFAULT 0.00,
     Instituicao VARCHAR(100) NOT NULL,
     DataCriacao DATE NOT NULL,

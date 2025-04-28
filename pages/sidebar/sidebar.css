@@ -92,6 +92,8 @@ body{
 }
 #sidebar a:hover, #sidebar .dropdown-btn:hover{
   background-color: var(--hover-clr);
+  transition: all 00ms ease-in-out;
+  width: 13rem;
 }
 #sidebar .sub-menu{
   display: grid;
@@ -127,7 +129,8 @@ body{
   }
 }
 #toggle-btn:hover{
-  background-color: var(--hover-clr);
+  transform: scale(1.2);
+  transition: all 150ms ease-in-out;
 }
 
 main{

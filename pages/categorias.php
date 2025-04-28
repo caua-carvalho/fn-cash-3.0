@@ -16,7 +16,7 @@ require_once 'dialog.php';
     </div>
 
     <!-- Tabela para exibir as categorias -->
-    <table class="table table-bordered text-white">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Nome</th>

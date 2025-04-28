@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Link Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Link Script -->
+     <link rel="stylesheet" href="js/script.js">
+</head>
+<body>
+    <!-- Sidebar / barra lateral -->
+  <div class="sidebar" id="sidebar">
+    <div class="menu-toggle" id="menu-toggle">
+      <i class="fas fa-bars"></i>
+    </div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fas fa-home"></i>
+          <span class="nav-text">Home</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="#">
+          <i class="fas fa-th-large"></i>
+          <span class="nav-text">Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fas fa-calendar"></i>
+          <span class="nav-text">Agenda</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fas fa-cog"></i>
+          <span class="nav-text">Configurações</span>
+        </a>
+      </li>
+      <li class="nav-item account-item">
+        <a class="nav-link" href="#">
+          <i class="fas fa-user-circle"></i>
+          <span class="nav-text">Conta</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main Panel / painel principal -->
+  <div class="main-panel">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Dashboard</a>
+        <button class="navbar-toggler" type="button" id="sidebar-toggle">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="d-flex align-items-center">
+          <div class="search-bar me-3">
+            <input type="text" placeholder="Search...">
+            <button class="icon-btn">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <button class="icon-btn me-3">
+            <i class="fas fa-th"></i>
+          </button>
+          <button class="icon-btn me-3">
+            <i class="fas fa-bell"></i>
+          </button>
+          <button class="icon-btn">
+            <i class="fas fa-user"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="content">
+      <div class="container-fluid">
+        <!-- Stats Row / estatisticas-->
+        <div class="row mt-4">
+          <!-- Stat Card 1 / linha 1-->
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-card-new">
+              <div class="stat-info">
+                <h3 class="stat-number">999,999</h3>
+                <p class="stat-title">LOREM</p>
+                <div class="stat-progress">
+                  <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 5.45% 
+                  </span>
+                  Lorem
+                </div>
+              </div>
+              <div class="stat-icon red-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Stat Card 2 / linha 2-->
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-card-new">
+              <div class="stat-info">
+                <h3 class="stat-number">2,356</h3>
+                <p class="stat-title">LOREM</p>
+                <div class="stat-progress">
+                  <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 2.10% 
+                  </span>
+                  Lorem
+                </div>
+              </div>
+              <div class="stat-icon orange-icon">
+                <i class="fas fa-users"></i>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Stat Card 3 / linha 3-->
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-card-new">
+              <div class="stat-info">
+                <h3 class="stat-number">999</h3>
+                <p class="stat-title">LOREM</p>
+                <div class="stat-progress">
+                  <span class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i> 1.10% 
+                  </span>
+                  Lorem
+                </div>
+              </div>
+              <div class="stat-icon yellow-icon">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Stat Card 4 / linha 4-->
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-card-new">
+              <div class="stat-info">
+                <h3 class="stat-number">49.65%</h3>
+                <p class="stat-title">LOREM</p>
+                <div class="stat-progress">
+                  <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 12% 
+                  </span>
+                  Lorem
+                </div>
+              </div>
+              <div class="stat-icon teal-icon">
+                <i class="fas fa-tachometer-alt"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Charts Row / graficos -->
+        <div class="row">
+          <!-- Chart 1 -->
+          <div class="col-lg-4">
+            <div class="chart-card">
+              <div class="card-header">
+                <h4 class="card-title">Lorem</h4>
+                <p class="card-category">15%</p>
+              </div>
+              <div class="card-body">
+                <div class="chart-area">
+                  <canvas id="dailySalesChart"></canvas>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="stats-text">
+                  <i class="fas fa-clock"></i> lorem
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Chart 2 -->
+          <div class="col-lg-4">
+            <div class="chart-card">
+              <div class="card-header">
+                <h4 class="card-title">Lorem</h4>
+                <p class="card-category">Lorem</p>
+              </div>
+              <div class="card-body">
+                <div class="chart-area">
+                  <canvas id="emailChart"></canvas>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="stats-text">
+                  <i class="fas fa-calendar"></i> Lorem
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Chart 3 -->
+          <div class="col-lg-4">
+            <div class="chart-card">
+              <div class="card-header">
+                <h4 class="card-title">Lorem</h4>
+                <p class="card-category">Lorem</p>
+              </div>
+              <div class="card-body">
+                <div class="chart-area">
+                  <canvas id="tasksChart"></canvas>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="stats-text">
+                  <i class="fas fa-history"></i> Lorem
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- adicionar mais... -->
+        <div class="row">
+          <!-- Tarefas -->
+          <div class="col-lg-6">
+            <div class="tasks-card">
+              <div class="card-header">
+                <h4 class="card-title">Tarefa</h4>
+                <ul class="nav nav-tabs" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#bugs">
+                      <i class="fas fa-bug"></i> lorem
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#website">
+                      <i class="fas fa-code"></i> lorem
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#server">
+                      <i class="fas fa-server"></i> lorem
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="tab-pane active" id="bugs">
+                    <div class="task-item">
+                      <div class="task-checkbox">
+                        <input type="checkbox" checked>
+                      </div>
+                      <p class="task-title completed">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quam, provident! Id placeat modi, tempora eos corrupti vel velit quaerat, rerum magnam culpa, accusantium optio nam mollitia praesentium. Optio, corporis aliquid?</p>
+                      <div class="task-actions">
+                        <button><i class="fas fa-edit"></i></button>
+                        <button><i class="fas fa-times"></i></button>
+                      </div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-checkbox">
+                        <input type="checkbox">
+                      </div>
+                      <p class="task-title">Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores quis optio ut consequuntur enim et nulla distinctio, eaque assumenda odio dolores sint, necessitatibus iusto! Rerum vero necessitatibus in fugit consequuntur.</p>
+                      <div class="task-actions">
+                        <button><i class="fas fa-edit"></i></button>
+                        <button><i class="fas fa-times"></i></button>
+                      </div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-checkbox">
+                        <input type="checkbox" checked>
+                      </div>
+                      <p class="task-title completed">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sequi, quibusdam. Iste quia fugit ipsum quaerat a, aliquam vero soluta deleniti fugiat incidunt sint quam minima libero? Ea vero tempore dolor.</p>
+                      <div class="task-actions">
+                        <button><i class="fas fa-edit"></i></button>
+                        <button><i class="fas fa-times"></i></button>
+                      </div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-checkbox">
+                        <input type="checkbox">
+                      </div>
+                      <p class="task-title">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Id, doloribus eum explicabo delectus necessitatibus rerum eligendi, eveniet ratione perferendis non, aut soluta! Excepturi deserunt facere quam at sed omnis modi.</p>
+                      <div class="task-actions">
+                        <button><i class="fas fa-edit"></i></button>
+                        <button><i class="fas fa-times"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- estatisticas das pessoas/ideia pra colocar no site -->
+          <div class="col-lg-6">
+            <div class="employee-stats">
+              <div class="card-header">
+                <h4 class="card-title">Lorem</h4>
+                <p class="card-category">lorem</p>
+              </div>
+              <div class="card-body">
+                <table class="table employee-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Salary</th>
+                      <th>Country</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>Dakota Rice</td>
+                      <td>$36,738</td>
+                      <td>Niger</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>Minerva Hooper</td>
+                      <td>$23,789</td>
+                      <td>Curaçao</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>Sage Rodriguez</td>
+                      <td>$56,142</td>
+                      <td>Netherlands</td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>Philip Chaney</td>
+                      <td>$38,735</td>
+                      <td>Korea, South</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Bootstrap & jQuery Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
+<script>
+  // Toggle sidebar on mobile
+  document.getElementById('menu-toggle').addEventListener('click', function() {
+    const sidebar = document.getElementById('sidebar');
+    const mainPanel = document.querySelector('.main-panel');
+    
+    sidebar.classList.toggle('collapsed');
+    mainPanel.classList.toggle('expanded');
+  });
+  
+  // Daily Sales Chart
+  const dailySalesCtx = document.getElementById('dailySalesChart').getContext('2d');
+  const dailySalesChart = new Chart(dailySalesCtx, {
+    type: 'line',
+    data: {
+      labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+      datasets: [{
+        label: 'Sales',
+        data: [12, 19, 15, 20, 18, 25, 22],
+        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+        borderColor: '#4CAF50',
+        borderWidth: 2,
+        pointBorderColor: '#4CAF50',
+        pointBackgroundColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          display: false
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      },
+      maintainAspectRatio: false
+    }
+  });
+  
+  // Email Subscriptions Chart
+  const emailCtx = document.getElementById('emailChart').getContext('2d');
+  const emailChart = new Chart(emailCtx, {
+    type: 'bar',
+    data: {
+      labels: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+      datasets: [{
+        label: 'Subscriptions',
+        data: [30, 40, 35, 50, 45, 60, 55, 65, 75, 70, 80, 85],
+        backgroundColor: '#FF9800',
+        borderWidth: 0,
+        borderRadius: 3
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          display: false
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      },
+      maintainAspectRatio: false
+    }
+  });
+  
+  // Completed Tasks Chart
+  const tasksCtx = document.getElementById('tasksChart').getContext('2d');
+  const tasksChart = new Chart(tasksCtx, {
+    type: 'line',
+    data: {
+      labels: ['12am', '3pm', '6pm', '9pm', '12pm', '3am', '6am', '9am'],
+      datasets: [{
+        label: 'Tasks',
+        data: [75, 30, 45, 35, 30, 20, 25, 20],
+        backgroundColor: 'rgba(244, 67, 54, 0.1)',
+        borderColor: '#F44336',
+        borderWidth: 2,
+        pointBorderColor: '#F44336',
+        pointBackgroundColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          display: false
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      },
+      maintainAspectRatio: false
+    }
+  });
+  
+  // Make checkboxes update task styling
+  document.querySelectorAll('.task-checkbox input').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      const taskTitle = this.closest('.task-item').querySelector('.task-title');
+      if (this.checked) {
+        taskTitle.classList.add('completed');
+      } else {
+        taskTitle.classList.remove('completed');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

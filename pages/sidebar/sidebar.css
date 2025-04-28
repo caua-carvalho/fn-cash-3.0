@@ -54,6 +54,7 @@ body{
   display: flex;
   justify-content: flex-end;
   margin-bottom: 16px;
+  margin-top: 20px;
   .logo{
     font-weight: 600;
   }

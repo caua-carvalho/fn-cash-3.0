@@ -4,36 +4,43 @@ require_once 'conexao.php';
 require_once 'header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $usuario = $_POST['usuario'] ?? '';
-    $senha = $_POST['senha'] ?? '';
+    $acao = $_POST['acao'] ?? null;
 
-    $sql = "SELECT ID_Usuario, Nome, Senha FROM USUARIO WHERE Nome = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $usuario);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    if ($acao == 'login') {
+        $usuario = $_POST['usuario'] ?? '';
+        $senha = $_POST['senha'] ?? '';
 
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
+        $sql = "SELECT ID_Usuario, Nome, Senha FROM USUARIO WHERE Nome = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $usuario);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        // VALIDACAO DA SENHA COM HASH
-        $hashed_password = hash('sha256', $senha);
-        if ($hashed_password === $user['Senha']) {
-            // VARIAVEIS DE SESSAO
+        if ($result->num_rows === 1) {
+            $user = $result->fetch_assoc();
 
-            $_SESSION['logged_in'] = true;
-            $_SESSION['id_usuario'] = $user['ID_Usuario'];
-            $_SESSION['usuario'] = $user['Nome'];
+            // VALIDACAO DA SENHA COM HASH
+            $hashed_password = hash('sha256', $senha);
+            if ($hashed_password === $user['Senha']) {
+                // VARIAVEIS DE SESSAO
 
-            header('Location: pages/home.php');
-            exit;
-        } else {
-            $error_message = 'Senha inválida.';
+                $_SESSION['logado'] = true;
+                $_SESSION['id_usuario'] = $user['ID_Usuario'];
+                $_SESSION['usuario'] = $user['Nome'];
+
+                header('Location: pages/home.php');
+                exit;
+            } 
+            
+            else {
+                $error_message = 'Senha inválida.';
+            }
+        } 
+        
+        else {
+            $error_message = 'Usuário não encontrado.';
         }
-    } else {
-        $error_message = 'Usuário não encontrado.';
     }
-
     $stmt->close();
     $conn->close();
 }
@@ -97,18 +104,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="divider">ou use sua conta de e -mail</div>
 
-                    <div class="input-group">
-                        <i class="fas fa-envelope"></i>
-                        <input type="text" id="usuario" name="usuario" class="form-control" required>
-                    </div>
+                    <form action="index.php" method="post" class="login">
+                        <input type="hidden" name="acao" value="login">
 
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="senha" name="senha" class="form-control" required>
-                    </div>
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="text" id="usuario" name="usuario" class="form-control" required>
+                        </div>
 
-                    <div class="divider">Esqueceu sua senha?</div>
-                    <button class="signup-btn">ENTRAR</button>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="senha" name="senha" class="form-control" required>
+                        </div>
+
+                        <div class="divider">Esqueceu sua senha?</div>
+                        <button class="signup-btn">ENTRAR</button>
+                    </form>
+
                 </div>
                 <div class="left-side">
                     <h1>Olá amigo!</h1>

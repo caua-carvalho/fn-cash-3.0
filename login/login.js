@@ -1,13 +1,13 @@
 // Get elements
-const card = document.querySelector('.card');
+const cardLogin = document.querySelector('.cardLogin');
 const signInBtn = document.getElementById('signInBtn');
 const signUpBtn = document.getElementById('signUpBtn');
 
 // Add event listeners
 signInBtn.addEventListener('click', () => {
-  card.classList.add('flipped');
+  cardLogin.classList.add('flipped');
 });
 
 signUpBtn.addEventListener('click', () => {
-  card.classList.remove('flipped');
+  cardLogin.classList.remove('flipped');
 });

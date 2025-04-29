@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +12,11 @@
   <!-- Script -->
   <script src="login.js" defer></script>
 </head>
+
 <body>
   <div class="container">
     <div class="card">
-      <!-- Front Side (Login) -->
+      <!-- Front Side (Cadastro) -->
       <div class="card-side front">
         <div class="left-side">
           <h1>Bem vindo de volta!</h1>
@@ -44,24 +46,36 @@
           <button class="signup-btn">REGISTRAR-SE</button>
         </div>
       </div>
-      <!-- Back Side (Cadastrar-se) -->
+
+      <!-- Back Side (Login) -->
       <div class="card-side back">
         <div class="right-side">
           <h2>Faça login na sua conta</h2>
+
           <div class="social-icons">
             <div class="social-icon"><i class="fab fa-facebook-f"></i></div>
             <div class="social-icon"><i class="fab fa-google-plus-g"></i></div>
             <div class="social-icon"><i class="fab fa-linkedin-in"></i></div>
           </div>
+
+          <?php if (isset($error_message)): ?>
+              <div class="alert alert-danger" role="alert">
+                  <?php echo htmlspecialchars($error_message); ?>
+              </div>
+          <?php endif; ?>
+
           <div class="divider">ou use sua conta de e -mail</div>
+
           <div class="input-group">
             <i class="fas fa-envelope"></i>
-            <input type="email" placeholder="Email">
+            <input type="text" id="usuario" name="usuario" class="form-control" required>
           </div>
+
           <div class="input-group">
             <i class="fas fa-lock"></i>
-            <input type="password" placeholder="Password">
+            <input type="password" id="senha" name="senha" class="form-control" required>
           </div>
+
           <div class="divider">Esqueceu sua senha?</div>
           <button class="signup-btn">ENTRAR</button>
         </div>
@@ -71,7 +85,9 @@
           <button class="btn" id="signUpBtn">REGISTRAR-SE</button>
         </div>
       </div>
+      
     </div>
   </div>
 </body>
+
 </html>

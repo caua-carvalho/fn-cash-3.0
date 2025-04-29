@@ -1,19 +1,17 @@
 .table {
-    background-color: #1c1c1c;
-    color: #f0f0f0;
-  }
-  
-  .table th,
-  .table td {
-    border-color: #333;
-  }
-  
-  .table-striped tbody tr:nth-of-type(odd) {
-    background-color: #2a2a2a;
-  }
-  
-  .table-hover tbody tr:hover {
-    background-color: #3a3a3a;
-  }
-  
-  
+  background-color: #1c1c1c;
+  color: #f0f0f0;
+}
+
+.table th,
+.table td {
+  border-color: #333;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #2a2a2a;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #3a3a3a;
+}

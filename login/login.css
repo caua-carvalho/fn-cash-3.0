@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root {
   --base-clr: #0a0a0a;
   --line-clr: #42434a;
@@ -15,7 +17,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -24,6 +25,7 @@ body {
   align-items: center;
   min-height: 100vh;
   background-color: var(--text-clr);
+  font-family: "Montserrat", sans-serif;
 }
 
 .container {

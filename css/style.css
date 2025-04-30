@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+  font-family: "Montserrat", sans-serif !important;
+  font-weight: 600;
+}
 .table {
   background-color: #1c1c1c;
   color: #f0f0f0;

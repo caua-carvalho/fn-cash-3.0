@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- Link Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+      crossorigin="anonymous"
+    />
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="categorias.css" />
+    <!-- Link Script -->
+    <link rel="stylesheet" href="script.js" />
+  </head>
+  <body>
+    <!-- Sidebar / barra lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="menu-toggle" id="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-home"></i>
+              <span class="nav-text">Home</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-th-large"></i>
+              <span class="nav-text">Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-calendar"></i>
+              <span class="nav-text">Agenda</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="#">
+              <i class="fas fa-layer-group"></i>
+              <span class="nav-text">Categorias</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-cog"></i>
+              <span class="nav-text">Configurações</span>
+            </a>
+          </li>
+          <li class="nav-item account-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-user-circle"></i>
+              <span class="nav-text">Conta</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+  
+      <!-- Main Panel / painel principal -->
+      <div class="main-panel">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#">Categorias</a>
+            <button class="navbar-toggler" type="button" id="sidebar-toggle">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="d-flex align-items-center">
+              <div class="search-bar me-3">
+                <input type="text" placeholder="Buscar..." />
+                <button class="icon-btn">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+              <button class="icon-btn me-3">
+                <i class="fas fa-th"></i>
+              </button>
+              <button class="icon-btn me-3">
+                <i class="fas fa-bell"></i>
+              </button>
+              <button class="icon-btn">
+                <i class="fas fa-user"></i>
+              </button>
+            </div>
+          </div>
+        </nav>
+  
+        <!-- Content -->
+        <div class="content">
+          <div class="container-fluid">
+            <!-- Cabeçalho da página -->
+            <div class="category-header">
+              <div>
+                <h2>Categorias</h2>
+                <p class="text-muted">Gerencie suas categorias de produtos</p>
+              </div>
+              <button class="btn-add-category">
+                <i class="fas fa-plus"></i> Nova Categoria
+              </button>
+            </div>
+            
+            <!-- Filtros de categoria -->
+            <div class="category-filters">
+              <div class="search-categories">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar categorias...">
+              </div>
+              <button class="filter-btn active">Todas</button>
+              <button class="filter-btn">Ativas</button>
+              <button class="filter-btn">Inativas</button>
+              <button class="filter-btn">Populares</button>
+            </div>
+            
+            <!-- Stats Row / estatisticas-->
+            <div class="row mt-4">
+              <!-- Stat Card 1 / linha 1-->
+              <div class="col-lg-3 col-md-6">
+                <div class="stat-card-new">
+                  <div class="stat-info">
+                    <h3 class="stat-number">42</h3>
+                    <p class="stat-title">CATEGORIAS</p>
+                    <div class="stat-progress">
+                      <span class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 5.45%
+                      </span>
+                      Desde o último mês
+                    </div>
+                  </div>
+                  <div class="stat-icon red-icon">
+                    <i class="fas fa-layer-group"></i>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Stat Card 2 / linha 2-->
+              <div class="col-lg-3 col-md-6">
+                <div class="stat-card-new">
+                  <div class="stat-info">
+                    <h3 class="stat-number">584</h3>
+                    <p class="stat-title">PRODUTOS</p>
+                    <div class="stat-progress">
+                      <span class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 3.2%
+                      </span>
+                      Desde o último mês
+                    </div>
+                  </div>
+                  <div class="stat-icon orange-icon">
+                    <i class="fas fa-box"></i>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Stat Card 3 / linha 3-->
+              <div class="col-lg-3 col-md-6">
+                <div class="stat-card-new">
+                  <div class="stat-info">
+                    <h3 class="stat-number">68.5%</h3>
+                    <p class="stat-title">VISIBILIDADE</p>
+                    <div class="stat-progress">
+                      <span class="stat-change negative">
+                        <i class="fas fa-arrow-down"></i> 1.10%
+                      </span>
+                      Desde a última semana
+                    </div>
+                  </div>
+                  <div class="stat-icon yellow-icon">
+                    <i class="fas fa-eye"></i>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Stat Card 4 / linha 4-->
+              <div class="col-lg-3 col-md-6">
+                <div class="stat-card-new">
+                  <div class="stat-info">
+                    <h3 class="stat-number">49.65%</h3>
+                    <p class="stat-title">CONVERSÃO</p>
+                    <div class="stat-progress">
+                      <span class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 12%
+                      </span>
+                      Desde o último mês
+                    </div>
+                  </div>
+                  <div class="stat-icon teal-icon">
+                    <i class="fas fa-chart-line"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Categorias Grid -->
+            <div class="row mt-4">
+              <!-- Categoria 1 -->
+              <div class="col-lg-4 col-md-6">
+                <div class="category-card">
+                  <img src="/api/placeholder/400/180" alt="Categoria" class="category-img">
+                  <div class="category-body">
+                    <h4 class="category-title">Eletrônicos</h4>
+                    <p class="category-subtitle">Smartphones, Laptops, Tablets, Acessórios</p>
+                    
+                    <div class="category-stats">
+                      <div class="stat-item">
+                        <span class="stat-value">128</span>
+                        <span class="stat-label">Produtos</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">86%</span>
+                        <span class="stat-label">Visibilidade</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">62%</span>
+                        <span class="stat-label">Conversão</span>
+                      </div>
+                    </div>
+                    
+                    <div class="progress">
+                      <div class="progress-bar bg-info" style="width: 86%"></div>
+                    </div>
+                  </div>
+                  <div class="category-footer">
+                    <span class="badge badge-info">Alta Demanda</span>
+                    <div class="category-actions">
+                      <a href="#"><i class="fas fa-edit"></i></a>
+                      <a href="#"><i class="fas fa-ellipsis-v"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Categoria 2 -->
+              <div class="col-lg-4 col-md-6">
+                <div class="category-card">
+                  <img src="/api/placeholder/400/180" alt="Categoria" class="category-img">
+                  <div class="category-body">
+                    <h4 class="category-title">Moda</h4>
+                    <p class="category-subtitle">Roupas, Calçados, Acessórios, Bolsas</p>
+                    
+                    <div class="category-stats">
+                      <div class="stat-item">
+                        <span class="stat-value">215</span>
+                        <span class="stat-label">Produtos</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">78%</span>
+                        <span class="stat-label">Visibilidade</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">54%</span>
+                        <span class="stat-label">Conversão</span>
+                      </div>
+                    </div>
+                    
+                    <div class="progress">
+                      <div class="progress-bar bg-primary" style="width: 78%"></div>
+                    </div>
+                  </div>
+                  <div class="category-footer">
+                    <span class="badge badge-primary">Popular</span>
+                    <div class="category-actions">
+                      <a href="#"><i class="fas fa-edit"></i></a>
+                      <a href="#"><i class="fas fa-ellipsis-v"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Categoria 3 -->
+              <div class="col-lg-4 col-md-6">
+                <div class="category-card">
+                  <img src="/api/placeholder/400/180" alt="Categoria" class="category-img">
+                  <div class="category-body">
+                    <h4 class="category-title">Casa e Decoração</h4>
+                    <p class="category-subtitle">Móveis, Decoração, Utilidades Domésticas</p>
+                    
+                    <div class="category-stats">
+                      <div class="stat-item">
+                        <span class="stat-value">94</span>
+                        <span class="stat-label">Produtos</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">65%</span>
+                        <span class="stat-label">Visibilidade</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">48%</span>
+                        <span class="stat-label">Conversão</span>
+                      </div>
+                    </div>
+                    
+                    <div class="progress">
+                      <div class="progress-bar bg-success" style="width: 65%"></div>
+                    </div>
+                  </div>
+                  <div class="category-footer">
+                    <span class="badge badge-success">Em Alta</span>
+                    <div class="category-actions">
+                      <a href="#"><i class="fas fa-edit"></i></a>
+                      <a href="#"><i class="fas fa-ellipsis-v"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Categoria 4 -->
+              <div class="col-lg-4 col-md-6">
+                <div class="category-card">
+                  <img src="/api/placeholder/400/180" alt="Categoria" class="category-img">
+                  <div class="category-body">
+                    <h4 class="category-title">Esportes e Fitness</h4>
+                    <p class="category-subtitle">Equipamentos, Roupas Esportivas, Acessórios</p>
+                    
+                    <div class="category-stats">
+                      <div class="stat-item">
+                        <span class="stat-value">76</span>
+                        <span class="stat-label">Produtos</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">59%</span>
+                        <span class="stat-label">Visibilidade</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">41%</span>
+                        <span class="stat-label">Conversão</span>
+                      </div>
+                    </div>
+                    
+                    <div class="progress">
+                      <div class="progress-bar bg-warning" style="width: 59%"></div>
+                    </div>
+                  </div>
+                  <div class="category-footer">
+                    <span class="badge badge-warning">Sazonal</span>
+                    <div class="category-actions">
+                      <a href="#"><i class="fas fa-edit"></i></a>
+                      <a href="#"><i class="fas fa-ellipsis-v"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Categoria 5 -->
+              <div class="col-lg-4 col-md-6">
+                <div class="category-card">
+                  <img src="/api/placeholder/400/180" alt="Categoria" class="category-img">
+                  <div class="category-body">
+                    <h4 class="category-title">Beleza e Saúde</h4>
+                    <p class="category-subtitle">Cosméticos, Cuidados Pessoais, Bem-estar</p>
+                    
+                    <div class="category-stats">
+                      <div class="stat-item">
+                        <span class="stat-value">112</span>
+                        <span class="stat-label">Produtos</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">72%</span>
+                        <span class="stat-label">Visibilidade</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">58%</span>
+                        <span class="stat-label">Conversão</span>
+                      </div>
+                    </div>
+                    
+                    <div class="progress">
+                      <div class="progress-bar bg-primary" style="width: 72%"></div>
+                    </div>
+                  </div>
+                  <div class="category-footer">
+                    <span class="badge badge-primary">Popular</span>
+                    <div class="category-actions">
+                      <a href="#"><i class="fas fa-edit"></i></a>
+                      <a href="#"><i class="fas fa-ellipsis-v"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Categoria 6 -->
+              <div class="col-lg-4 col-md-6">
+                <div class="category-card">
+                  <img src="/api/placeholder/400/180" alt="Categoria" class="category-img">
+                  <div class="category-body">
+                    <h4 class="category-title">Tecnologia</h4>
+                    <p class="category-subtitle">Gadgets, Acessórios, Inovações</p>
+                    
+                    <div class="category-stats">
+                      <div class="stat-item">
+                        <span class="stat-value">63</span>
+                        <span class="stat-label">Produtos</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">81%</span>
+                        <span class="stat-label">Visibilidade</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">67%</span>
+                        <span class="stat-label">Conversão</span>
+                      </div>
+                    </div>
+                    
+                    <div class="progress">
+                      <div class="progress-bar bg-info" style="width: 81%"></div>
+                    </div>
+                  </div>
+                  <div class="category-footer">
+                    <span class="badge badge-info">Alta Demanda</span>
+                    <div class="category-actions">
+                      <a href="#"><i class="fas fa-edit"></i></a>
+                      <a href="#"><i class="fas fa-ellipsis-v"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Paginação -->
+            <div class="category-pagination">
+              <ul class="pagination">
+                <li><a href="#"><i class="fas fa-chevron-left"></i></a></li>
+                <li class="active"><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#"><i class="fas fa-chevron-right"></i></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Bootstrap & jQuery Scripts -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+      <!-- Chart.js -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  
+      <script>
+        // Toggle sidebar on mobile
+        document
+          .getElementById("menu-toggle")
+          .addEventListener("click", function () {
+            const sidebar = document.getElementById("sidebar");
+            const mainPanel = document.querySelector(".main-panel");
+  
+            sidebar.classList.toggle("collapsed");
+            mainPanel.classList.toggle("expanded");
+          });
+        
+        // Inicializar dropdowns e outros componentes Bootstrap
+        document.addEventListener('DOMContentLoaded', function() {
+          // Atualizar contagem de itens filtrados quando os botões de filtro são clicados
+          const filterButtons = document.querySelectorAll('.filter-btn');
+          filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+              // Remover classe active de todos os botões
+              filterButtons.forEach(btn => btn.classList.remove('active'));
+              // Adicionar classe active ao botão clicado
+              this.classList.add('active');
+              
+              // Aqui você implementaria a lógica de filtragem real
+              // Por enquanto, apenas um exemplo visual
+              const categoryCards = document.querySelectorAll('.category-card');
+              // Simulação de filtragem (para demonstração)
+            });
+          });
+        });
+      </script>
+    </body>
+</html>

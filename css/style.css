@@ -1237,6 +1237,10 @@
     transition: transform var(--transition-duration-normal) var(--transition-timing);
     transform: scale(0.9);
   }
+
+  .modal.fade.show {
+    background-color: rgba(0, 0, 0, 0.671) !important;
+  }
   
   .modal.show .modal-dialog {
     transform: scale(1);
@@ -2410,9 +2414,24 @@
      16. Theme System
      ========================================================================== */
   
-  /* System auto dark mode */
+  /* Sistema automático de tema escuro */
   @media (prefers-color-scheme: dark) {
-    :root:not(.light-theme) {
+      :root:not(.light-theme) {
+          --color-background: #0a0a0a;
+          --color-background-alt: #242529;
+          --color-surface: #1a1a1a;
+          --color-border: #42434a;
+          --color-text: #e6e6ef;
+          --color-text-muted: #b0b3c1;
+          
+          --shadow-color-light: rgba(0, 0, 0, 0.5);
+          --shadow-color-medium: rgba(0, 0, 0, 0.6);
+          --shadow-color-strong: rgba(0, 0, 0, 0.7);
+      }
+  }
+  
+  /* Classe para forçar tema escuro, independente da preferência do sistema */
+  body.dark-theme {
       --color-background: #0a0a0a;
       --color-background-alt: #242529;
       --color-surface: #1a1a1a;
@@ -2423,7 +2442,20 @@
       --shadow-color-light: rgba(0, 0, 0, 0.5);
       --shadow-color-medium: rgba(0, 0, 0, 0.6);
       --shadow-color-strong: rgba(0, 0, 0, 0.7);
-    }
+  }
+  
+  /* Classe para forçar tema claro, mesmo quando o sistema preferir escuro */
+  body.light-theme {
+      --color-background: #ffffff;
+      --color-background-alt: #f5f5f5;
+      --color-surface: #ffffff;
+      --color-border: #dee2e6;
+      --color-text: #0a0a0a;
+      --color-text-muted: #6c757d;
+      
+      --shadow-color-light: rgba(0, 0, 0, 0.1);
+      --shadow-color-medium: rgba(0, 0, 0, 0.15);
+      --shadow-color-strong: rgba(0, 0, 0, 0.2);
   }
   
   /* Theme toggle */

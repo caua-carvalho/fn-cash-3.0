@@ -26,6 +26,7 @@ body {
   min-height: 100vh;
   background-color: var(--base-clr);
   font-family: "Montserrat", sans-serif;
+  overflow: hidden;
 }
 
 /* Container 3D */
@@ -40,7 +41,7 @@ body {
 .cardLogin {
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: 90%;
   transform-style: preserve-3d;
   transition: transform 1s ease-in-out;
 }

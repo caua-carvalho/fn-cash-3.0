@@ -6,50 +6,63 @@ require_once 'header.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = $_POST['acao'] ?? null;
 
-    if ($acao == 'login') {
-        $usuario = $_POST['usuario'] ?? '';
-        $senha = $_POST['senha'] ?? '';
+    if ($acao === 'login') {
+        $usuario = trim($_POST['usuario'] ?? '');
+        $senha = trim($_POST['senha'] ?? '');
+
+        if (empty($usuario) || empty($senha)) {
+            $_SESSION['error_message'] = 'Usuário e senha são obrigatórios!';
+            header('Location: index.php');
+            exit;
+        }
 
         $sql = "SELECT ID_Usuario, Nome, Senha FROM USUARIO WHERE Nome = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $usuario);
-        $stmt->execute();
-        $result = $stmt->get_result();
 
-        if ($result->num_rows === 1) {
-            $user = $result->fetch_assoc();
+        if ($stmt) {
+            $stmt->bind_param("s", $usuario);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-            // VALIDACAO DA SENHA COM HASH
-            $hashed_password = hash('sha256', $senha);
-            if ($hashed_password === $user['Senha']) {
-                // VARIAVEIS DE SESSAO
+            if ($result && $result->num_rows === 1) {
+                $user = $result->fetch_assoc();
 
-                $_SESSION['logado'] = true;
-                $_SESSION['id_usuario'] = $user['ID_Usuario'];
-                $_SESSION['usuario'] = $user['Nome'];
+                // Validação da senha com hash
+                $hashed_password = hash('sha256', $senha);
+                if ($hashed_password === $user['Senha']) {
+                    // Variáveis de sessão
+                    $_SESSION['logado'] = true;
+                    $_SESSION['id_usuario'] = $user['ID_Usuario'];
+                    $_SESSION['usuario'] = $user['Nome'];
 
-                header('Location: pages/home.php');
+                    header('Location: pages/home.php');
+                    exit;
+                } else {
+                    $_SESSION['error_message'] = 'Senha inválida!';
+                    header('Location: index.php');
+                    exit;
+                }
+            } else {
+                $_SESSION['error_message'] = 'Usuário não encontrado!';
+                header('Location: index.php');
                 exit;
-            } 
-            
-            else {
-                $error_message = 'Senha inválida!';
             }
-        } 
-        
-        else {
-            $error_message = 'Usuário não encontrado!';
+
+            $stmt->close();
+        } else {
+            $_SESSION['error_message'] = 'Erro ao preparar a consulta!';
+            header('Location: index.php');
+            exit;
         }
     }
-    $stmt->close();
+
     $conn->close();
 }
 ?>
 
-<heade>
+<head>
     <link rel="stylesheet" href="login/login.css">
-</heade>
-
+</head>
 
 <body>
     <div class="container">
@@ -75,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <div class="input-container">
-                        <input type`="email" id="cad-email" name="email" placeholder=" " required>
+                        <input type="email" id="cad-email" name="email" placeholder=" " required>
                         <label for="cad-email">E-mail</label>
                     </div>
 
@@ -99,26 +112,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="social-icon"><i class="bi bi-linkedin"></i></div>
                     </div>
 
-                    <?php if (isset($error_message)): ?>
-                    <div class="alert" role="alert">
-                        <?php echo htmlspecialchars($error_message); ?>
-                    </div>
+                    <?php if (isset($_SESSION['error_message'])): ?>
+                        <div class="alert" role="alert">
+                            <?php 
+                                echo htmlspecialchars($_SESSION['error_message']);
+                                unset($_SESSION['error_message']);
+                            ?>
+                        </div>
                     <?php endif; ?>
 
                     <form action="index.php" method="post" class="login">
                         <input type="hidden" name="acao" value="login">
 
                         <div class="input-container">
-                            <input type="text" id="usuario" name="usuario" placeholder=" " required>
-                            <label for="usuario">Usuário</label>
+                            <input type="text" id="usuario_login" name="usuario" placeholder=" " required>
+                            <label for="usuario_login">Usuário</label>
                         </div>
 
                         <div class="input-container">
-                            <input type="text" id="usuario" name="senha" placeholder=" " required>
-                            <label for="usuario">Senha</label>
+                            <input type="password" id="senha_login" name="senha" placeholder=" " required>
+                            <label for="senha_login">Senha</label>
                         </div>
+
                         <div class="container-btn">
-                            <button class="signup-btn">ENTRAR</button>
+                            <button type="submit" class="signup-btn">ENTRAR</button>
                         </div>
                     </form>
 

@@ -33,12 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } 
             
             else {
-                $error_message = 'Senha inválida.';
+                $error_message = 'Senha inválida!';
             }
         } 
         
         else {
-            $error_message = 'Usuário não encontrado.';
+            $error_message = 'Usuário não encontrado!';
         }
     }
     $stmt->close();
@@ -68,19 +68,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="social-icon"><i class="bi bi-google"></i></div>
                         <div class="social-icon"><i class="bi bi-linkedin"></i></div>
                     </div>
-                    <div class="divider">ou use seu e -mail para registro</div>
-                    <div class="input-group">
-                        <i class="fas fa-user"></i>
-                        <input type="text" placeholder="Name">
+
+                    <div class="input-container">
+                        <input type="text" id="cad-usuario" name="usuario" placeholder=" " required>
+                        <label for="cad-usuario">Usuário</label>
                     </div>
-                    <div class="input-group">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" placeholder="Email">
+
+                    <div class="input-container">
+                        <input type`="email" id="cad-email" name="email" placeholder=" " required>
+                        <label for="cad-email">E-mail</label>
                     </div>
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" placeholder="Password">
+
+                    <div class="input-container">
+                        <input type="password" id="cad-senha" name="senha" placeholder=" " required>
+                        <label for="cad-senha">Senha</label>
                     </div>
+
                     <button class="signup-btn">REGISTRAR-SE</button>
                 </div>
             </div>
@@ -97,28 +100,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <?php if (isset($error_message)): ?>
-                    <div class="alert alert-danger" role="alert">
+                    <div class="alert" role="alert">
                         <?php echo htmlspecialchars($error_message); ?>
                     </div>
                     <?php endif; ?>
 
-                    <div class="divider">ou use sua conta de e -mail</div>
-
                     <form action="index.php" method="post" class="login">
                         <input type="hidden" name="acao" value="login">
 
-                        <div class="input-group">
-                            <i class="fas fa-envelope"></i>
-                            <input type="text" id="usuario" name="usuario" class="form-control" required>
+                        <div class="input-container">
+                            <input type="text" id="usuario" name="usuario" placeholder=" " required>
+                            <label for="usuario">Usuário</label>
                         </div>
 
-                        <div class="input-group">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="senha" name="senha" class="form-control" required>
+                        <div class="input-container">
+                            <input type="text" id="usuario" name="usuario" placeholder=" " required>
+                            <label for="usuario">Senha</label>
                         </div>
-
-                        <div class="divider">Esqueceu sua senha?</div>
-                        <button class="signup-btn">ENTRAR</button>
+                        <div class="container-btn">
+                            <button class="signup-btn">ENTRAR</button>
+                        </div>
                     </form>
 
                 </div>

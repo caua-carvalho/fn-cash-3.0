@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
                         <div class="input-container">
-                            <input type="text" id="usuario" name="usuario" placeholder=" " required>
+                            <input type="text" id="usuario" name="senha" placeholder=" " required>
                             <label for="usuario">Senha</label>
                         </div>
                         <div class="container-btn">

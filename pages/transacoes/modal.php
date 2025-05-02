@@ -4,134 +4,145 @@ require './contas/funcoes.php';
 require './categorias/funcoes.php';
 ?>
 
+<!-- Nova Transação Modal -->
 <div class="modal fade" id="transacaoModal" tabindex="-1" aria-labelledby="transacaoModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <!-- Título do modal para cadastrar nova transação -->
-                <h5 class="modal-title" id="modalCadastrarTransacaoLabel">Cadastrar Nova Transação</h5>
+                <h5 class="modal-title" id="transacaoModalLabel">Nova Transação</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <!-- Formulário para cadastrar nova transação -->
-            <form action="transacoes.php" method="POST">
+
+            <div class="tab-container">
+                <button type="button" class="tab-btn active" data-tab="basic">Dados Básicos</button>
+                <button type="button" class="tab-btn" data-tab="details">Detalhes</button>
+            </div>
+
+            <form action="transacoes.php" method="POST" class="needs-validation" novalidate>
                 <input type="hidden" name="acao" value="cadastrarTransacao">
+                
                 <div class="modal-body">
-                    
+                    <div class="tab-content" data-tab="basic">
+                        <!-- Tipo de Transação -->
+                        <h6 class="mb-3">Tipo de Transação</h6>
+                        <div class="type-selector mb-4">
+                            <div class="type-option expense" data-type="Despesa">
+                                <i class="fas fa-arrow-down type-icon"></i>
+                                <span class="type-name">Despesa</span>
+                            </div>
+                            <div class="type-option income" data-type="Receita">
+                                <i class="fas fa-arrow-up type-icon"></i>
+                                <span class="type-name">Receita</span>
+                            </div>
+                            <div class="type-option transfer" data-type="Transferência">
+                                <i class="fas fa-exchange-alt type-icon"></i>
+                                <span class="type-name">Transferência</span>
+                            </div>
+                        </div>
+                        <input type="hidden" name="tipoTransacao" value="Despesa">
 
-                    <!-- Campo para o título da transação -->
-                    <div class="form-group">
-                        <label for="tituloTransacao">Título</label>
-                        <input type="text" class="form-control" id="tituloTransacao" name="tituloTransacao" required>
+                        <!-- Título da Transação -->
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="tituloTransacao" name="tituloTransacao" placeholder=" " required>
+                            <label for="tituloTransacao">Título</label>
+                        </div>
+
+                        <!-- Valor da Transação -->
+                        <div class="form-group value-container">
+                            <input type="number" class="form-control" id="valorTransacao" name="valorTransacao" step="0.01" placeholder=" " required>
+                            <label for="valorTransacao">Valor</label>
+                        </div>
+
+                        <!-- Data da Transação -->
+                        <div class="form-group">
+                            <input type="date" class="form-control" id="dataTransacao" name="dataTransacao" placeholder=" " required>
+                            <label for="dataTransacao">Data</label>
+                        </div>
+
+                        <!-- Status da Transação -->
+                        <h6 class="mb-3">Status</h6>
+                        <div class="status-selector mb-4">
+                            <button type="button" class="status-option pending" data-status="Pendente">Pendente</button>
+                            <button type="button" class="status-option completed" data-status="Efetivada">Efetivada</button>
+                            <button type="button" class="status-option canceled" data-status="Cancelada">Cancelada</button>
+                        </div>
+                        <input type="hidden" name="statusTransacao" value="Pendente">
                     </div>
 
-                    <!-- Campo para a descrição da transação -->
-                    <div class="form-group">
-                        <label for="descricaoTransacao">Descrição</label>
-                        <textarea class="form-control" id="descricaoTransacao" name="descricaoTransacao"></textarea>
-                    </div>
+                    <div class="tab-content" data-tab="details" style="display: none;">
+                        <!-- Descrição da Transação -->
+                        <div class="form-group">
+                            <textarea class="form-control" id="descricaoTransacao" name="descricaoTransacao" placeholder=" " rows="3"></textarea>
+                            <label for="descricaoTransacao">Descrição</label>
+                        </div>
 
-                    <!-- Campo para o valor da transação -->
-                    <div class="form-group">
-                        <label for="valorTransacao">Valor</label>
-                        <input type="number" class="form-control" id="valorTransacao" name="valorTransacao" step="0.01" required>
-                    </div>
+                        <!-- Forma de Pagamento -->
+                        <div class="form-group expense-income-only">
+                            <select class="form-control" id="formaPagamento" name="formaPagamento" required>
+                                <option value="" disabled selected></option>
+                                <option value="dinheiro">Dinheiro</option>
+                                <option value="debito">Débito</option>
+                                <option value="credito">Crédito</option>
+                                <option value="pix">PIX</option>
+                                <option value="boleto">Boleto</option>
+                            </select>
+                            <label for="formaPagamento">Forma de Pagamento</label>
+                        </div>
 
-                    <!-- Campo para selecionar a forma de pagamento -->
-                    <div class="form-group">
-                        <label for="formaPagamento">Forma de Pagamento</label>
-                        <select class="form-control" id="formaPagamento" name="formaPagamento" required>
-                            <option value="dinheiro">Dinheiro</option>
-                            <option value="debito">Débito</option>
-                            <option value="credito">Crédito</option>
-                        </select>
-                    </div>
+                        <!-- Conta Remetente -->
+                        <div class="form-group">
+                            <select class="form-control" id="contaRemetente" name="contaRemetente" required>
+                                <option value="" disabled selected></option>
+                                <?php
+                                $contas = obterContas();
+                                if ($contas) {
+                                    foreach ($contas as $conta) {
+                                        $saldo = number_format($conta['Saldo'], 2, ',', '.');
+                                        echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . ' - R$ ' . $saldo . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                            <label for="contaRemetente">Conta <span class="transfer-only">Origem</span></label>
+                        </div>
 
-                    <!-- Campo para a data da transação -->
-                    <div class="form-group">
-                        <label for="dataTransacao">Data</label>
-                        <input type="date" class="form-control" id="dataTransacao" name="dataTransacao" required>
-                    </div>
+                        <!-- Conta Destinatária (apenas para transferências) -->
+                        <div class="form-group transfer-only">
+                            <select class="form-control" id="contaDestinataria" name="contaDestinataria">
+                                <option value="" disabled selected></option>
+                                <?php
+                                if ($contas) {
+                                    foreach ($contas as $conta) {
+                                        $saldo = number_format($conta['Saldo'], 2, ',', '.');
+                                        echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . ' - R$ ' . $saldo . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                            <label for="contaDestinataria">Conta Destino</label>
+                        </div>
 
-                    <!-- Campo para selecionar o tipo da transação -->
-                    <div class="form-group">
-                        <label for="tipoTransacao">Tipo</label>
-                        <select class="form-control" id="tipoTransacao" name="tipoTransacao" required>
-                            <option value="Despesa">Despesa</option>
-                            <option value="Receita">Receita</option>
-                            <option value="Transferência">Transferência</option>
-                        </select>
-                    </div>
-
-                    <!-- Campo para selecionar o status da transação -->
-                    <div class="form-group">
-                        <label for="statusTransacao">Status</label>
-                        <select class="form-control" id="statusTransacao" name="statusTransacao" required>
-                            <option value="Pendente">Pendente</option>
-                            <option value="Efetivada">Efetivada</option>
-                            <option value="Cancelada">Cancelada</option>
-                        </select>
-                    </div>
-
-                    <!-- Conta remetente -->
-                    <div class="form-group">
-                        <label for="contaRemetente">Conta Remetente</label>
-                        <?php
-                        $contas = obterContas();
-                        if ($contas) {
-                            echo '<select class="form-control" id="contaRemetente" name="contaRemetente" required>';
-                            echo '<option value="">Selecione uma conta...</option>';
-                            foreach ($contas as $conta) {
-                                $saldo = number_format($conta['Saldo'], 2, ',', '.'); // Formata o saldo
-                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '    R$ ' . $saldo . '</option>';
-                            }
-                            echo '</select>';
-                        } else {
-                            echo '<p class="text-danger">Nenhuma conta encontrada. <a href="contas.php" class="text-primary">Adicionar Conta</a></p>';
-                        }
-                        ?>
-                    </div>
-
-                    <!-- Conta destinatária (exibida apenas para transferências) -->
-                    <div class="form-group">
-                        <label for="contaDestinataria">Conta destinatária</label>
-                        <?php
-                        $contas = obterContas();
-                        if ($contas) {
-                            echo '<select class="form-control" id="contaDestinataria" name="contaDestinataria" required>';
-                            echo '<option value="">Selecione uma conta...</option>';
-                            foreach ($contas as $conta) {
-                                $saldo = number_format($conta['Saldo'], 2, ',', '.'); // Formata o saldo
-                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . '    R$ ' . $saldo . '</option>';
-                            }
-                            echo '</select>';
-                        } else {
-                            echo '<p class="text-danger">Nenhuma conta encontrada. <a href="contas.php" class="text-primary">Adicionar Conta</a></p>';
-                        }
-                        ?>
-                    </div>
-
-                    <!-- Campo para selecionar a categoria da transação -->
-                    <div class="form-group">
-                        <label for="categoriaTransacao">Categoria</label>
-                        <?php
-                        $categorias = obterCategorias();
-                        if ($categorias) {
-                            echo '<select class="form-control" id="categoriaTransacao" name="categoriaTransacao">';
-                            echo '<option value="">Selecione uma Categoria...</option>';
-                            foreach ($categorias as $categoria) {
-                                echo '<option value="' . $categoria['ID_Categoria'] . '">' . htmlspecialchars($categoria['Nome']) . '</option>';
-                            }
-                            echo '</select>';
-                        } else {
-                            echo '<p class="text-danger">Nenhuma categoria encontrada.</p>';
-                        }
-                        ?>
+                        <!-- Categoria -->
+                        <div class="form-group expense-income-only">
+                            <select class="form-control" id="categoriaTransacao" name="categoriaTransacao">
+                                <option value="" disabled selected></option>
+                                <?php
+                                $categorias = obterCategorias();
+                                if ($categorias) {
+                                    foreach ($categorias as $categoria) {
+                                        echo '<option value="' . $categoria['ID_Categoria'] . '">' . htmlspecialchars($categoria['Nome']) . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                            <label for="categoriaTransacao">Categoria</label>
+                        </div>
                     </div>
                 </div>
+
                 <div class="modal-footer">
-                    <!-- Botões para cancelar ou salvar -->
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-success">Salvar</button>
                 </div>
@@ -140,155 +151,177 @@ require './categorias/funcoes.php';
     </div>
 </div>
 
+<!-- Editar Transação Modal -->
 <div class="modal fade" id="editarTransacaoModal" tabindex="-1" aria-labelledby="editarTransacaoModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <!-- Título do modal para editar transação -->
                 <h5 class="modal-title" id="editarTransacaoModalLabel">Editar Transação</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <!-- Formulário para editar transação -->
-            <form action="transacoes.php" method="POST">
+
+            <div class="tab-container">
+                <button type="button" class="tab-btn active" data-tab="basic">Dados Básicos</button>
+                <button type="button" class="tab-btn" data-tab="details">Detalhes</button>
+            </div>
+
+            <form action="transacoes.php" method="POST" class="needs-validation" novalidate>
                 <input type="hidden" name="acao" value="editarTransacao">
+                <input type="hidden" id="editarTransacaoId" name="idTransacao">
+                
                 <div class="modal-body">
-                    <!-- Campo oculto para armazenar o ID da transação -->
-                    <input type="hidden" id="editarTransacaoId" name="idTransacao">
-                    <!-- Campo para o título da transação -->
-                    <div class="form-group">
-                        <label for="editarTituloTransacao">Título</label>
-                        <input type="text" class="form-control" id="editarTituloTransacao" name="tituloTransacao" required>
+                    <div class="tab-content" data-tab="basic">
+                        <!-- Tipo de Transação -->
+                        <h6 class="mb-3">Tipo de Transação</h6>
+                        <div class="type-selector mb-4">
+                            <div class="type-option expense" data-type="Despesa">
+                                <i class="fas fa-arrow-down type-icon"></i>
+                                <span class="type-name">Despesa</span>
+                            </div>
+                            <div class="type-option income" data-type="Receita">
+                                <i class="fas fa-arrow-up type-icon"></i>
+                                <span class="type-name">Receita</span>
+                            </div>
+                            <div class="type-option transfer" data-type="Transferência">
+                                <i class="fas fa-exchange-alt type-icon"></i>
+                                <span class="type-name">Transferência</span>
+                            </div>
+                        </div>
+                        <input type="hidden" name="tipoTransacao" id="editarTipoTransacao" value="Despesa">
+
+                        <!-- Título da Transação -->
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="editarTituloTransacao" name="tituloTransacao" placeholder=" " required>
+                            <label for="editarTituloTransacao">Título</label>
+                        </div>
+
+                        <!-- Valor da Transação -->
+                        <div class="form-group value-container">
+                            <input type="number" class="form-control" id="editarValorTransacao" name="valorTransacao" step="0.01" placeholder=" " required>
+                            <label for="editarValorTransacao">Valor</label>
+                        </div>
+
+                        <!-- Data da Transação -->
+                        <div class="form-group">
+                            <input type="date" class="form-control" id="editarDataTransacao" name="dataTransacao" placeholder=" " required>
+                            <label for="editarDataTransacao">Data</label>
+                        </div>
+
+                        <!-- Status da Transação -->
+                        <h6 class="mb-3">Status</h6>
+                        <div class="status-selector mb-4">
+                            <button type="button" class="status-option pending" data-status="Pendente">Pendente</button>
+                            <button type="button" class="status-option completed" data-status="Efetivada">Efetivada</button>
+                            <button type="button" class="status-option canceled" data-status="Cancelada">Cancelada</button>
+                        </div>
+                        <input type="hidden" name="statusTransacao" id="editarStatusTransacao" value="Pendente">
                     </div>
-                    <!-- Campo para a descrição da transação -->
-                    <div class="form-group">
-                        <label for="editarDescricaoTransacao">Descrição</label>
-                        <textarea class="form-control" id="editarDescricaoTransacao" name="descricaoTransacao"></textarea>
-                    </div>
-                    <!-- Campo para o valor da transação -->
-                    <div class="form-group">
-                        <label for="editarValorTransacao">Valor</label>
-                        <input type="number" class="form-control" id="editarValorTransacao" name="valorTransacao" step="0.01" required>
-                    </div>
-                    <!-- Campo para a data da transação -->
-                    <div class="form-group">
-                        <label for="editarDataTransacao">Data</label>
-                        <input type="date" class="form-control" id="editarDataTransacao" name="dataTransacao" required>
-                    </div>
-                    <!-- Campo para selecionar o tipo da transação -->
-                    <div class="form-group">
-                        <label for="editarTipoTransacao">Tipo</label>
-                        <select class="form-control" id="editarTipoTransacao" name="tipoTransacao" required>
-                            <option value="Despesa">Despesa</option>
-                            <option value="Receita">Receita</option>
-                            <option value="Transferência">Transferência</option>
-                        </select>
-                    </div>
-                    <!-- Campo para selecionar o status da transação -->
-                    <div class="form-group">
-                        <label for="editarStatusTransacao">Status</label>
-                        <select class="form-control" id="editarStatusTransacao" name="statusTransacao" required>
-                            <option value="Pendente">Pendente</option>
-                            <option value="Efetivada">Efetivada</option>
-                            <option value="Cancelada">Cancelada</option>
-                        </select>
-                    </div>
-                    <!-- Campo para selecionar a conta remetente -->
-                    <div class="form-group">
-                        <label for="editarContaRemetente">Conta Remetente</label>
-                        <?php
-                        $transacao = obterTransacoesPorId($idTransacao); // função que busca os dados da transação que está sendo editada
-                        $contas = obterContas();
-                        
-                        if ($contas) {
-                            echo '<select class="form-control" id="editarContaRemetente" name="contaRemetente" required>';
-                            echo '<option value="">Selecione uma conta...</option>';
-                            foreach ($contas as $conta) {
-                                $saldo = $conta['Saldo'];
-                        
-                                // Se a conta for a da transação que está sendo editada, ajusta o saldo
-                                if ($conta['ID_Conta'] == $transacao['ID_ContaRemetente']) {
-                                    if ($transacao['Tipo'] == 'Receita') {
-                                        $saldo += $transacao['Valor'];
-                                    } elseif ($transacao['Tipo'] == 'Despesa' || $transacao['Tipo'] == 'Transferência') {
-                                        $saldo -= $transacao['Valor'];
+
+                    <div class="tab-content" data-tab="details" style="display: none;">
+                        <!-- Descrição da Transação -->
+                        <div class="form-group">
+                            <textarea class="form-control" id="editarDescricaoTransacao" name="descricaoTransacao" placeholder=" " rows="3"></textarea>
+                            <label for="editarDescricaoTransacao">Descrição</label>
+                        </div>
+
+                        <!-- Forma de Pagamento -->
+                        <div class="form-group expense-income-only">
+                            <select class="form-control" id="editarFormaPagamento" name="formaPagamento" required>
+                                <option value="" disabled selected></option>
+                                <option value="dinheiro">Dinheiro</option>
+                                <option value="debito">Débito</option>
+                                <option value="credito">Crédito</option>
+                                <option value="pix">PIX</option>
+                                <option value="boleto">Boleto</option>
+                            </select>
+                            <label for="editarFormaPagamento">Forma de Pagamento</label>
+                        </div>
+
+                        <!-- Conta Remetente -->
+                        <div class="form-group">
+                            <select class="form-control" id="editarContaRemetente" name="contaRemetente" required>
+                                <option value="" disabled selected></option>
+                                <?php
+                                $contas = obterContas();
+                                if ($contas) {
+                                    foreach ($contas as $conta) {
+                                        $saldo = number_format($conta['Saldo'], 2, ',', '.');
+                                        echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . ' - R$ ' . $saldo . '</option>';
                                     }
                                 }
-                        
-                                $saldoFormatado = number_format($saldo, 2, ',', '.');
-                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . ' R$ ' . $saldoFormatado . '</option>';
-                            }
-                            echo '</select>';
-                        }
-                         else {
-                            echo '<p class="text-danger">Nenhuma conta encontrada.</p>';
-                        }
-                        ?>
-                    </div>
-                    <!-- Campo para selecionar a conta destinatária -->
-                    <div class="form-group">
-                        <label for="editarContaDestinataria">Conta Destinatária</label>
-                        <?php
-                        $transacao = obterTransacoesPorId($idTransacao); // função que busca os dados da transação que está sendo editada
-                        $contas = obterContas();
-                        
-                        if ($contas) {
-                            echo '<select class="form-control" id="editarContaDestinataria" name="contaDestinataria" required>';
-                            echo '<option value="">Selecione uma conta...</option>';
-                            foreach ($contas as $conta) {
-                                $saldo = $conta['Saldo'];
-                        
-                                // Se a conta for a da transação que está sendo editada, ajusta o saldo
-                                if ($conta['ID_Conta'] == $transacao['ID_ContaDestinataria']) {
-                                    if ($transacao['Tipo'] == 'Receita') {
-                                        $saldo -= $transacao['Valor'];
-                                    } elseif ($transacao['Tipo'] == 'Despesa' || $transacao['Tipo'] == 'Transferência') {
-                                        $saldo += $transacao['Valor'];
+                                ?>
+                            </select>
+                            <label for="editarContaRemetente">Conta <span class="transfer-only">Origem</span></label>
+                        </div>
+
+                        <!-- Conta Destinatária (apenas para transferências) -->
+                        <div class="form-group transfer-only">
+                            <select class="form-control" id="editarContaDestinataria" name="contaDestinataria">
+                                <option value="" disabled selected></option>
+                                <?php
+                                if ($contas) {
+                                    foreach ($contas as $conta) {
+                                        $saldo = number_format($conta['Saldo'], 2, ',', '.');
+                                        echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . ' - R$ ' . $saldo . '</option>';
                                     }
                                 }
-                        
-                                $saldoFormatado = number_format($saldo, 2, ',', '.');
-                                echo '<option value="' . $conta['ID_Conta'] . '">' . htmlspecialchars($conta['Nome']) . ' R$ ' . $saldoFormatado . '</option>';
-                            }
-                            echo '</select>';
-                        }
-                         else {
-                            echo '<p class="text-danger">Nenhuma conta encontrada.</p>';
-                        }
-                        ?>
+                                ?>
+                            </select>
+                            <label for="editarContaDestinataria">Conta Destino</label>
+                        </div>
+
+                        <!-- Categoria -->
+                        <div class="form-group expense-income-only">
+                            <select class="form-control" id="editarCategoriaTransacao" name="categoriaTransacao">
+                                <option value="" disabled selected></option>
+                                <?php
+                                $categorias = obterCategorias();
+                                if ($categorias) {
+                                    foreach ($categorias as $categoria) {
+                                        echo '<option value="' . $categoria['ID_Categoria'] . '">' . htmlspecialchars($categoria['Nome']) . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                            <label for="editarCategoriaTransacao">Categoria</label>
+                        </div>
                     </div>
                 </div>
+
                 <div class="modal-footer">
-                    <!-- Botões para cancelar ou salvar alterações -->
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    <button type="submit" class="btn btn-primary">Atualizar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<!-- Excluir Transação Modal -->
 <div class="modal fade" id="excluirTransacaoModal" tabindex="-1" aria-labelledby="excluirTransacaoModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <!-- Título do modal para confirmação de exclusão -->
-                <h5 class="modal-title" id="excluirTransacaoModalLabel">Confirmar Exclusão</h5>
+                <h5 class="modal-title" id="excluirTransacaoModalLabel">Excluir Transação</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <!-- Formulário para exclusão de transação -->
+            
             <form action="transacoes.php" method="POST" id="excluirTransacaoForm">
                 <input type="hidden" name="acao" value="excluirTransacao">
                 <input type="hidden" id="excluirTransacaoId" name="transacaoId">
-                <div class="modal-body">
-                    <!-- Mensagem de confirmação -->
-                    <p>Tem certeza de que deseja excluir esta transação? Esta ação não pode ser desfeita.</p>
+                
+                <div class="modal-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <p>Tem certeza que deseja excluir a transação:</p>
+                    <p><strong id="transacaoTituloExcluir">Nome da Transação</strong>?</p>
+                    <p class="small text-danger">Esta ação não pode ser desfeita.</p>
                 </div>
+                
                 <div class="modal-footer">
-                    <!-- Botões para cancelar ou confirmar exclusão -->
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-danger">Excluir</button>
                 </div>
@@ -297,41 +330,36 @@ require './categorias/funcoes.php';
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Seleciona todos os botões que abrem o modal de edição
-        const editarButtons = document.querySelectorAll('[data-target="#editarTransacaoModal"]');
-        editarButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                // Obtém os atributos de dados do botão clicado
-                const id = this.getAttribute('data-id');
-                const titulo = this.getAttribute('data-titulo');
-                const descricao = this.getAttribute('data-descricao');
-                const valor = this.getAttribute('data-valor');
-                const data = this.getAttribute('data-data');
-                const tipo = this.getAttribute('data-tipo');
-                const status = this.getAttribute('data-status');
+<!-- Root CSS Variables (Adicionar no Head da página) -->
+<style>
+:root {
+  --base-clr: #0a0a0a;
+  --line-clr: #42434a;
+  --hover-clr: #053F27;
+  --text-clr: #e6e6ef;
+  --accent-clr: #07A362;
+  --secondary-text-clr: #b0b3c1;
+  --background-clr: #f5f5f5;
+  --input-bg-clr: #f5f5f5;
+  --box-shadow-clr: rgba(10, 10, 10, 0.5);
+  --hover-overlay-clr: rgba(10, 10, 10, 0.2);
+}
 
-                // Preenche os campos do modal com os valores obtidos
-                document.getElementById('editarTransacaoId').value = id;
-                document.getElementById('editarTituloTransacao').value = titulo;
-                document.getElementById('editarDescricaoTransacao').value = descricao;
-                document.getElementById('editarValorTransacao').value = valor;
-                document.getElementById('editarDataTransacao').value = data;
-                document.getElementById('editarTipoTransacao').value = tipo;
-                document.getElementById('editarStatusTransacao').value = status;
-            });
-        });
+/* Adicionar classe para animação de shake em campos com erro */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
 
-        // Seleciona todos os botões que abrem o modal de exclusão
-        const excluirButtons = document.querySelectorAll('[data-target="#excluirTransacaoModal"]');
-        excluirButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                // Obtém o ID da transação do botão clicado
-                const id = this.getAttribute('data-id');
-                // Preenche o campo oculto do modal com o ID da transação
-                document.getElementById('excluirTransacaoId').value = id;
-            });
-        });
-    });
-</script>
+.shake {
+  animation: shake 0.6s ease-in-out;
+}
+</style>
+
+<!-- Inclua FontAwesome para ícones (Adicionar no Head) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- Incorpore as folhas de estilo e scripts -->
+<link rel="stylesheet" href="transacoes/modal/modal.css">
+<script src="transacoes/modal/modal.js"></script>

@@ -2,7 +2,7 @@
 include_once 'header.php';
 $documento = pathinfo(basename($_SERVER['REQUEST_URI']), PATHINFO_FILENAME);
 ?>
-<body>
+<body class="dark-theme">
   <nav id="sidebar">
     <ul>
       <li>

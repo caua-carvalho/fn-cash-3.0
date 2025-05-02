@@ -18,8 +18,6 @@ html {
 body {
   min-height: 100vh;
   min-height: 100dvh;
-  background-color: var(--base-clr);
-  color: var(--text-clr);
   display: grid;
   grid-template-columns: auto 1fr;
 }
@@ -30,7 +28,6 @@ body {
   padding: 5px 1em;
   background-color: var(--base-clr);
   border-right: 1px solid var(--line-clr);
-
   position: sticky;
   top: 0;
   align-self: start;
@@ -158,8 +155,7 @@ main p {
   margin-bottom: 20px;
   padding: min(3em, 15%);
 
-  h2,
-  p {
+  h2, p {
     margin-top: 1em;
   }
 }

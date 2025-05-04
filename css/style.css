@@ -2418,7 +2418,7 @@
   @media (prefers-color-scheme: dark) {
       :root:not(.light-theme) {
           --color-background: #0a0a0a;
-          --color-background-alt: #242529;
+          --color-background-alt: #0a0a0a;
           --color-surface: #1a1a1a;
           --color-border: #42434a;
           --color-text: #e6e6ef;
@@ -2433,7 +2433,7 @@
   /* Classe para forçar tema escuro, independente da preferência do sistema */
   body.dark-theme {
       --color-background: #0a0a0a;
-      --color-background-alt: #242529;
+      --color-background-alt: #0a0a0a;
       --color-surface: #1a1a1a;
       --color-border: #42434a;
       --color-text: #e6e6ef;

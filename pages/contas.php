@@ -32,6 +32,7 @@ require_once 'dialog.php';
                 $totalSaldo += $conta['Saldo'];
             }
             ?>
+          
             <div class="summary-card income fade-in animation-delay-100 w-full">
                 <span class="summary-label">Saldo Total</span>
                 <div class="d-flex justify-between items-center">
@@ -45,13 +46,14 @@ require_once 'dialog.php';
                     <h3 class="summary-value"><?php echo count($contas); ?></h3>
                 </div>
             </div>
-            
+
             <div class="summary-card balance fade-in animation-delay-300 w-full">
                 <span class="summary-label">Saldo Médio</span>
                 <div class="d-flex justify-between items-center">
                     <h3 class="summary-value">R$ <?php echo count($contas) > 0 ? number_format($totalSaldo / count($contas), 2, ',', '.') : '0,00'; ?></h3>
                 </div>
             </div>
+          
         </div>
     </div>
     

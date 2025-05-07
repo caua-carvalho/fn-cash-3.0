@@ -19,6 +19,7 @@
    14. Animations
    15. Responsive Utilities
    16. Theme System
+
    ========================================================================== */
 
 /* ==========================================================================
@@ -1396,6 +1397,24 @@
   .tab-content.active {
     display: block;
     animation: fadeIn var(--transition-duration-normal) var(--transition-timing);
+  }
+
+  /* Value Container */
+  .value-container {
+    position: relative;
+  }
+  
+  .value-container::before {
+    color: var(--color-text-muted);
+    content: 'R$';
+    font-size: var(--font-size-base);
+    left: var(--spacing-3);
+    position: absolute;
+    top: var(--spacing-3);
+  }
+  
+  .value-container input {
+    padding-left: var(--spacing-6);
   }
   
   /* ==========================================================================

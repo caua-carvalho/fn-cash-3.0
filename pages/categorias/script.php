@@ -1,36 +1,56 @@
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Seleciona todos os botões que abrem o modal de edição
-        const editarButtons = document.querySelectorAll('[data-target="#editarCategoriaModal"]');
-        editarButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                // Obtém os atributos de dados do botão clicado
-                const id = this.getAttribute('data-id');
-                const nome = this.getAttribute('data-nome');
-                const tipo = this.getAttribute('data-tipo');
-                const descricao = this.getAttribute('data-descricao');
-                const status = this.getAttribute('data-status');
+<?php
+// Arquivo: pages/categorias/script.php
+/**
+ * Obtém o ícone correspondente ao tipo de categoria
+ * @param string $tipo Tipo da categoria
+ * @return string Classe do ícone FontAwesome
+ */
+function obterIconeTipoCategoria($tipo)
+{
+    switch ($tipo) {
+        case 'Receita':
+            return 'fa-arrow-up';
+        case 'Despesa':
+            return 'fa-arrow-down';
+        default:
+            return 'fa-tag';
+    }
+}
 
-                // Preenche os campos do modal com os valores obtidos
-                document.getElementById('editarCategoriaId').value = id;
-                document.getElementById('editarNomeCategoria').value = nome;
-                document.getElementById('editarTipoCategoria').value = tipo;
-                document.getElementById('editarDescricaoCategoria').value = descricao;
+/**
+ * Obtém a cor correspondente ao tipo de categoria
+ * @param string $tipo Tipo da categoria
+ * @return string Cor hexadecimal ou nome da variável CSS
+ */
+function obterCorTipoCategoria($tipo)
+{
+    switch ($tipo) {
+        case 'Receita':
+            return 'var(--color-income)';
+        case 'Despesa':
+            return 'var(--color-expense)';
+        default:
+            return 'var(--color-text-muted)';
+    }
+}
 
-                // Converte o valor de status para o formato esperado pelo select
-                document.getElementById('editarStatusCategoria').value = status === 'true' ? 'true' : 'false';
-            });
-        });
+/**
+ * Verifica se uma categoria pode ser excluída com segurança
+ * @param int $idCategoria ID da categoria
+ * @return bool True se for seguro excluir, False caso contrário
+ */
+function podeDeletarCategoria($idCategoria)
+{
+    global $conn;
 
-        // Seleciona todos os botões que abrem o modal de exclusão
-        const excluirButtons = document.querySelectorAll('[data-target="#excluirCategoriaModal"]');
-        excluirButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                // Obtém o ID da categoria do botão clicado
-                const id = this.getAttribute('data-id');
-                // Preenche o campo oculto do modal com o ID da categoria
-                document.getElementById('excluirCategoriaId').value = id;
-            });
-        });
-    });
-</script>
+    // Verifica se existem transações vinculadas a esta categoria
+    $sql = "SELECT COUNT(*) as total FROM TRANSACAO WHERE ID_Categoria = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $idCategoria);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    return ($row['total'] == 0);
+}
+?>

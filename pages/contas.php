@@ -24,7 +24,7 @@ require_once 'dialog.php';
         </div>
         
         <!-- Cards de Resumo -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
+        <div class="d-flex justify-between gap-4 mt-5">
             <?php
             $totalSaldo = 0;
             $contas = obterContas();
@@ -32,26 +32,28 @@ require_once 'dialog.php';
                 $totalSaldo += $conta['Saldo'];
             }
             ?>
-            <div class="summary-card income fade-in animation-delay-100">
+          
+            <div class="summary-card income fade-in animation-delay-100 w-full">
                 <span class="summary-label">Saldo Total</span>
-                <div class="flex justify-between items-center">
+                <div class="d-flex justify-between items-center">
                     <h3 class="summary-value income">R$ <?php echo number_format($totalSaldo, 2, ',', '.'); ?></h3>
                 </div>
             </div>
             
-            <div class="summary-card expense fade-in animation-delay-200">
+            <div class="summary-card expense fade-in animation-delay-200 w-full">
                 <span class="summary-label">Total de Contas</span>
-                <div class="flex justify-between items-center">
+                <div class="d-flex justify-between items-center">
                     <h3 class="summary-value"><?php echo count($contas); ?></h3>
                 </div>
             </div>
-            
-            <div class="summary-card balance fade-in animation-delay-300">
+
+            <div class="summary-card balance fade-in animation-delay-300 w-full">
                 <span class="summary-label">Saldo Médio</span>
-                <div class="flex justify-between items-center">
+                <div class="d-flex justify-between items-center">
                     <h3 class="summary-value">R$ <?php echo count($contas) > 0 ? number_format($totalSaldo / count($contas), 2, ',', '.') : '0,00'; ?></h3>
                 </div>
             </div>
+          
         </div>
     </div>
     

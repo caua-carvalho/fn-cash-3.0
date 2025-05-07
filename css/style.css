@@ -1504,8 +1504,8 @@
     width: 260px;
     position: fixed;
     height: 100%;
-    background-color: var(--color-text);
-    color: var(--color-background);
+    background-color: var(--color-background);
+    color: var(--color-text);
     padding: var(--spacing-4) 0;
     z-index: var(--z-index-fixed);
     transition: all var(--transition-duration-normal) var(--transition-timing);

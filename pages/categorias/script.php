@@ -53,4 +53,6 @@ function podeDeletarCategoria($idCategoria)
 
     return ($row['total'] == 0);
 }
+
 ?>
+

@@ -1,9 +1,0 @@
-.despesa:hover {
-  border-color: red;
-  background-color: red;
-}
-
-.despesa .active {
-  border-color: red !important;
-  background-color: red !important;
-}

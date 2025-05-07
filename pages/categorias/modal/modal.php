@@ -1,23 +1,13 @@
+<!-- Arquivo: pages/categorias/modal/modal.php -->
 <?php
 // Arquivo: pages/categorias/modal/modal.php
-require 'categorias/script.php';
+require_once 'categorias/script.php';
 ?>
 
 <!-- Link para FontAwesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<style>
-    #despesa:hover {
-        border-color: red;
-        background-color: rgb(223, 67, 67);
-    }
-
-    #receita:hover {
-        border-color: var(--color-primary-500);
-        background-color: var(--color-primary-500);
-    }
-</style>
-<!-- Nova Categoria Modal -->
+<!-- Modal de Nova Categoria -->
 <div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -37,15 +27,15 @@ require 'categorias/script.php';
                 <input type="hidden" name="acao" value="cadastrarCategoria">
 
                 <div class="modal-body">
-                    <div class="tab-content" data-tab="basic">
+                    <div class="tab-content active" data-tab="basic">
                         <!-- Tipo de Categoria -->
                         <h6 class="mb-3">Tipo de Categoria</h6>
                         <div class="type-selector mb-4">
-                            <div class="type-option active" id="despesa" data-type="Despesa">
-                                <i class="fas fa-arrow-down type-icon" id="despesa" id="setaDes"></i>
+                            <div class="type-option expense active" data-type="Despesa">
+                                <i class="fas fa-arrow-down type-icon"></i>
                                 <span class="type-name">Despesa</span>
                             </div>
-                            <div class="type-option receita" id="receita" data-type="Receita">
+                            <div class="type-option income" data-type="Receita">
                                 <i class="fas fa-arrow-up type-icon"></i>
                                 <span class="type-name">Receita</span>
                             </div>
@@ -55,26 +45,26 @@ require 'categorias/script.php';
                         <!-- Nome da Categoria -->
                         <label for="nomeCategoria">Nome da Categoria</label>
                         <div class="form-group">
-                            <input type="text" class="form-control" id="nomeCategoria" name="nomeCategoria"
+                            <input type="text" class="form-control" id="nomeCategoria" name="nomeCategoria" 
                                 placeholder=" " required>
                         </div>
-                    </div>
-
-                    <div class="tab-content" data-tab="details" style="display: none;">
-                        <!-- Descrição -->
-                        <label for="descricaoCategoria">Descrição (opcional)</label>
-                        <div class="form-group">
-                            <textarea class="form-control" id="descricaoCategoria" name="descricaoCategoria"
-                                placeholder=" " rows="3"></textarea>
-                        </div>
-
+                        
                         <!-- Status -->
-                        <div class="form-check mb-4">
+                        <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="statusCategoria" name="statusCategoria"
                                 value="true" checked>
                             <label class="form-check-label" for="statusCategoria">
                                 Categoria Ativa
                             </label>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" data-tab="details" style="display: none;">
+                        <!-- Apenas a Descrição -->
+                        <label for="descricaoCategoria">Descrição (opcional)</label>
+                        <div class="form-group">
+                            <textarea class="form-control" id="descricaoCategoria" name="descricaoCategoria" 
+                                placeholder=" " rows="5"></textarea>
                         </div>
                     </div>
                 </div>
@@ -88,9 +78,8 @@ require 'categorias/script.php';
     </div>
 </div>
 
-<!-- Editar Categoria Modal -->
-<div class="modal fade" id="editarCategoriaModal" tabindex="-1" aria-labelledby="editarCategoriaModalLabel"
-    aria-hidden="true">
+<!-- Modal de Editar Categoria -->
+<div class="modal fade" id="editarCategoriaModal" tabindex="-1" aria-labelledby="editarCategoriaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -110,15 +99,15 @@ require 'categorias/script.php';
                 <input type="hidden" id="editarCategoriaId" name="categoriaId">
 
                 <div class="modal-body">
-                    <div class="tab-content" data-tab="basic">
+                    <div class="tab-content active" data-tab="basic">
                         <!-- Tipo de Categoria -->
                         <h6 class="mb-3">Tipo de Categoria</h6>
                         <div class="type-selector mb-4">
-                            <div class="type-option" data-type="Despesa">
+                            <div class="type-option expense" data-type="Despesa">
                                 <i class="fas fa-arrow-down type-icon"></i>
                                 <span class="type-name">Despesa</span>
                             </div>
-                            <div class="type-option" data-type="Receita">
+                            <div class="type-option income" data-type="Receita">
                                 <i class="fas fa-arrow-up type-icon"></i>
                                 <span class="type-name">Receita</span>
                             </div>
@@ -128,26 +117,26 @@ require 'categorias/script.php';
                         <!-- Nome da Categoria -->
                         <label for="editarNomeCategoria">Nome da Categoria</label>
                         <div class="form-group">
-                            <input type="text" class="form-control" id="editarNomeCategoria" name="nomeCategoria"
+                            <input type="text" class="form-control" id="editarNomeCategoria" name="nomeCategoria" 
                                 placeholder=" " required>
                         </div>
-                    </div>
-
-                    <div class="tab-content" data-tab="details" style="display: none;">
-                        <!-- Descrição -->
-                        <div class="form-group">
-                            <textarea class="form-control" id="editarDescricaoCategoria" name="descricaoCategoria"
-                                placeholder=" " rows="3"></textarea>
-                            <label for="editarDescricaoCategoria">Descrição (opcional)</label>
-                        </div>
-
+                        
                         <!-- Status -->
-                        <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="editarStatusCategoria"
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="editarStatusCategoria" 
                                 name="statusCategoria" value="true">
                             <label class="form-check-label" for="editarStatusCategoria">
                                 Categoria Ativa
                             </label>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" data-tab="details" style="display: none;">
+                        <!-- Apenas a Descrição -->
+                        <label for="editarDescricaoCategoria">Descrição (opcional)</label>
+                        <div class="form-group">
+                            <textarea class="form-control" id="editarDescricaoCategoria" name="descricaoCategoria" 
+                                placeholder=" " rows="5"></textarea>
                         </div>
                     </div>
                 </div>
@@ -162,8 +151,7 @@ require 'categorias/script.php';
 </div>
 
 <!-- Excluir Categoria Modal -->
-<div class="modal fade" id="excluirCategoriaModal" tabindex="-1" aria-labelledby="excluirCategoriaModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="excluirCategoriaModal" tabindex="-1" aria-labelledby="excluirCategoriaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header">
@@ -196,157 +184,173 @@ require 'categorias/script.php';
 <!-- JavaScript para funcionalidades dos modais -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Set up type selector
-        const setupTypeSelector = () => {
-            const typeOptions = document.querySelectorAll('.type-option');
+        // Inicializa todos os componentes dos modais
+        initModalComponents();
+        
+        // Adiciona listeners para eventos dos modais
+        setupModalListeners();
+    });
+    
+    // Função principal para inicializar todos os componentes
+    function initModalComponents() {
+        setupTypeSelector();
+        setupModalTabs();
+        setupFormValidation();
+    }
+    
+    // Configura listeners para eventos dos modais
+    function setupModalListeners() {
+        // Setup para abrir modal de edição
+        const editButtons = document.querySelectorAll('[data-target="#editarCategoriaModal"]');
+        editButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const id = this.getAttribute('data-id');
+                const nome = this.getAttribute('data-nome');
+                const tipo = this.getAttribute('data-tipo');
+                const descricao = this.getAttribute('data-descricao');
+                const status = this.getAttribute('data-status') === '1';
 
-            typeOptions.forEach(option => {
-                option.addEventListener('click', function () {
-                    const type = this.getAttribute('data-type');
-                    const form = this.closest('form');
+                // Preenche os campos do formulário
+                document.getElementById('editarCategoriaId').value = id;
+                document.getElementById('editarNomeCategoria').value = nome;
+                document.getElementById('editarTipoCategoria').value = tipo;
+                document.getElementById('editarDescricaoCategoria').value = descricao;
+                document.getElementById('editarStatusCategoria').checked = status;
 
-                    // Update visual state
-                    form.querySelectorAll('.type-option').forEach(opt => opt.classList.remove('active'));
-                    this.classList.add('active');
-
-                    // Update hidden input value
-                    if (form.querySelector('input[name="tipoCategoria"]')) {
-                        form.querySelector('input[name="tipoCategoria"]').value = type;
+                // Seleciona o tipo correto
+                const editModal = document.getElementById('editarCategoriaModal');
+                editModal.querySelectorAll('.type-option').forEach(opt => {
+                    opt.classList.remove('active');
+                    opt.classList.remove('income');
+                    opt.classList.remove('expense');
+                    
+                    if (opt.getAttribute('data-type') === tipo) {
+                        opt.classList.add('active');
+                        opt.classList.add(tipo === 'Receita' ? 'income' : 'expense');
                     }
                 });
             });
-        };
+        });
 
-        // Handle edit modal
-        const setupEditModal = () => {
-            const editButtons = document.querySelectorAll('[data-target="#editarCategoriaModal"]');
+        // Setup para abrir modal de exclusão
+        const deleteButtons = document.querySelectorAll('[data-target="#excluirCategoriaModal"]');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const id = this.getAttribute('data-id');
+                const nome = this.getAttribute('data-nome');
 
-            editButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const id = this.getAttribute('data-id');
-                    const nome = this.getAttribute('data-nome');
-                    const tipo = this.getAttribute('data-tipo');
-                    const descricao = this.getAttribute('data-descricao');
-                    const status = this.getAttribute('data-status') === '1';
-
-                    // Fill form fields
-                    document.getElementById('editarCategoriaId').value = id;
-                    document.getElementById('editarNomeCategoria').value = nome;
-                    document.getElementById('editarTipoCategoria').value = tipo;
-                    document.getElementById('editarDescricaoCategoria').value = descricao;
-                    document.getElementById('editarStatusCategoria').checked = status;
-
-                    // Set active type option
-                    document.querySelectorAll('#editarCategoriaModal .type-option').forEach(opt => {
-                        opt.classList.remove('active');
-                        if (opt.getAttribute('data-type') === tipo) {
-                            opt.classList.add('active');
-                        }
-                    });
-                });
+                document.getElementById('excluirCategoriaId').value = id;
+                document.getElementById('excluirCategoriaNome').textContent = nome;
             });
-        };
+        });
+    }
 
-        // Handle delete modal
-        const setupDeleteModal = () => {
-            const deleteButtons = document.querySelectorAll('[data-target="#excluirCategoriaModal"]');
+    // Configura seletor de tipo
+    function setupTypeSelector() {
+        const typeOptions = document.querySelectorAll('.type-option');
 
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const id = this.getAttribute('data-id');
-                    const nome = this.getAttribute('data-nome');
+        typeOptions.forEach(option => {
+            option.addEventListener('click', function () {
+                const type = this.getAttribute('data-type');
+                const form = this.closest('form');
 
-                    document.getElementById('excluirCategoriaId').value = id;
-                    document.getElementById('excluirCategoriaNome').textContent = nome;
+                // Atualiza estado visual
+                form.querySelectorAll('.type-option').forEach(opt => {
+                    opt.classList.remove('active');
+                    opt.classList.remove('income');
+                    opt.classList.remove('expense');
                 });
+                
+                this.classList.add('active');
+                if (type === 'Receita') {
+                    this.classList.add('income');
+                } else if (type === 'Despesa') {
+                    this.classList.add('expense');
+                }
+
+                // Atualiza valor do input hidden
+                if (form.querySelector('input[name="tipoCategoria"]')) {
+                    form.querySelector('input[name="tipoCategoria"]').value = type;
+                }
             });
-        };
+        });
+    }
 
-        // Initialize modal tabs
-        const setupModalTabs = () => {
-            const tabButtons = document.querySelectorAll('.tab-btn');
+    // Configura as abas do modal
+    function setupModalTabs() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
 
-            tabButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const tabType = this.getAttribute('data-tab');
-                    const modal = this.closest('.modal');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const tabType = this.getAttribute('data-tab');
+                const modal = this.closest('.modal');
 
-                    // Update tab buttons
-                    modal.querySelectorAll('.tab-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    this.classList.add('active');
-
-                    // Update content visibility
-                    modal.querySelectorAll('.tab-content').forEach(content => {
-                        content.style.display = 'none';
-                    });
-                    modal.querySelector(`.tab-content[data-tab="${tabType}"]`).style.display = 'block';
+                // Atualiza botões de tab
+                modal.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
                 });
+                this.classList.add('active');
+
+                // Atualiza visibilidade do conteúdo
+                modal.querySelectorAll('.tab-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                modal.querySelector(`.tab-content[data-tab="${tabType}"]`).style.display = 'block';
             });
-        };
+        });
+    }
 
-        // Form validation
-        const setupFormValidation = () => {
-            const forms = document.querySelectorAll('form.needs-validation');
+    // Configura validação de formulário
+    function setupFormValidation() {
+        const forms = document.querySelectorAll('form.needs-validation');
 
-            forms.forEach(form => {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
+        forms.forEach(form => {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
 
-                        // Visual feedback
-                        const invalidFields = form.querySelectorAll(':invalid');
-                        if (invalidFields.length > 0) {
-                            invalidFields[0].focus();
+                    // Feedback visual
+                    const invalidFields = form.querySelectorAll(':invalid');
+                    if (invalidFields.length > 0) {
+                        invalidFields[0].focus();
 
-                            // Show the tab containing the invalid field
-                            const tabContent = invalidFields[0].closest('.tab-content');
-                            if (tabContent) {
-                                const tabId = tabContent.getAttribute('data-tab');
-                                const tabBtn = form.querySelector(`.tab-btn[data-tab="${tabId}"]`);
-                                if (tabBtn) {
-                                    tabBtn.click();
-                                }
+                        // Mostra a tab que contém o campo inválido
+                        const tabContent = invalidFields[0].closest('.tab-content');
+                        if (tabContent) {
+                            const tabId = tabContent.getAttribute('data-tab');
+                            const tabBtn = form.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+                            if (tabBtn) {
+                                tabBtn.click();
                             }
                         }
                     }
-
-                    form.classList.add('was-validated');
-                });
-            });
-        };
-
-        // Initialize floating labels
-        const setupFloatingLabels = () => {
-            const formControls = document.querySelectorAll('.form-control');
-
-            formControls.forEach(input => {
-                // Initial state
-                if (input.value) {
-                    input.classList.add('has-value');
                 }
 
-                // Add listeners
-                input.addEventListener('focus', function () {
-                    this.classList.add('has-value');
-                });
-
-                input.addEventListener('blur', function () {
-                    if (!this.value) {
-                        this.classList.remove('has-value');
-                    }
-                });
+                form.classList.add('was-validated');
             });
-        };
-
-        // Run all setup functions
-        setupTypeSelector();
-        setupEditModal();
-        setupDeleteModal();
-        setupModalTabs();
-        setupFormValidation();
-        setupFloatingLabels();
-    });
+        });
+    }
 </script>
+
+<style>
+    /* Estilos para type-option consistent com Design System */
+    .type-option.active.expense {
+        background-color: rgba(231, 76, 60, 0.1);
+        border-color: var(--color-expense);
+    }
+
+    .type-option.active.income {
+        background-color: rgba(7, 163, 98, 0.1);
+        border-color: var(--color-income);
+    }
+
+    .dark-theme .type-option.active.expense {
+        background-color: rgba(231, 76, 60, 0.2);
+    }
+
+    .dark-theme .type-option.active.income {
+        background-color: rgba(7, 163, 98, 0.2);
+    }
+    
+</style>

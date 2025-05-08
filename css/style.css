@@ -1418,6 +1418,16 @@
   .value-container input {
     padding-left: var(--spacing-6);
   }
+
+  .value-container label {
+    left: var(--spacing-6); /* Ajuste para dar espaço ao prefixo R$ */
+}
+
+.value-container .form-control:focus ~ label,
+.value-container .form-control:not(:placeholder-shown) ~ label {
+    left: var(--spacing-3);
+    background-color: var(--color-surface);
+}
   
   /* ==========================================================================
      11. Navigation

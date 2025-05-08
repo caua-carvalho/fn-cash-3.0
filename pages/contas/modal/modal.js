@@ -55,23 +55,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const formControls = document.querySelectorAll('.form-control');
     
     formControls.forEach(input => {
-      const updateLabelState = () => {
+        // Verificar inicialmente se o campo tem valor
         if (input.value) {
-          input.classList.add('has-value');
-        } else {
-          input.classList.remove('has-value');
+            input.setAttribute('placeholder', ' ');
         }
-      };
-      
-      // Initial state
-      updateLabelState();
-      
-      // Event listeners
-      input.addEventListener('focus', updateLabelState);
-      input.addEventListener('blur', updateLabelState);
-      input.addEventListener('change', updateLabelState);
+        
+        // Event listeners
+        input.addEventListener('focus', () => {
+            input.setAttribute('placeholder', ' ');
+        });
+        
+        input.addEventListener('blur', () => {
+            if (!input.value) {
+                input.setAttribute('placeholder', '');
+            }
+        });
     });
-  };
+};
 
   // Add fade in animation
   const animateFields = () => {

@@ -29,8 +29,8 @@ error_reporting(E_ALL);
         </div>
         
         <!-- Cards de Resumo -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
-            <div class="summary-card income fade-in animation-delay-100">
+        <div class="d-flex justify-between gap-4 mt-5">
+            <div class="summary-card income fade-in animation-delay-100 w-full">
                 <span class="summary-label">Receitas</span>
                 <div class="flex justify-between items-center">
                     <h3 class="summary-value income">R$ 6.235,80</h3>
@@ -40,7 +40,7 @@ error_reporting(E_ALL);
                 </div>
             </div>
             
-            <div class="summary-card expense fade-in animation-delay-200">
+            <div class="summary-card expense fade-in animation-delay-200 w-full">
                 <span class="summary-label">Despesas</span>
                 <div class="flex justify-between items-center">
                     <h3 class="summary-value expense">R$ 3.842,50</h3>
@@ -50,7 +50,7 @@ error_reporting(E_ALL);
                 </div>
             </div>
             
-            <div class="summary-card balance fade-in animation-delay-300">
+            <div class="summary-card balance fade-in animation-delay-300 w-full">
                 <span class="summary-label">Balanço</span>
                 <div class="flex justify-between items-center">
                     <h3 class="summary-value">R$ 2.393,30</h3>

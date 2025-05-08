@@ -28,3 +28,4 @@ if (!isset($_SESSION['id_usuario'])) {
 	<link rel="stylesheet" href="sidebar/sidebar.css">
 	
 </head>
+<body>

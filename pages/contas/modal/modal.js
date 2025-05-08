@@ -20,6 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   };
 
+  document.querySelectorAll('.form-floating .form-control').forEach(input => {
+    if (!input.getAttribute('placeholder')) {
+        input.setAttribute('placeholder', ' ');
+    }
+});
+
   // Handle account type selection
   const setupTypeSelector = () => {
     const typeOptions = document.querySelectorAll('.type-option');

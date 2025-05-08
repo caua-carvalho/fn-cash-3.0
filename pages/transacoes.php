@@ -11,9 +11,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 ?>
 
-<!-- Link para FontAwesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
 <div class="container py-6">
     <!-- Cabeçalho da Página com Estatísticas -->
     <div class="mb-6">

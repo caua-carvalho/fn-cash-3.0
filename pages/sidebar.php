@@ -14,29 +14,29 @@ $documento = pathinfo(basename($_SERVER['REQUEST_URI']), PATHINFO_FILENAME);
     </div>
     
     <ul class="sidebar-nav">
-      <li class="sidebar-nav-item <?php if ($documento == 'home') echo 'active'; ?>">
-        <a href="home.php" class="sidebar-nav-link">
+      <li class="sidebar-nav-item ">
+        <a href="home.php" class="sidebar-nav-link <?php if ($documento == 'home') echo 'active'; ?>">
           <i class="sidebar-nav-icon fas fa-home"></i>
           <span class="nav-text">Home</span>
         </a>
       </li>
       
-      <li class="sidebar-nav-item <?php if ($documento == 'categorias') echo 'active'; ?>">
-        <a href="categorias.php" class="sidebar-nav-link">
-          <i class="sidebar-nav-icon fas fa-th-large"></i>
+      <li class="sidebar-nav-item ">
+        <a href="categorias.php" class="sidebar-nav-link <?php if ($documento == 'categorias') echo 'active'; ?>">
+          <i class="sidebar-nav-icon fas fa-th-large active"></i>
           <span class="nav-text">Categorias</span>
         </a>
       </li>
       
-      <li class="sidebar-nav-item <?php if ($documento == 'contas') echo 'active'; ?>">
-        <a href="contas.php" class="sidebar-nav-link">
+      <li class="sidebar-nav-item ">
+        <a href="contas.php" class="sidebar-nav-link <?php if ($documento == 'contas') echo 'active'; ?>">
           <i class="sidebar-nav-icon fas fa-wallet"></i>
           <span class="nav-text">Contas</span>
         </a>
       </li>
       
-      <li class="sidebar-nav-item <?php if ($documento == 'transacoes') echo 'active'; ?>">
-        <a href="transacoes.php" class="sidebar-nav-link">
+      <li class="sidebar-nav-item ">
+        <a href="transacoes.php" class="sidebar-nav-link <?php if ($documento == 'transacoes') echo 'active'; ?>">
           <i class="sidebar-nav-icon fas fa-exchange-alt"></i>
           <span class="nav-text">Transações</span>
         </a>

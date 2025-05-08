@@ -4,9 +4,6 @@
 require_once 'categorias/script.php';
 ?>
 
-<!-- Link para FontAwesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
 <!-- Modal de Nova Categoria -->
 <div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

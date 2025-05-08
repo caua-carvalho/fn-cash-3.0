@@ -1615,8 +1615,7 @@
   }
   
   .sidebar-nav-link.active {
-    color: var(--color-background);
-    background-color: var(--color-primary-500);
+    color: var(--color-primary-500);
   }
   
   .sidebar-nav-icon {

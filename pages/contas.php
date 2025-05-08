@@ -22,7 +22,7 @@ require_once 'dialog.php';
                 Nova Conta
             </button>
         </div>
-        
+
         <!-- Cards de Resumo -->
         <div class="d-flex justify-between gap-4 mt-5">
             <?php
@@ -32,14 +32,14 @@ require_once 'dialog.php';
                 $totalSaldo += $conta['Saldo'];
             }
             ?>
-          
+
             <div class="summary-card income fade-in animation-delay-100 w-full">
                 <span class="summary-label">Saldo Total</span>
                 <div class="d-flex justify-between items-center">
                     <h3 class="summary-value income">R$ <?php echo number_format($totalSaldo, 2, ',', '.'); ?></h3>
                 </div>
             </div>
-            
+
             <div class="summary-card expense fade-in animation-delay-200 w-full">
                 <span class="summary-label">Total de Contas</span>
                 <div class="d-flex justify-between items-center">
@@ -50,13 +50,15 @@ require_once 'dialog.php';
             <div class="summary-card balance fade-in animation-delay-300 w-full">
                 <span class="summary-label">Saldo Médio</span>
                 <div class="d-flex justify-between items-center">
-                    <h3 class="summary-value">R$ <?php echo count($contas) > 0 ? number_format($totalSaldo / count($contas), 2, ',', '.') : '0,00'; ?></h3>
+                    <h3 class="summary-value">R$
+                        <?php echo count($contas) > 0 ? number_format($totalSaldo / count($contas), 2, ',', '.') : '0,00'; ?>
+                    </h3>
                 </div>
             </div>
-          
+
         </div>
     </div>
-    
+
     <!-- Tabela de Contas -->
     <div class="transaction-table-container fade-in-up">
         <div class="p-4 flex justify-between items-center border-bottom">
@@ -70,7 +72,7 @@ require_once 'dialog.php';
                 </button>
             </div>
         </div>
-        
+
         <table class="transaction-table">
             <thead>
                 <tr>
@@ -106,28 +108,28 @@ require_once 'dialog.php';
                         } elseif ($conta['Tipo'] === 'Cartão de Crédito') {
                             $tipoBadgeClass = 'badge-expense';
                         }
-                        
+
                         $icone = obterIconeTipoConta($conta['Tipo']);
-                        
+
                         echo "<tr class='fade-in-up' style='animation-delay: {$delay}ms'>";
                         echo "<td class='font-medium'>" . htmlspecialchars($conta['Nome']) . "</td>";
-                        
+
                         // Badge para o tipo de conta
-                        echo "<td><span class='badge {$tipoBadgeClass}'>" . 
-                             "<i class='fas {$icone} me-1'></i>" . 
-                             htmlspecialchars($conta['Tipo']) . "</span></td>";
-                        
+                        echo "<td><span class='badge {$tipoBadgeClass}'>" .
+                            "<i class='fas {$icone} me-1'></i>" .
+                            htmlspecialchars($conta['Tipo']) . "</span></td>";
+
                         // Formata saldo
-                        echo "<td class='font-semibold'>" . 
-                             "R$ " . number_format($conta['Saldo'], 2, ',', '.') . 
-                             "</td>";
-                        
+                        echo "<td class='font-semibold'>" .
+                            "R$ " . number_format($conta['Saldo'], 2, ',', '.') .
+                            "</td>";
+
                         echo "<td>" . htmlspecialchars($conta['Instituicao']) . "</td>";
-                        
+
                         // Botões de ação
                         echo "<td>";
                         echo "<div class='flex justify-center gap-2'>";
-                        
+
                         // Botão de editar
                         echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarContaModal'
                                data-id='" . $conta['ID_Conta'] . "'
@@ -137,17 +139,17 @@ require_once 'dialog.php';
                                data-instituicao='" . htmlspecialchars($conta['Instituicao']) . "'>
                               <i class='fas fa-edit'></i>
                               </button>";
-                        
+
                         // Botão de excluir
                         echo "<button class='btn-action delete' title='Excluir' data-toggle='modal' data-target='#excluirContaModal'
                                data-id='" . $conta['ID_Conta'] . "'>
                               <i class='fas fa-trash-alt'></i>
                               </button>";
-                              
+
                         echo "</div>";
                         echo "</td>";
                         echo "</tr>";
-                        
+
                         $delay += 50; // Incrementa o delay para o próximo item
                     }
                 }

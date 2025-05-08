@@ -669,10 +669,11 @@
   /* Floating Labels */
   .form-floating {
     position: relative;
+    margin-bottom: 20px;
   }
   
   .form-floating > .form-control {
-    padding: var(--spacing-5) var(--spacing-3) var(--spacing-2);
+    padding: 1rem 0.75rem;
     height: calc(3.5rem + 2px);
   }
   
@@ -701,14 +702,18 @@
   }
   
   .form-floating > .form-control:focus ~ label,
-  .form-floating > .form-control:not(:placeholder-shown) ~ label {
-    opacity: 0.65;
-    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-    color: var(--color-primary-500);
-    background-color: var(--color-surface);
-    padding: 0 var(--spacing-1);
-    height: auto;
-    left: var(--spacing-2);
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+  transform: scale(0.85) translateY(-0.85rem) translateX(0.15rem); /* Ajustar a posição Y */
+  opacity: 1;
+  color: var(--color-primary-500);
+  background-color: var(--color-surface);
+  padding: 0 var(--spacing-2);
+  height: auto;
+  left: var(--spacing-2);
+  }
+
+  .form-floating > .form-control::placeholder {
+    color: transparent;
   }
   
   /* Validation */
@@ -1418,6 +1423,16 @@
   .value-container input {
     padding-left: var(--spacing-6);
   }
+
+  .value-container label {
+    left: var(--spacing-6); /* Ajuste para dar espaço ao prefixo R$ */
+}
+
+.value-container .form-control:focus ~ label,
+.value-container .form-control:not(:placeholder-shown) ~ label {
+    left: var(--spacing-3);
+    background-color: var(--color-surface);
+}
   
   /* ==========================================================================
      11. Navigation

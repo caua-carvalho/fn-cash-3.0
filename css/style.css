@@ -946,7 +946,6 @@
   
   .card__footer {
     padding: var(--spacing-4) var(--spacing-5);
-    background-color: var(--color-background-alt);
     border-top: var(--border-width) solid var(--color-border);
   }
   

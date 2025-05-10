@@ -20,29 +20,6 @@ require_once 'dialog.php';
 <body>
   <!-- Main Panel -->
   <div class="main-panel">
-    <!-- Navbar -->
-    <nav class="navbar">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">FnCash</a>
-        <button class="navbar-toggler" type="button" id="sidebar-toggle">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="flex items-center">
-          <div class="form-group me-3">
-            <input type="text" placeholder="Pesquisar..." class="form-control"/>
-          </div>
-          <div class="indicator me-3">
-            <button class="btn-action">
-              <i class="fas fa-bell"></i>
-            </button>
-            <span class="indicator-dot"></span>
-          </div>
-          <button class="btn-action">
-            <i class="fas fa-user"></i>
-          </button>
-        </div>
-      </div>
-    </nav>
 
     <!-- Content -->
     <div class="content">

@@ -4,6 +4,7 @@ require_once 'sidebar.php';
 require_once 'contas/funcoes.php';
 require_once 'contas/modal.php';
 require_once 'dialog.php';
+require_once 'dashboard/funcoes.php'; // Inclui as funções do dashboard
 ?>
 
     <div class="content">
@@ -25,7 +26,8 @@ require_once 'dialog.php';
           <div class="summary-card balance animation-delay-100 fade-in">
             <span class="summary-label">Saldo Total</span>
             <div class="flex justify-between items-center">
-              <h3 class="summary-value balance">R$ 6.000,00</h3>
+              <h3 class="summary-value balance"><?php echo obterSaldoTotal(); ?>
+              </h3>
               <div class="flex items-center gap-2">
                 <span class="badge badge-success"><i class="fas fa-arrow-up me-1"></i> 15%</span>
               </div>

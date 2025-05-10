@@ -163,10 +163,10 @@
   }
   
   body {
-    font-family: var(--font-family-base);
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-regular);
-    line-height: var(--line-height-base);
+    font-family: var(--font-family-base) !important;
+    font-size: var(--font-size-base) !important;
+    font-weight: var(--font-weight-regular) !important;
+    line-height: var(--line-height-base) !important;
     color: var(--color-text);
     background-color: var(--color-background-alt);
     -webkit-font-smoothing: antialiased;

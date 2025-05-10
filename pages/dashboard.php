@@ -6,22 +6,6 @@ require_once 'contas/modal.php';
 require_once 'dialog.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FnCash - Dashboard</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <!-- Chart.js para os gráficos -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-  <!-- Main Panel -->
-  <div class="main-panel">
-
-    <!-- Content -->
     <div class="content">
       <div class="container-fluid">
         <!-- Cabeçalho e botão Nova Transação -->
@@ -269,7 +253,6 @@ require_once 'dialog.php';
         </div>
       </div>
     </div>
-  </div>
 
   <!-- Scripts para os gráficos -->
   <script>

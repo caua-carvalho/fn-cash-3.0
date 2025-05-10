@@ -214,4 +214,4 @@ require 'contas/script.php';
             </form>
         </div>
     </div>
-</div
+</div> <!-- Fechando o modal de exclusão -->

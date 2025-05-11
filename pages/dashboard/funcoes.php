@@ -1,18 +1,53 @@
 <?php
 include '../../conexao.php';
 
-function obterSaldoTotal(){
+// Retorna o saldo total de todas as contas
+function obterSaldoTotal() {
     global $conn;
     $sql = "SELECT SUM(Saldo) AS saldo_total FROM CONTA";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        return 'R$ ' . $row['saldo_total']; // Retorna diretamente o saldo total
+        return floatval($row['saldo_total']); // Retorna como número
     }
 
     return 0; // Retorna 0 caso não haja resultados
 }
 
+// Retorna o total de receitas
+function obterReceita() {
+    global $conn;
+    $sql = "SELECT SUM(Valor) AS receita_total FROM TRANSACAO WHERE Tipo = 'Receita'";
+    $result = $conn->query($sql);
 
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return floatval($row['receita_total']); // Retorna como número
+    }
+
+    return 0; // Retorna 0 caso não haja resultados
+}
+
+// Retorna o total de despesas
+function obterDespesa() {
+    global $conn;
+    $sql = "SELECT SUM(Valor) AS despesa_total FROM TRANSACAO WHERE Tipo = 'Despesa'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return floatval($row['despesa_total']); // Retorna como número
+    }
+
+    return 0; // Retorna 0 caso não haja resultados
+}
+
+// Calcula o saldo mensal (receitas - despesas)
+function obterSaldoMensal() {
+    $receita = obterReceita();
+    $despesa = obterDespesa();
+
+    return $receita - $despesa; // Retorna o saldo mensal
+}
 ?>

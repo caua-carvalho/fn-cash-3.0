@@ -12,7 +12,7 @@ require_once 'dashboard/funcoes.php'; // Inclui as funções do dashboard
         <!-- Cabeçalho e botão Nova Transação -->
         <div class="flex justify-between items-center my-4">
             <div>
-                <h2>Olá, adm!</h2>
+                <h2><?php echo 'Ola, ' . $_SESSION['usuario'] . '!' ?></h2>
                 <p class="text-muted">Aqui está um resumo da sua situação financeira atual.</p>
             </div>
             <button class="btn btn-primary btn-icon">
@@ -75,7 +75,7 @@ require_once 'dashboard/funcoes.php'; // Inclui as funções do dashboard
             <div class="summary-card balance animation-delay-100 fade-in">
                 <span class="summary-label">Saldo Total</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value balance"><?php echo obterSaldoTotal(); ?></h3>
+                    <h3 class="summary-value balance"><?php echo 'R$ ' . number_format(obterSaldoTotal(), 2); ?></h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-success"><i class="fas fa-arrow-up me-1"></i> 15%</span>
                     </div>
@@ -87,7 +87,7 @@ require_once 'dashboard/funcoes.php'; // Inclui as funções do dashboard
             <div class="summary-card income animation-delay-200 fade-in">
                 <span class="summary-label">Receitas do Mês</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value income">R$ 3.000,00</h3>
+                    <h3 class="summary-value income"><?php echo 'R$ ' . number_format(obterReceita(), 2); ?></h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-income"><i class="fas fa-arrow-up me-1"></i> 5%</span>
                     </div>
@@ -99,7 +99,7 @@ require_once 'dashboard/funcoes.php'; // Inclui as funções do dashboard
             <div class="summary-card expense animation-delay-300 fade-in">
                 <span class="summary-label">Despesas do Mês</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value expense">R$ 700,00</h3>
+                    <h3 class="summary-value expense"><?php echo 'R$ ' . number_format(obterDespesa(), 2); ?></h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-expense"><i class="fas fa-arrow-down me-1"></i> 3%</span>
                     </div>
@@ -111,7 +111,7 @@ require_once 'dashboard/funcoes.php'; // Inclui as funções do dashboard
             <div class="summary-card balance animation-delay-400 fade-in">
                 <span class="summary-label">Saldo Mensal</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value balance">R$ 2.300,00</h3>
+                    <h3 class="summary-value balance"><?php echo 'R$ ' . number_format(obterSaldoMensal(), 2); ?></h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-success"><i class="fas fa-arrow-up me-1"></i> 77%</span>
                     </div>

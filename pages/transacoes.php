@@ -11,7 +11,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 ?>
 
-<div class="container py-6">
+<div class="content">
     <!-- Cabeçalho da Página com Estatísticas -->
     <div class="mb-6">
         <div class="flex items-center justify-between mb-4">

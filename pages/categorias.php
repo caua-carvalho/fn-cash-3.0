@@ -6,7 +6,8 @@ require_once 'categorias/modal/modal.php';
 require_once 'dialog.php';
 ?>
 
-<div class="container py-6">
+<div class="content">
+
     <!-- Cabeçalho da Página com Estatísticas -->
     <div class="mb-6">
         <div class="flex items-center justify-between mb-4">

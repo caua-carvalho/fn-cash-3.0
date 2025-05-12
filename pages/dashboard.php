@@ -81,12 +81,12 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                     <button type="button" class="status-option <?php echo $periodo === 'mes-atual' ? 'active' : ''; ?>" data-period="mes-atual">Mês Atual</button>
                     <button type="button" class="status-option <?php echo $periodo === 'mes-anterior' ? 'active' : ''; ?>" data-period="mes-anterior">Mês Anterior</button>
                     <button type="button" class="status-option <?php echo $periodo === 'ano-atual' ? 'active' : ''; ?>" data-period="ano-atual">Ano Atual</button>
-                    <button type="button" class="status-option <?php echo $periodo === 'custom' ? 'active' : ''; ?>" data-period="custom">Personalizado</button>
+                    <button type="button" class="status-option <?php echo $periodo === 'customizado' ? 'active' : ''; ?>" data-period="customizado">Personalizado</button>
                 </div>
                 <input type="hidden" name="periodSelection" id="periodSelection" value="<?php echo $periodo; ?>">
                 
                 <!-- Intervalo de datas personalizado (inicialmente oculto) -->
-                <div id="customPeriodSection" class="fade-in-up" style="display: none;">
+                <div id="customPeriodSection" class="fade-in-up" style="display: <?php echo $periodo === 'customizado' ? 'block' : 'none'; ?>;">
                     <div class="grid grid-cols-1 grid-md-cols-2 gap-4 mb-4">
                         <div class="form-floating">
                             <input type="date" class="form-control" id="startDate" placeholder=" " value="<?php echo $dataInicio ?? $intervalo['inicio']; ?>">
@@ -119,7 +119,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                 <div class="flex justify-between flex-col">
                     <h3 class="summary-value balance"><?php echo 'R$ ' . number_format($saldoTotal, 2, ',', '.'); ?></h3>
                     <div class="flex items-center gap-2 mt-2">
-                        <span class="badge badge-<?php echo $variacaoSaldo >= 0 ? 'transfer' : 'expense'; ?>">
+                        <span class="badge badge-<?php echo $variacaoSaldo >= 0 ? 'income' : 'expense'; ?>">
                             <i class="fas fa-arrow-<?php echo $variacaoSaldo >= 0 ? 'up' : 'down'; ?> me-1"></i> 
                             <?php echo abs($variacaoSaldo); ?>%
                         </span>
@@ -161,7 +161,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                 <div class="flex justify-between flex-col">
                     <h3 class="summary-value balance"><?php echo 'R$ ' . number_format($saldoMensal, 2, ',', '.'); ?></h3>
                     <div class="flex items-center gap-2 mt-2">
-                        <span class="badge badge-<?php echo $variacaoSaldoMensal >= 0 ? 'transfer' : 'expense'; ?>">
+                        <span class="badge badge-<?php echo $variacaoSaldoMensal >= 0 ? 'income' : 'expense'; ?>">
                             <i class="fas fa-arrow-<?php echo $variacaoSaldoMensal >= 0 ? 'up' : 'down'; ?> me-1"></i> 
                             <?php echo abs($variacaoSaldoMensal); ?>%
                         </span>
@@ -280,7 +280,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                         </tr>
                     </thead>
                     <tbody>
-                       <?php if (empty($transacoesRecentes)): ?>
+                        <?php if (empty($transacoesRecentes)): ?>
                             <tr>
                                 <td colspan="6" class="text-center py-4">
                                     <i class="fas fa-receipt fa-3x text-muted mb-3"></i>

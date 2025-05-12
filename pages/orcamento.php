@@ -12,7 +12,7 @@ include_once 'orcamentos/modal.php';
 require_once 'dialog.php';
 ?>
 
-<div class="container">
+<div class="content">
     <h2>Orçamentos</h2>
     
     <!-- Botão para cadastrar novo orçamento -->

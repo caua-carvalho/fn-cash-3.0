@@ -119,7 +119,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                 <div class="flex justify-between flex-col">
                     <h3 class="summary-value balance"><?php echo 'R$ ' . number_format($saldoTotal, 2, ',', '.'); ?></h3>
                     <div class="flex items-center gap-2 mt-2">
-                        <span class="badge badge-<?php echo $variacaoSaldo >= 0 ? 'income' : 'expense'; ?>">
+                        <span class="badge badge-<?php echo $variacaoSaldo >= 0 ? 'transfer' : 'expense'; ?>">
                             <i class="fas fa-arrow-<?php echo $variacaoSaldo >= 0 ? 'up' : 'down'; ?> me-1"></i> 
                             <?php echo abs($variacaoSaldo); ?>%
                         </span>
@@ -161,7 +161,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                 <div class="flex justify-between flex-col">
                     <h3 class="summary-value balance"><?php echo 'R$ ' . number_format($saldoMensal, 2, ',', '.'); ?></h3>
                     <div class="flex items-center gap-2 mt-2">
-                        <span class="badge badge-<?php echo $variacaoSaldoMensal >= 0 ? 'income' : 'expense'; ?>">
+                        <span class="badge badge-<?php echo $variacaoSaldoMensal >= 0 ? 'transfer' : 'expense'; ?>">
                             <i class="fas fa-arrow-<?php echo $variacaoSaldoMensal >= 0 ? 'up' : 'down'; ?> me-1"></i> 
                             <?php echo abs($variacaoSaldoMensal); ?>%
                         </span>

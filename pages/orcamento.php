@@ -1,13 +1,13 @@
 <?php
 // Importações necessárias
-require_once 'header.php';
 require_once 'sidebar.php';
 require_once 'orcamentos/funcoes.php';
 include_once 'orcamentos/modal.php';
 require_once 'dialog.php';
 ?>
 
-<script src="orcamento/orcamento.js"></script>
+<link rel="stylesheet" href="orcamentos/orcamento.css">
+<script src="orcamentos/orcamento.js" defer></script>
 
 <div class="container py-6">
     <!-- Cabeçalho da Página com Estatísticas -->
@@ -69,16 +69,16 @@ require_once 'dialog.php';
 
     <!-- Filtro rápido -->
     <div class="filter-container scale-on-load mb-5">
-        <div class="filter-header">
+        <div class="filter-header" role="button" tabindex="0" aria-expanded="false" aria-controls="filterContent">
             <h3 class="filter-title">
-                <i class="fas fa-filter me-2"></i> Filtros
+                <i class="fas fa-filter me-2" aria-hidden="true"></i> Filtros
             </h3>
-            <button class="btn-action" id="toggleFilter">
-                <i class="fas fa-chevron-down"></i>
+            <button class="btn-action" id="toggleFilter" aria-label="Expandir filtros">
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
         </div>
         
-        <div class="filter-content mt-4" style="display: none;">
+        <div class="filter-content mt-4" id="filterContent" style="display: none; opacity: 0; transition: opacity 0.3s ease-out;">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="form-group mb-3">
                     <label class="form-label">Status</label>

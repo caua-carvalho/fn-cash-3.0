@@ -1,4 +1,4 @@
-<?php
+ <?php
 // Incluir o cabeçalho
 require_once "../conexao.php";
 require_once "dialog.php";

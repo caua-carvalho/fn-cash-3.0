@@ -130,7 +130,6 @@ function confirmarExclusao($mensagem, $pagina, $itemNome = "", $titulo = "Confir
     ';
 }
 
-// Nova função para alertas menos intrusivos
 function alerta($mensagem, $tipo = "success", $duracao = 3000) {
     $icones = [
         "success" => "fas fa-check-circle",
@@ -144,8 +143,8 @@ function alerta($mensagem, $tipo = "success", $duracao = 3000) {
     $id = "alerta_" . uniqid();
     
     echo '
-    <div id="' . $id . '" class="fade-in position-fixed start-50 translate-middle-x" style="top: 20px; z-index: 9999; display: none;">
-        <div class="card shadow-lg border-' . $tipo . ' mb-3" style="max-width: 400px;">
+    <div id="' . $id . '" class="fade-in position-fixed bottom-0 end-0 m-4" style="z-index: 9999; display: none;">
+        <div class="card shadow-lg border-' . $tipo . ' mb-0" style="max-width: 400px;">
             <div class="card__body p-3 d-flex align-items-center gap-3">
                 <i class="' . $icone . ' text-' . $tipo . ' fa-lg"></i>
                 <p class="mb-0">' . $mensagem . '</p>

@@ -4,6 +4,11 @@ require_once 'sidebar.php';
 require_once 'categorias/funcoes.php';
 require_once 'categorias/modal/modal.php';
 require_once 'dialog.php';
+
+if (isset($_SESSION['mensagem_sucesso'])) {
+    alerta($_SESSION['mensagem_sucesso']);
+    unset($_SESSION['mensagem_sucesso']);
+}
 ?>
 
 <div class="content">
@@ -357,7 +362,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         case 'cadastrarCategoria':
             if (cadastrarCategoria($nome, $tipo, $descricao, $status)) {
-                confirmar("Categoria cadastrada com sucesso!", "categorias.php");
+                // Armazene a mensagem de sucesso em uma sessão
+                $_SESSION['mensagem_sucesso'] = "Categoria cadastrada com sucesso!";
+                // Redirecione imediatamente
+                header("Location: categorias.php");
+                exit;
             } else {
                 erro("Erro ao cadastrar categoria. Verifique os dados e tente novamente.");
             }

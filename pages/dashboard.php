@@ -49,9 +49,6 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
     const dadosCategorias = <?php echo $dadosGraficoCategoriasJSON; ?>;
 </script>
 
-<!-- Scripts para os gráficos -->
-<script src="dashboard/dashboard_content.js"></script>
-
 <div class="content">
     <div class="container-fluid">
         <!-- Cabeçalho e botão Nova Transação -->
@@ -84,12 +81,12 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                     <button type="button" class="status-option <?php echo $periodo === 'mes-atual' ? 'active' : ''; ?>" data-period="mes-atual">Mês Atual</button>
                     <button type="button" class="status-option <?php echo $periodo === 'mes-anterior' ? 'active' : ''; ?>" data-period="mes-anterior">Mês Anterior</button>
                     <button type="button" class="status-option <?php echo $periodo === 'ano-atual' ? 'active' : ''; ?>" data-period="ano-atual">Ano Atual</button>
-                    <button type="button" class="status-option <?php echo $periodo === 'customizado' ? 'active' : ''; ?>" data-period="customizado">Personalizado</button>
+                    <button type="button" class="status-option <?php echo $periodo === 'custom' ? 'active' : ''; ?>" data-period="custom">Personalizado</button>
                 </div>
                 <input type="hidden" name="periodSelection" id="periodSelection" value="<?php echo $periodo; ?>">
                 
                 <!-- Intervalo de datas personalizado (inicialmente oculto) -->
-                <div id="customPeriodSection" class="fade-in-up" style="display: <?php echo $periodo === 'customizado' ? 'block' : 'none'; ?>;">
+                <div id="customPeriodSection" class="fade-in-up" style="display: none;">
                     <div class="grid grid-cols-1 grid-md-cols-2 gap-4 mb-4">
                         <div class="form-floating">
                             <input type="date" class="form-control" id="startDate" placeholder=" " value="<?php echo $dataInicio ?? $intervalo['inicio']; ?>">
@@ -283,7 +280,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($transacoesRecentes)): ?>
+                       <?php if (empty($transacoesRecentes)): ?>
                             <tr>
                                 <td colspan="6" class="text-center py-4">
                                     <i class="fas fa-receipt fa-3x text-muted mb-3"></i>

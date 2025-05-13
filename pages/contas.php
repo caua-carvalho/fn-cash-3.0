@@ -216,7 +216,7 @@ require_once 'dialog.php';
 
 <?php 
 // Agora vamos incluir os modais
-require_once 'contas/modal/modal.php';
+require_once 'contas/modal.php';
 ?>
 
 <script>

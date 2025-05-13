@@ -21,9 +21,10 @@ function obterCategorias() {
 
 function cadastrarCategoria($nome, $tipo, $descricao, $status) {
     global $conn;
-
-    $status = ($_POST['statusCategoria'] === 'true') ? 1 : 0;
-
+    
+    // Remova esta linha que sobrescreve o parâmetro
+    // $status = ($_POST['statusCategoria'] === 'true') ? 1 : 0;
+    
     $sql = "INSERT INTO CATEGORIA (Nome, Tipo, Descricao, Ativa, ID_Usuario) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sssii", $nome, $tipo, $descricao, $status, $_SESSION['id_usuario']);
@@ -31,7 +32,9 @@ function cadastrarCategoria($nome, $tipo, $descricao, $status) {
     if ($stmt->execute()) {
         return $conn->insert_id; // Retorna o ID da nova categoria inserida
     } else {
-        return erro("Erro ao cadastrar categoria: " . $conn->error); // Retorna false em caso de falha
+        // Apenas registre o erro e retorne false
+        error_log("Erro ao cadastrar categoria: " . $conn->error);
+        return false;
     }
 }
 

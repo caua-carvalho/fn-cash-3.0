@@ -1,5 +1,4 @@
 <?php
-include_once 'header.php';
 $documento = pathinfo(basename($_SERVER['REQUEST_URI']), PATHINFO_FILENAME);
 ?>
 <div class="d-flex">

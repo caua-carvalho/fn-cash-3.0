@@ -1,14 +1,83 @@
 <?php
+// Adicione no topo do arquivo categorias.php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// Verifique se a sessão está funcionando
+if (!isset($_SESSION)) {
+    echo "Problema com a sessão";
+    exit;
+}
+
+// Log para debug
+error_log("Acessando categorias.php: " . print_r($_SESSION, true));
+
 require_once 'header.php';
+// restante do código...
 require_once 'sidebar.php';
 require_once 'categorias/funcoes.php';
 require_once 'categorias/modal/modal.php';
 require_once 'dialog.php';
 
-if (isset($_SESSION['mensagem_sucesso'])) {
-    alerta($_SESSION['mensagem_sucesso']);
-    unset($_SESSION['mensagem_sucesso']);
+// MOVER ESTE BLOCO PARA O INÍCIO DO ARQUIVO
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Verifica se a ação foi definida
+    $acao = $_POST['acao'] ?? null;
+
+    if (!$acao) {
+        $_SESSION['mensagem_erro'] = "Ação não definida.";
+        header("Location: categorias.php");
+        exit;
+    }
+
+    // Obtém os dados enviados
+    $id = $_POST['categoriaId'] ?? null;
+    $nome = $_POST['nomeCategoria'] ?? '';
+    $tipo = $_POST['tipoCategoria'] ?? '';
+    $descricao = $_POST['descricaoCategoria'] ?? '';
+    $status = isset($_POST['statusCategoria']) ? ($_POST['statusCategoria'] === 'true' ? 1 : 0) : 1;
+
+    // Processa a ação solicitada
+    switch ($acao) {
+        case 'editarCategoria':
+            if (editarCategoria($id, $nome, $tipo, $descricao, $status)) {
+                $_SESSION['mensagem_sucesso'] = "Categoria editada com sucesso!";
+            } else {
+                $_SESSION['mensagem_erro'] = "Erro ao editar categoria. Verifique os dados e tente novamente.";
+            }
+            header("Location: categorias.php");
+            exit;
+            break;
+
+        case 'cadastrarCategoria':
+            if (cadastrarCategoria($nome, $tipo, $descricao, $status)) {
+                $_SESSION['mensagem_sucesso'] = "Categoria cadastrada com sucesso!";
+            } else {
+                $_SESSION['mensagem_erro'] = "Erro ao cadastrar categoria. Verifique os dados e tente novamente.";
+            }
+            header("Location: categorias.php");
+            exit;
+            break;
+
+        case 'excluirCategoria':
+            if (deletarCategoria($id)) {
+                $_SESSION['mensagem_sucesso'] = "Categoria excluída com sucesso!";
+            } else {
+                $_SESSION['mensagem_erro'] = "Erro ao excluir categoria. Verifique se não existem transações associadas.";
+            }
+            header("Location: categorias.php");
+            exit;
+            break;
+
+        default:
+            $_SESSION['mensagem_erro'] = "Ação inválida.";
+            header("Location: categorias.php");
+            exit;
+            break;
+    }
 }
+
+
 ?>
 
 <div class="content">
@@ -334,55 +403,5 @@ if (isset($_SESSION['mensagem_sucesso'])) {
 <?php
 require_once 'footer.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Verifica se a ação foi definida
-    $acao = $_POST['acao'] ?? null;
 
-    if (!$acao) {
-        erro("Ação não definida.");
-        exit;
-    }
-
-    // Obtém os dados enviados
-    $id = $_POST['categoriaId'] ?? null;
-    $nome = $_POST['nomeCategoria'] ?? '';
-    $tipo = $_POST['tipoCategoria'] ?? '';
-    $descricao = $_POST['descricaoCategoria'] ?? '';
-    $status = isset($_POST['statusCategoria']) ? ($_POST['statusCategoria'] === 'true' ? 1 : 0) : 1;
-
-    // Processa a ação solicitada
-    switch ($acao) {
-        case 'editarCategoria':
-            if (editarCategoria($id, $nome, $tipo, $descricao, $status)) {
-                confirmar("Categoria editada com sucesso!", "categorias.php");
-            } else {
-                erro("Erro ao editar categoria. Verifique os dados e tente novamente.");
-            }
-            break;
-
-        case 'cadastrarCategoria':
-            if (cadastrarCategoria($nome, $tipo, $descricao, $status)) {
-                // Armazene a mensagem de sucesso em uma sessão
-                $_SESSION['mensagem_sucesso'] = "Categoria cadastrada com sucesso!";
-                // Redirecione imediatamente
-                header("Location: categorias.php");
-                exit;
-            } else {
-                erro("Erro ao cadastrar categoria. Verifique os dados e tente novamente.");
-            }
-            break;
-
-        case 'excluirCategoria':
-            if (deletarCategoria($id)) {
-                confirmar("Categoria excluída com sucesso!", "categorias.php");
-            } else {
-                erro("Erro ao excluir categoria. Verifique se não existem transações associadas a esta categoria.");
-            }
-            break;
-
-        default:
-            erro("Ação inválida.");
-            break;
-    }
-}
 ?>

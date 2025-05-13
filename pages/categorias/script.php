@@ -1,5 +1,8 @@
 <?php
-// Arquivo: pages/categorias/script.php
+/**
+ * Funções auxiliares para a página de categorias
+ */
+
 /**
  * Obtém o ícone correspondente ao tipo de categoria
  * @param string $tipo Tipo da categoria
@@ -33,26 +36,4 @@ function obterCorTipoCategoria($tipo)
             return 'var(--color-text-muted)';
     }
 }
-
-/**
- * Verifica se uma categoria pode ser excluída com segurança
- * @param int $idCategoria ID da categoria
- * @return bool True se for seguro excluir, False caso contrário
- */
-function podeDeletarCategoria($idCategoria)
-{
-    global $conn;
-
-    // Verifica se existem transações vinculadas a esta categoria
-    $sql = "SELECT COUNT(*) as total FROM TRANSACAO WHERE ID_Categoria = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $idCategoria);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-
-    return ($row['total'] == 0);
-}
-
 ?>
-

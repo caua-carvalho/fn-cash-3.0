@@ -1,26 +1,8 @@
 <?php
-// Adicione no topo do arquivo categorias.php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
-// Verifique se a sessão está funcionando
-if (!isset($_SESSION)) {
-    echo "Problema com a sessão";
-    exit;
-}
-
-// Log para debug
-error_log("Acessando categorias.php: " . print_r($_SESSION, true));
-
-require_once 'header.php';
-// restante do código...
-require_once 'sidebar.php';
-require_once 'categorias/funcoes.php';
-require_once 'categorias/modal/modal.php';
-require_once 'dialog.php';
-
-// MOVER ESTE BLOCO PARA O INÍCIO DO ARQUIVO
+// Processamento dos formulários - DEVE vir antes de qualquer saída HTML
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once dirname(__FILE__, 1) . '/categorias/funcoes.php';
+    
     // Verifica se a ação foi definida
     $acao = $_POST['acao'] ?? null;
 
@@ -31,11 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Obtém os dados enviados
-    $id = $_POST['categoriaId'] ?? null;
-    $nome = $_POST['nomeCategoria'] ?? '';
-    $tipo = $_POST['tipoCategoria'] ?? '';
-    $descricao = $_POST['descricaoCategoria'] ?? '';
-    $status = isset($_POST['statusCategoria']) ? ($_POST['statusCategoria'] === 'true' ? 1 : 0) : 1;
+    $id = isset($_POST['categoriaId']) ? (int)$_POST['categoriaId'] : null;
+    $nome = trim($_POST['nomeCategoria'] ?? '');
+    $tipo = trim($_POST['tipoCategoria'] ?? '');
+    $descricao = trim($_POST['descricaoCategoria'] ?? '');
+    $status = isset($_POST['statusCategoria']) && $_POST['statusCategoria'] === 'true' ? 1 : 0;
 
     // Processa a ação solicitada
     switch ($acao) {
@@ -47,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             header("Location: categorias.php");
             exit;
-            break;
 
         case 'cadastrarCategoria':
             if (cadastrarCategoria($nome, $tipo, $descricao, $status)) {
@@ -57,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             header("Location: categorias.php");
             exit;
-            break;
 
         case 'excluirCategoria':
             if (deletarCategoria($id)) {
@@ -67,21 +47,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             header("Location: categorias.php");
             exit;
-            break;
 
         default:
             $_SESSION['mensagem_erro'] = "Ação inválida.";
             header("Location: categorias.php");
             exit;
-            break;
     }
 }
 
+// Inclui os arquivos necessários
+require_once 'header.php';
+require_once 'sidebar.php';
+require_once 'categorias/funcoes.php';
+require_once 'dialog.php';
+require_once 'categorias/modal/modal.php';
 
+// Exibe mensagens de sucesso ou erro
+if (isset($_SESSION['mensagem_sucesso'])) {
+    alerta($_SESSION['mensagem_sucesso']);
+    unset($_SESSION['mensagem_sucesso']);
+}
+
+if (isset($_SESSION['mensagem_erro'])) {
+    erro($_SESSION['mensagem_erro'], "Erro");
+    unset($_SESSION['mensagem_erro']);
+}
+
+// Obtém as categorias
+$categorias = obterCategorias();
 ?>
 
 <div class="content">
-
     <!-- Cabeçalho da Página com Estatísticas -->
     <div class="mb-6">
         <div class="flex items-center justify-between mb-4">
@@ -98,7 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Cards de Resumo -->
         <div class="d-flex justify-between gap-4 mt-5">
             <?php
-            $categorias = obterCategorias();
             $totalCategorias = count($categorias);
             $categoriasReceita = 0;
             $categoriasDespesa = 0;
@@ -182,6 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
+    
     <!-- Tabela de Categorias -->
     <div class="transaction-table-container fade-in-up">
         <div class="p-4 flex justify-between items-center border-bottom">
@@ -333,7 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function filtrarCategorias() {
             const tipo = filtroTipo.value;
             const status = filtroStatus.value;
-            const busca = filtroBusca.value.toLowerCase();
+            const busca = filtroBusca.value.toLowerCase().trim();
 
             const linhas = document.getElementById('tabelaCategorias').getElementsByTagName('tr');
 
@@ -343,7 +339,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 const linha = linhas[i];
 
                 // Pula linha de estado vazio
-                if (linha.cells.length === 1 && linha.cells[0].colSpan === 5) {
+                if (linha.cells && linha.cells.length === 1 && linha.cells[0].colSpan === 5) {
+                    continue;
+                }
+
+                if (!linha.cells || linha.cells.length < 4) {
                     continue;
                 }
 
@@ -400,8 +400,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     });
 </script>
 
-<?php
-require_once 'footer.php';
-
-
-?>
+<?php require_once 'footer.php'; ?>

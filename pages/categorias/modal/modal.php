@@ -44,6 +44,9 @@ require_once 'categorias/script.php';
                         <div class="form-group">
                             <input type="text" class="form-control" id="nomeCategoria" name="nomeCategoria" 
                                 placeholder=" " required>
+                            <div class="invalid-feedback">
+                                Por favor, informe um nome para a categoria.
+                            </div>
                         </div>
                         
                         <!-- Status -->
@@ -116,6 +119,9 @@ require_once 'categorias/script.php';
                         <div class="form-group">
                             <input type="text" class="form-control" id="editarNomeCategoria" name="nomeCategoria" 
                                 placeholder=" " required>
+                            <div class="invalid-feedback">
+                                Por favor, informe um nome para a categoria.
+                            </div>
                         </div>
                         
                         <!-- Status -->
@@ -349,5 +355,4 @@ require_once 'categorias/script.php';
     .dark-theme .type-option.active.income {
         background-color: rgba(7, 163, 98, 0.2);
     }
-    
 </style>

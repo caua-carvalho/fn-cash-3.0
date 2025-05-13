@@ -1,6 +1,7 @@
 <?php
-// Funções auxiliares específicas para a página de contas
-// Este arquivo pode ser ampliado conforme necessário
+/**
+ * Funções auxiliares para a página de contas
+ */
 
 /**
  * Formata um valor numérico para o formato brasileiro (R$ 0.000,00)
@@ -54,23 +55,4 @@ function obterCorTipoConta($tipo) {
             return 'var(--color-text-muted)';
     }
 }
-
-/**
- * Verifica se uma conta pode ser excluída com segurança
- * @param int $idConta ID da conta
- * @return bool True se for seguro excluir, False caso contrário
- */
-function podeDeletarConta($idConta) {
-    global $conn;
-    
-    // Verifica se existem transações vinculadas a esta conta
-    $sql = "SELECT COUNT(*) as total FROM TRANSACAO WHERE ID_ContaRemetente = ? OR ID_ContaDestinataria = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $idConta, $idConta);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    
-    // Se não existirem transações, pode excluir com segurança
-    return ($row['total'] == 0);
-}
+?>

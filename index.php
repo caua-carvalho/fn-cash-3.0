@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['id_usuario'] = $user['ID_Usuario'];
                     $_SESSION['usuario'] = $user['Nome'];
 
-                    header('Location: pages/home.php');
+                    header('Location: pages/dashboard.php');
                     exit;
                 } else {
                     $_SESSION['error_message'] = 'Senha inválida!';

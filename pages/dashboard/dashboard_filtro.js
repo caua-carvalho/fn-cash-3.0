@@ -1,184 +1,246 @@
+// Gerado pelo Copilot
+
 document.addEventListener('DOMContentLoaded', function() {
-    //
-    // === UTILS DE URL ===
-    //
+    // Constantes para evitar magic numbers
     const PARAM_KEY = 'periodo';
+    const ANIMACAO_CURTA = 300;
+    const ANIMACAO_MEDIA = 500;
+    const ANIMACAO_LONGA = 1200;
 
-    function getPeriodoFromURL() {
+    // Seletores de elementos do DOM
+    const botaoToggleFiltroPeriodo = document.getElementById('togglePeriodFilter');
+    const conteudoFiltroPeriodo = document.getElementById('periodFilterContent');
+    const botoesPeriodo = document.querySelectorAll('.status-option');
+    const inputPeriodoSelecionado = document.getElementById('periodSelection');
+    const secaoPeriodoCustomizado = document.getElementById('customPeriodSection');
+    const botaoLimparFiltro = document.getElementById('clearPeriodFilter');
+    const botaoAplicarFiltro = document.getElementById('applyPeriodFilter');
+    const inputDataInicio = document.getElementById('startDate');
+    const inputDataFim = document.getElementById('endDate');
+
+    /**
+     * Retorna o período atual da URL ou 'mes-atual' se não houver.
+     */
+    function obterPeriodoDaURL() {
         const params = new URLSearchParams(window.location.search);
-        return params.get(PARAM_KEY) || 'current-month';
+        return params.get(PARAM_KEY) || 'mes-atual';
     }
 
-    function setPeriodoInURL(periodo) {
+    /**
+     * Atualiza o parâmetro de período na URL, incluindo dataInicio/dataFim se customizado.
+     * Gerado pelo Copilot
+     */
+    function atualizarPeriodoNaURL(periodo) {
         const params = new URLSearchParams(window.location.search);
-        params.set(PARAM_KEY, periodo);
-        window.history.pushState({}, '', `${window.location.pathname}?${params}`);
-    }
 
-    //
-    // === SELETORES ===
-    //
-    const togglePeriodFilter = document.getElementById('togglePeriodFilter');
-    const periodFilterContent = document.getElementById('periodFilterContent');
-    const statusOptions = document.querySelectorAll('.status-option');
-    const periodSelection = document.getElementById('periodSelection');
-    const customPeriodSection = document.getElementById('customPeriodSection');
-    const clearPeriodFilter = document.getElementById('clearPeriodFilter');
-    const applyPeriodFilter = document.getElementById('applyPeriodFilter');
-
-    //
-    // === INICIALIZAÇÃO A PARTIR DA URL ===
-    //
-    function initPeriodoFromURL() {
-        const periodoParam = getPeriodoFromURL();
-        let matched = false;
-
-        statusOptions.forEach(opt => {
-            const p = opt.getAttribute('data-period');
-            if (p === periodoParam && p !== 'custom') {
-                opt.classList.add('active');
-                periodSelection.value = p;
-                customPeriodSection.style.display = 'none';
-                matched = true;
-            }
-        });
-
-        if (!matched && periodoParam.startsWith('custom')) {
-            // formato custom: YYYY-MM-DD_YYYY-MM-DD
-            const [, range] = periodoParam.split('=');
-            const [start, end] = periodoParam.split('_');
-            document.querySelector('.status-option[data-period="custom"]').classList.add('active');
-            periodSelection.value = 'custom';
-            customPeriodSection.style.display = 'block';
-            document.getElementById('startDate').value = start;
-            document.getElementById('endDate').value = end;
-        }
-
-        // se não achar nada, força default
-        if (!matched && periodSelection.value === '') {
-            document.querySelector('.status-option[data-period="current-month"]').classList.add('active');
-            periodSelection.value = 'current-month';
-            customPeriodSection.style.display = 'none';
-        }
-    }
-
-    initPeriodoFromURL();
-
-    //
-    // === TOGGLE DO FILTRO ===
-    //
-    togglePeriodFilter.addEventListener('click', function() {
-        const isVisible = periodFilterContent.style.display !== 'none';
-        const chevron = this.querySelector('i');
-        chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
-
-        if (isVisible) {
-            periodFilterContent.classList.add('fade-out');
-            setTimeout(() => {
-                periodFilterContent.style.display = 'none';
-                periodFilterContent.classList.remove('fade-out');
-            }, 300);
+        if (periodo === 'customizado') {
+            const inicio = inputDataInicio.value;
+            const fim = inputDataFim.value;
+            params.set('periodo', 'customizado');
+            params.set('dataInicio', inicio);
+            params.set('dataFim', fim);
+        } else if (periodo.includes('_')) {
+            const [inicio, fim] = periodo.split('_');
+            params.set('periodo', 'customizado');
+            params.set('dataInicio', inicio);
+            params.set('dataFim', fim);
         } else {
-            periodFilterContent.style.display = 'block';
-            periodFilterContent.classList.add('fade-in');
-            setTimeout(() => periodFilterContent.classList.remove('fade-in'), 300);
+            params.set('periodo', periodo);
+            params.delete('dataInicio');
+            params.delete('dataFim');
         }
-    });
 
-    //
-    // === SELEÇÃO DE PERÍODO (PILLS) ===
-    //
-    statusOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            statusOptions.forEach(opt => opt.classList.remove('active'));
-            this.classList.add('active');
+        window.location.search = params.toString();
+    }
 
-            const periodType = this.getAttribute('data-period');
-            periodSelection.value = periodType;
-            customPeriodSection.style.display = periodType === 'custom' ? 'block' : 'none';
+    /**
+     * Inicializa o filtro de período com base na URL.
+     */
+    function inicializarFiltroPeriodo() {
+        const periodoParam = obterPeriodoDaURL();
+        let encontrou = false;
 
-            if (periodType === 'custom') {
-                customPeriodSection.classList.add('fade-in-up');
-                setTimeout(() => customPeriodSection.classList.remove('fade-in-up'), 500);
+        botoesPeriodo.forEach(botao => {
+            const periodoBotao = botao.getAttribute('data-period');
+            if (periodoBotao === periodoParam && periodoBotao !== 'customizado') {
+                botao.classList.add('active');
+                inputPeriodoSelecionado.value = periodoBotao;
+                secaoPeriodoCustomizado.style.display = 'none';
+                encontrou = true;
             }
         });
-    });
 
-    //
-    // === LIMPAR FILTROS ===
-    //
-    clearPeriodFilter.addEventListener('click', function() {
-        statusOptions.forEach(opt => {
-            opt.classList.toggle('active', opt.getAttribute('data-period') === 'current-month');
-        });
-        periodSelection.value = 'current-month';
-        customPeriodSection.style.display = 'none';
-        document.getElementById('startDate').value = '';
-        document.getElementById('endDate').value = '';
-
-        this.classList.add('pulse');
-        setTimeout(() => this.classList.remove('pulse'), 500);
-
-        setPeriodoInURL('current-month');
-    });
-
-    //
-    // === APLICAR FILTROS ===
-    //
-    applyPeriodFilter.addEventListener('click', function() {
-        // Determina o valor para a URL
-        const periodType = periodSelection.value;
-        let periodoURL = periodType;
-
-        if (periodType === 'custom') {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            periodoURL = `${startDate}_${endDate}`;
+        if (!encontrou && periodoParam.includes('_')) {
+            // formato customizado: YYYY-MM-DD_YYYY-MM-DD
+            const [inicio, fim] = periodoParam.split('_');
+            const botaoCustomizado = document.querySelector('.status-option[data-period="customizado"]');
+            if (botaoCustomizado) botaoCustomizado.classList.add('active');
+            inputPeriodoSelecionado.value = 'customizado';
+            secaoPeriodoCustomizado.style.display = 'block';
+            inputDataInicio.value = inicio;
+            inputDataFim.value = fim;
         }
 
-        setPeriodoInURL(periodoURL);
+        if (!encontrou && inputPeriodoSelecionado.value === '') {
+            const botaoMesAtual = document.querySelector('.status-option[data-period="mes-atual"]');
+            if (botaoMesAtual) botaoMesAtual.classList.add('active');
+            inputPeriodoSelecionado.value = 'mes-atual';
+            secaoPeriodoCustomizado.style.display = 'none';
+        }
+    }
 
-        // Notificação visual (mantive seu código)
-        const notification = document.createElement('div');
-        // ... resto da criação da notificação ...
-        // (manter seu HTML/CSS como estava)
+    /**
+     * Alterna a exibição do filtro de período.
+     */
+    function alternarFiltroPeriodo() {
+        const estaVisivel = conteudoFiltroPeriodo.style.display !== 'none';
+        const iconeChevron = botaoToggleFiltroPeriodo.querySelector('i');
+        iconeChevron.style.transform = estaVisivel ? 'rotate(0deg)' : 'rotate(180deg)';
 
-        document.body.appendChild(notification);
+        if (estaVisivel) {
+            conteudoFiltroPeriodo.classList.add('fade-out');
+            setTimeout(() => {
+                conteudoFiltroPeriodo.style.display = 'none';
+                conteudoFiltroPeriodo.classList.remove('fade-out');
+            }, ANIMACAO_CURTA);
+            return;
+        }
+        conteudoFiltroPeriodo.style.display = 'block';
+        conteudoFiltroPeriodo.classList.add('fade-in');
+        setTimeout(() => conteudoFiltroPeriodo.classList.remove('fade-in'), ANIMACAO_CURTA);
+    }
+
+    /**
+     * Marca o botão de período selecionado e exibe/esconde o customizado.
+     */
+    function selecionarPeriodo(evento) {
+        botoesPeriodo.forEach(botao => botao.classList.remove('active'));
+        const botaoClicado = evento.currentTarget;
+        botaoClicado.classList.add('active');
+
+        const periodoSelecionado = botaoClicado.getAttribute('data-period');
+        inputPeriodoSelecionado.value = periodoSelecionado;
+        secaoPeriodoCustomizado.style.display = periodoSelecionado === 'customizado' ? 'block' : 'none';
+
+        if (periodoSelecionado === 'customizado') {
+            secaoPeriodoCustomizado.classList.add('fade-in-up');
+            setTimeout(() => secaoPeriodoCustomizado.classList.remove('fade-in-up'), ANIMACAO_MEDIA);
+        }
+    }
+
+    /**
+     * Limpa o filtro de período para o padrão.
+     */
+    function limparFiltroPeriodo() {
+        botoesPeriodo.forEach(botao => {
+            botao.classList.toggle('active', botao.getAttribute('data-period') === 'mes-atual');
+        });
+        inputPeriodoSelecionado.value = 'mes-atual';
+        secaoPeriodoCustomizado.style.display = 'none';
+        inputDataInicio.value = '';
+        inputDataFim.value = '';
+
+        botaoLimparFiltro.classList.add('pulse');
+        setTimeout(() => botaoLimparFiltro.classList.remove('pulse'), ANIMACAO_MEDIA);
+
+        atualizarPeriodoNaURL('mes-atual');
+    }
+
+    /**
+     * Aplica o filtro de período selecionado.
+     * Gerado pelo Copilot
+     */
+    function aplicarFiltroPeriodo() {
+        const periodoSelecionado = inputPeriodoSelecionado.value;
+        let periodoURL = periodoSelecionado;
+
+        if (periodoSelecionado === 'customizado') {
+            const inicio = inputDataInicio.value;
+            const fim = inputDataFim.value;
+            if (!inicio || !fim) {
+                alert('Preencha as datas inicial e final!');
+                return;
+            }
+            // Aqui, passa só 'customizado', as datas vão como params separados
+            periodoURL = 'customizado';
+        }
+
+        atualizarPeriodoNaURL(periodoURL);
+
+        // O resto não faz sentido pois vai recarregar a página
+    }
+
+    /**
+     * Mostra uma notificação visual simples.
+     */
+    function mostrarNotificacao(mensagem) {
+        const notificacao = document.createElement('div');
+        notificacao.className = 'notification fade-in';
+        notificacao.innerHTML = `<i class="fas fa-check-circle me-2"></i> ${mensagem}`;
+        document.body.appendChild(notificacao);
         setTimeout(() => {
-            notification.classList.add('fade-out');
-            setTimeout(() => notification.remove(), 300);
+            notificacao.classList.add('fade-out');
+            setTimeout(() => notificacao.remove(), ANIMACAO_CURTA);
         }, 4000);
+    }
 
-        // Loading feedback
-        const originalText = this.innerHTML;
-        this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Aplicando...';
-        this.disabled = true;
-
+    /**
+     * Mostra loading no botão e executa callback depois.
+     */
+    function mostrarLoadingBotao(botao, callback) {
+        const textoOriginal = botao.innerHTML;
+        botao.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Aplicando...';
+        botao.disabled = true;
         setTimeout(() => {
-            this.innerHTML = originalText;
-            this.disabled = false;
-            document.querySelectorAll('.summary-card').forEach(card => {
-                card.classList.add('pulse');
-                setTimeout(() => card.classList.remove('pulse'), 500);
-            });
-            togglePeriodFilter.click();
-        }, 1200);
+            botao.innerHTML = textoOriginal;
+            botao.disabled = false;
+            if (typeof callback === 'function') callback();
+        }, ANIMACAO_LONGA);
+    }
 
-        // Aqui você chamaria suas APIs / atualizaria gráficos...
-    });
+    /**
+     * Anima os cards de resumo.
+     */
+    function animarCardsResumo() {
+        document.querySelectorAll('.summary-card').forEach(card => {
+            card.classList.add('pulse');
+            setTimeout(() => card.classList.remove('pulse'), ANIMACAO_MEDIA);
+        });
+    }
 
-    //
-    // === DATAS DEFAULT PARA CUSTOM ===
-    //
-    const today = new Date();
-    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const formatDate = date => {
-        const y = date.getFullYear();
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const d = String(date.getDate()).padStart(2, '0');
+    /**
+     * Define datas padrão para o período customizado.
+     */
+    function definirDatasPadraoCustomizado() {
+        const hoje = new Date();
+        const primeiroDiaMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+        inputDataInicio.value = formatarData(primeiroDiaMes);
+        inputDataFim.value = formatarData(hoje);
+    }
+
+    /**
+     * Formata data para yyyy-mm-dd.
+     */
+    function formatarData(data) {
+        const y = data.getFullYear();
+        const m = String(data.getMonth() + 1).padStart(2, '0');
+        const d = String(data.getDate()).padStart(2, '0');
         return `${y}-${m}-${d}`;
-    };
+    }
 
-    document.getElementById('startDate').value = formatDate(firstDayOfMonth);
-    document.getElementById('endDate').value = formatDate(today);
+    // --- Inicialização ---
+    inicializarFiltroPeriodo();
+    definirDatasPadraoCustomizado();
+
+    // --- Eventos ---
+    botaoToggleFiltroPeriodo.addEventListener('click', alternarFiltroPeriodo);
+    botoesPeriodo.forEach(botao => botao.addEventListener('click', selecionarPeriodo));
+    botaoLimparFiltro.addEventListener('click', limparFiltroPeriodo);
+    botaoAplicarFiltro.addEventListener('click', aplicarFiltroPeriodo);
+
+    // Atualização dos gráficos/listagens quando o período mudar
+    window.addEventListener('periodoAtualizado', () => {
+        // Aqui você pode disparar AJAX ou atualizar gráficos sem reload
+        // Exemplo: atualizarGraficos();
+    });
 });

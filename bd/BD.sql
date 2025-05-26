@@ -7,13 +7,14 @@ CREATE TABLE USUARIO (
     Nome VARCHAR(100) NOT NULL,
     Email VARCHAR(100) NOT NULL UNIQUE,
     Senha VARCHAR(255) NOT NULL,
-    DataCadastro DATE NOT NULL
+    DataCadastro DATE NOT NULL,
+    UltimoAcesso DATETIME
 );
 
 CREATE TABLE CONTA (
     ID_Conta INT AUTO_INCREMENT PRIMARY KEY,
     Nome VARCHAR(100) NOT NULL,
-    Tipo ENUM('Corrente', 'Poupança', 'Cartão de Crédito', 'VR/VA', 'Investimento', 'Dinheiro', 'Outros') NOT NULL,
+    Tipo ENUM('Corrente', 'Poupança', 'Cartão de Crédito', 'Investimento', 'Dinheiro', 'Outros') NOT NULL,
     Saldo DECIMAL(15 , 2 ) NOT NULL DEFAULT 0.00,
     Instituicao VARCHAR(100) NOT NULL,
     DataCriacao DATE NOT NULL,
@@ -321,3 +322,4 @@ END $$
 
 DELIMITER ;
 
+SELECT SUM(Saldo) AS saldo_total FROM CONTA;

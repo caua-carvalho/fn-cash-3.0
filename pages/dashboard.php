@@ -1,38 +1,71 @@
 <?php
+// Gerado pelo Copilot
+
 require_once 'header.php';
 require_once 'sidebar.php';
 require_once 'contas/funcoes.php';
 require_once 'contas/modal.php';
 require_once 'dialog.php';
-require_once 'dashboard/funcoes.php'; // Inclui as funções do dashboard
+require_once 'dashboard/funcoes.php';
 
-// Processa o filtro de período se enviado
-$periodo = isset($_GET['periodo']) ? $_GET['periodo'] : 'mes-atual';
-$dataInicio = isset($_GET['dataInicio']) ? $_GET['dataInicio'] : null;
-$dataFim = isset($_GET['dataFim']) ? $_GET['dataFim'] : null;
+// Interpreta corretamente o período customizado vindo da URL
+$periodoSelecionado = $_GET['periodo'] ?? 'mes-atual';
+$dataInicio = $_GET['dataInicio'] ?? null;
+$dataFim = $_GET['dataFim'] ?? null;
+
+// Suporte para periodo=YYYY-MM-DD_YYYY-MM-DD (caso antigo)
+if (
+    $periodoSelecionado !== 'mes-atual' &&
+    $periodoSelecionado !== 'mes-anterior' &&
+    $periodoSelecionado !== 'ano-atual' &&
+    $periodoSelecionado !== 'customizado' &&
+    strpos($periodoSelecionado, '_') !== false
+) {
+    list($dataInicio, $dataFim) = explode('_', $periodoSelecionado);
+    $periodoSelecionado = 'customizado';
+}
 
 // Obtém o intervalo de datas com base no período selecionado
-$intervalo = obterIntervaloDatas($periodo, $dataInicio, $dataFim);
+$intervaloDatas = obterIntervaloDatas($periodoSelecionado, $dataInicio, $dataFim);
 
-// Prepara os dados para os gráficos
-$dadosGraficoReceitasDespesas = obterDadosGraficoReceitasDespesas();
-$dadosGraficoCategorias = obterDadosGraficoCategorias($intervalo);
+// Decide o modo do gráfico (diário ou mensal) conforme o filtro
+switch ($periodoSelecionado) {
+    case 'ano-atual':
+        $dadosGraficoReceitasDespesas = obterDadosGraficoReceitasDespesasPorMes($intervaloDatas);
+        $modoGrafico = 'mensal';
+        break;
+    case 'mes-atual':
+    case 'mes-anterior':
+    case 'customizado':
+        $dadosGraficoReceitasDespesas = obterDadosGraficoReceitasDespesasPorDia($intervaloDatas);
+        $modoGrafico = 'diario';
+        break;
+    default:
+        $dadosGraficoReceitasDespesas = [
+            'labels' => [],
+            'receitas' => [],
+            'despesas' => []
+        ];
+        $modoGrafico = 'indefinido';
+        break;
+}
+$dadosGraficoCategorias = obterDadosGraficoCategorias($intervaloDatas);
 
-// Obtém os dados para os cards de resumo
+// Dados para os cards de resumo
 $saldoTotal = obterSaldoTotal();
-$receitasPeriodo = obterReceita($intervalo);
-$despesasPeriodo = obterDespesa($intervalo);
-$saldoMensal = obterSaldoMensal($intervalo);
+$receitasPeriodo = obterReceita($intervaloDatas);
+$despesasPeriodo = obterDespesa($intervaloDatas);
+$saldoMensal = obterSaldoMensal($intervaloDatas);
 
-// Calcula as variações percentuais
-$variacaoSaldo = calcularVariacaoPercentual('saldo', $intervalo);
-$variacaoReceita = calcularVariacaoPercentual('receita', $intervalo);
-$variacaoDespesa = calcularVariacaoPercentual('despesa', $intervalo);
-$variacaoSaldoMensal = calcularVariacaoPercentual('saldo_mensal', $intervalo);
+// Variações percentuais
+$variacaoSaldo = calcularVariacaoPercentual('saldo', $intervaloDatas);
+$variacaoReceita = calcularVariacaoPercentual('receita', $intervaloDatas);
+$variacaoDespesa = calcularVariacaoPercentual('despesa', $intervaloDatas);
+$variacaoSaldoMensal = calcularVariacaoPercentual('saldo_mensal', $intervaloDatas);
 
-// Obtém as contas e transações recentes
-$contas = obterContasUsuario(2);
-$transacoesRecentes = obterTransacoesRecentes(4, $intervalo);
+// Contas e transações recentes
+$contasUsuario = obterContasUsuario(2);
+$transacoesRecentes = obterTransacoesRecentes(4, $intervaloDatas);
 
 // Converte os dados para JSON para uso no JavaScript
 $dadosGraficoReceitasDespesasJSON = json_encode($dadosGraficoReceitasDespesas);
@@ -44,9 +77,10 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
 
 <!-- Passa os dados dinâmicos para o JavaScript -->
 <script>
-    // Dados para os gráficos - preenchidos com PHP
+    // Gerado pelo Copilot
     const dadosReceitasDespesas = <?php echo $dadosGraficoReceitasDespesasJSON; ?>;
     const dadosCategorias = <?php echo $dadosGraficoCategoriasJSON; ?>;
+    const modoGrafico = '<?php echo $modoGrafico; ?>';
 </script>
 
 <div class="content">
@@ -78,23 +112,23 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
             <div class="card__body" id="periodFilterContent" style="display: none;">
                 <!-- Seletor de Tipo (Pills) para rápida seleção -->
                 <div class="status-selector mb-5">
-                    <button type="button" class="status-option <?php echo $periodo === 'mes-atual' ? 'active' : ''; ?>" data-period="mes-atual">Mês Atual</button>
-                    <button type="button" class="status-option <?php echo $periodo === 'mes-anterior' ? 'active' : ''; ?>" data-period="mes-anterior">Mês Anterior</button>
-                    <button type="button" class="status-option <?php echo $periodo === 'ano-atual' ? 'active' : ''; ?>" data-period="ano-atual">Ano Atual</button>
-                    <button type="button" class="status-option <?php echo $periodo === 'customizado' ? 'active' : ''; ?>" data-period="customizado">Personalizado</button>
+                    <button type="button" class="status-option <?php echo $periodoSelecionado === 'mes-atual' ? 'active' : ''; ?>" data-period="mes-atual">Mês Atual</button>
+                    <button type="button" class="status-option <?php echo $periodoSelecionado === 'mes-anterior' ? 'active' : ''; ?>" data-period="mes-anterior">Mês Anterior</button>
+                    <button type="button" class="status-option <?php echo $periodoSelecionado === 'ano-atual' ? 'active' : ''; ?>" data-period="ano-atual">Ano Atual</button>
+                    <button type="button" class="status-option <?php echo $periodoSelecionado === 'customizado' ? 'active' : ''; ?>" data-period="customizado">Personalizado</button>
                 </div>
-                <input type="hidden" name="periodSelection" id="periodSelection" value="<?php echo $periodo; ?>">
+                <input type="hidden" name="periodSelection" id="periodSelection" value="<?php echo $periodoSelecionado; ?>">
                 
                 <!-- Intervalo de datas personalizado (inicialmente oculto) -->
-                <div id="customPeriodSection" class="fade-in-up" style="display: <?php echo $periodo === 'customizado' ? 'block' : 'none'; ?>;">
+                <div id="customPeriodSection" class="fade-in-up" style="display: <?php echo $periodoSelecionado === 'customizado' ? 'block' : 'none'; ?>;">
                     <div class="grid grid-cols-1 grid-md-cols-2 gap-4 mb-4">
                         <div class="form-floating">
-                            <input type="date" class="form-control" id="startDate" placeholder=" " value="<?php echo $dataInicio ?? $intervalo['inicio']; ?>">
+                            <input type="date" class="form-control" id="startDate" placeholder=" " value="<?php echo $dataInicio ?? $intervaloDatas['inicio']; ?>">
                             <label for="startDate">Data Inicial</label>
                         </div>
                         
                         <div class="form-floating">
-                            <input type="date" class="form-control" id="endDate" placeholder=" " value="<?php echo $dataFim ?? $intervalo['fim']; ?>">
+                            <input type="date" class="form-control" id="endDate" placeholder=" " value="<?php echo $dataFim ?? $intervaloDatas['fim']; ?>">
                             <label for="endDate">Data Final</label>
                         </div>
                     </div>
@@ -174,16 +208,31 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
         <div class="card col-span-12 mb-6 fade-in-up">
             <div class="card__header">
                 <h4 class="card__title">Receitas vs Despesas</h4>
-                <p class="card__subtitle">Últimos 6 meses</p>
+                <p class="card__subtitle">
+                <?php
+                    // Subtítulo explícito para o usuário
+                    switch ($modoGrafico) {
+                        case 'mensal':
+                            echo 'Evolução mensal (por mês)';
+                            break;
+                        case 'diario':
+                            echo 'Evolução diária (por dia)';
+                            break;
+                        default:
+                            echo 'Evolução financeira';
+                            break;
+                    }
+                ?>
+                </p>
             </div>
             <div class="card__body">
-                <div class="chart-area" style="height: 400px;">
-                    <canvas id="financeChart"></canvas>
+                <div class="chart-area" style="height:400px;">
+                <canvas id="financeChart"></canvas>
                 </div>
             </div>
             <div class="card__footer">
                 <div class="text-muted text-sm">
-                    <i class="fas fa-calendar"></i> Atualizado hoje
+                <i class="fas fa-calendar"></i> Atualizado hoje
                 </div>
             </div>
         </div>
@@ -194,7 +243,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
             <div class="card fade-in-up animation-delay-200">
                 <div class="card__header">
                     <h4 class="card__title">Despesas por Categoria</h4>
-                    <p class="card__subtitle"><?php echo $periodo === 'mes-atual' ? 'Mês atual' : ($periodo === 'mes-anterior' ? 'Mês anterior' : ($periodo === 'ano-atual' ? 'Ano atual' : 'Período personalizado')); ?></p>
+                    <p class="card__subtitle"><?php echo $periodoSelecionado === 'mes-atual' ? 'Mês atual' : ($periodoSelecionado === 'mes-anterior' ? 'Mês anterior' : ($periodoSelecionado === 'ano-atual' ? 'Ano atual' : 'Período personalizado')); ?></p>
                 </div>
                 <div class="card__body">
                     <div class="chart-area" style="height: 250px;">
@@ -215,7 +264,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                     <p class="card__subtitle">Saldos atuais</p>
                 </div>
                 <div class="card__body">
-                    <?php if (empty($contas)): ?>
+                    <?php if (empty($contasUsuario)): ?>
                         <div class="text-center text-muted py-4">
                             <i class="fas fa-piggy-bank fa-3x mb-3"></i>
                             <p>Você ainda não possui contas cadastradas.</p>
@@ -224,7 +273,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                             </button>
                         </div>
                     <?php else: ?>
-                        <?php foreach ($contas as $conta): ?>
+                        <?php foreach ($contasUsuario as $conta): ?>
                             <!-- Conta dinâmica -->
                             <div class="account-card mb-4">
                                 <div class="account-card__header">
@@ -331,18 +380,23 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
 <!-- Adicionar script para atualizar os gráficos com dados dinâmicos -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Configuração do gráfico de Receitas vs Despesas com dados dinâmicos
-    const financeCtx = document.getElementById('financeChart').getContext('2d');
+    // Gerado pelo Copilot
 
+    // Proteção: se não vier dados, não tenta criar gráfico
+    if (!dadosReceitasDespesas || !Array.isArray(dadosReceitasDespesas.labels) || dadosReceitasDespesas.labels.length === 0) {
+        document.getElementById('financeChart').parentElement.innerHTML = '<div class="text-center text-muted py-4">Nenhum dado para exibir neste período.</div>';
+        return;
+    }
+
+    const financeCtx = document.getElementById('financeChart').getContext('2d');
     const despesaGradient = financeCtx.createLinearGradient(0, 0, 0, 350);
     despesaGradient.addColorStop(0, 'rgba(231, 43, 22, 0.88)');
     despesaGradient.addColorStop(1, 'rgba(231, 76, 60, 0)');
-
     const receitaGradient = financeCtx.createLinearGradient(0, 0, 0, 350);
     receitaGradient.addColorStop(0, 'rgba(7, 163, 98, 0.6)');
     receitaGradient.addColorStop(1, 'rgba(7, 163, 98, 0)');
 
-    const financeChart = new Chart(financeCtx, {
+    new Chart(financeCtx, {
         type: 'line',
         data: {
             labels: dadosReceitasDespesas.labels,

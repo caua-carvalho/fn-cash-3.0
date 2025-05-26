@@ -4,6 +4,8 @@ require_once "../conexao.php";
 
 function obterTransacoes() {
     global $conn;
+    // Gerado pelo Copilot
+    // Consulta transações com JOINs corretos e filtro por usuário
     $sql = "SELECT 
                 t.*, 
                 cr.ID_Conta AS ID_ContaRemetente, 
@@ -13,6 +15,7 @@ function obterTransacoes() {
             FROM TRANSACAO t
             LEFT JOIN CONTA cr ON t.ID_ContaRemetente = cr.ID_Conta
             LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
+            WHERE t.ID_Usuario = 1
             ORDER BY t.Data DESC";
     $result = $conn->query($sql);
     $transacoes = array();

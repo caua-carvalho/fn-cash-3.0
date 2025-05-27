@@ -71,7 +71,7 @@ require_once 'dialog.php';
                 <h2 class="text-2xl font-bold mb-1">Contas</h2>
                 <p class="text-muted">Gerencie suas contas e saldos</p>
             </div>
-            <button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#contaModal">
+            <button class="btn btn-primary btn-icon" data-modal-open="#contaModal">
                 <i class="fas fa-plus me-2"></i>
                 Nova Conta
             </button>
@@ -144,7 +144,7 @@ require_once 'dialog.php';
                     echo '<i class="fas fa-wallet empty-state__icon"></i>';
                     echo '<h3 class="empty-state__title">Nenhuma conta encontrada</h3>';
                     echo '<p class="empty-state__description">Comece a registrar suas contas financeiras para visualizá-las aqui.</p>';
-                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#contaModal">';
+                    echo '<button class="btn btn-primary btn-icon" data-modal-open="#contaModal">';
                     echo '<i class="fas fa-plus me-2"></i> Criar Primeira Conta';
                     echo '</button>';
                     echo '</div>';
@@ -184,7 +184,7 @@ require_once 'dialog.php';
                         echo "<div class='flex justify-center gap-2'>";
 
                         // Botão de editar
-                        echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarContaModal'
+                        echo "<button class='btn-action edit' title='Editar' data-modal-open='#editarContaModal'
                             data-id='" . $conta['ID_Conta'] . "'
                             data-nome='" . htmlspecialchars($conta['Nome']) . "'
                             data-tipo='" . $conta['Tipo'] . "'
@@ -194,7 +194,7 @@ require_once 'dialog.php';
                             </button>";
 
                         // Botão de excluir
-                        echo "<button class='btn-action delete' title='Excluir' data-toggle='modal' data-target='#excluirContaModal'
+                        echo "<button class='btn-action delete' title='Excluir' data-modal-open='#excluirContaModal'
                             data-id='" . $conta['ID_Conta'] . "'
                             data-nome='" . htmlspecialchars($conta['Nome']) . "'>
                             <i class='fas fa-trash-alt'></i>
@@ -212,11 +212,61 @@ require_once 'dialog.php';
         </table>
     </div>
 </div>
-<!-- Aqui termina o conteúdo principal -->
 
-<?php 
-// Agora vamos incluir os modais
+<!-- Modal de Nova Conta -->
+    <div class="modal fade" id="contaModal" tabindex="-1" aria-labelledby="contaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="contaModalLabel">Nova Conta</h5>
+                    <button type="button" class="close" data-modal-close aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="' . htmlspecialchars($caminhoForm) . '" method="POST" autocomplete="off">
+                    <input type="hidden" name="acao" value="cadastrarConta">
+                    <div class="modal-body">
+                        <!-- Tipo de Conta -->
+                        <div class="form-group">
+                            <label class="form-label" for="tipoConta">Tipo de Conta</label>
+                            <select class="form-control" id="tipoConta" name="tipoConta" required>
+                                <option value="Corrente">Corrente</option>
+                                <option value="Poupança">Poupança</option>
+                                <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                <option value="Investimento">Investimento</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                        <!-- Nome da Conta -->
+                        <div class="form-group">
+                            <label class="form-label" for="nomeConta">Nome da Conta</label>
+                            <input type="text" class="form-control" id="nomeConta" name="nomeConta" required placeholder="Digite o nome da conta">
+                        </div>
+                        <!-- Saldo Inicial -->
+                        <div class="form-group value-container">
+                            <label class="form-label" for="saldoConta">Saldo Inicial</label>
+                            <input type="number" class="form-control" id="saldoConta" name="saldoConta" step="0.01" required placeholder="0,00">
+                        </div>
+                        <!-- Instituição Financeira -->
+                        <div class="form-group">
+                            <label class="form-label" for="instituicaoConta">Instituição Financeira</label>
+                            <input type="text" class="form-control" id="instituicaoConta" name="instituicaoConta" required placeholder="Ex: Nubank, Itaú...">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-modal-close>Cancelar</button>
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<?php
+// Agora vamos incluir os modais 
 require_once 'contas/modal.php';
+
+echo gerarModalNovaConta('contas.php');
 ?>
 
 <script>

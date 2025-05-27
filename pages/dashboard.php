@@ -65,7 +65,7 @@ $variacaoSaldoMensal = calcularVariacaoPercentual('saldo_mensal', $intervaloData
 
 // Contas e transações recentes
 $contasUsuario = obterContasUsuario(2);
-$transacoesRecentes = obterTransacoesRecentes(4, $intervaloDatas);
+$transacoesRecentes = obterTransacoesRecentes(20, null); // sem filtro de data, pega 20 últimas
 
 // Converte os dados para JSON para uso no JavaScript
 $dadosGraficoReceitasDespesasJSON = json_encode($dadosGraficoReceitasDespesas);

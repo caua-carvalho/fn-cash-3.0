@@ -32,6 +32,9 @@ if (!isset($_SESSION['id_usuario'])) {
 
 	<!-- Chart.js para os gráficos -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+	<!-- JS PARA MODAIS -->
+	<script src="../JavaScript/scirpt.js"></script> 
 	
 </head>
 <body class="dark-theme">

@@ -1210,7 +1210,7 @@
     display: none;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow-y: scroll;
     outline: 0;
   }
   
@@ -2557,9 +2557,9 @@
     }
   }
 
-/* ==========================================================================
-  17. Width and Height Utilities
-  ========================================================================== */
+  /* ==========================================================================
+   17. Width and Height Utilities
+   ========================================================================== */
 
 /* Width */
 .w-auto { width: auto; }
@@ -2687,3 +2687,53 @@
   .main-content {
     overflow-x: hidden;
   }
+
+/* ==========================================================================
+   Scrollbar Customization
+   ========================================================================== */
+/* Estilização da barra de rolagem padrão */
+/* Gerado pelo Copilot */
+::-webkit-scrollbar {
+  width: 10px;
+  background: var(--color-background-alt);
+  border-radius: var(--border-radius-md);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border); /* cinza do sistema */
+  border-radius: var(--border-radius-pill);
+  border: 2px solid var(--color-background-alt);
+  transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-400); /* leve destaque no hover */
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--color-background-alt);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: 2px;
+  scrollbar-color: var(--color-border) var(--color-background-alt); /* cinza do sistema */
+}
+
+/* Tema escuro */
+body.dark-theme ::-webkit-scrollbar {
+  background: var(--color-surface);
+}
+body.dark-theme ::-webkit-scrollbar-thumb {
+  background: var(--color-border); /* cinza do sistema no dark também */
+  border: 3px solid var(--color-surface);
+}
+body.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-400);
+}
+body.dark-theme ::-webkit-scrollbar-corner {
+  background: var(--color-surface);
+}
+body.dark-theme * {
+  scrollbar-color: var(--color-border) var(--color-surface); /* cinza no dark */
+}

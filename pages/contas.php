@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Inclui os arquivos necessários
 require_once 'header.php';
 require_once 'sidebar.php';
+require_once 'contas/modal.php';
 require_once 'contas/funcoes.php';
 require_once 'dialog.php';
 ?>
@@ -261,14 +262,6 @@ require_once 'dialog.php';
             </div>
         </div>
     </div>
-
-<?php
-// Agora vamos incluir os modais 
-require_once 'contas/modal.php';
-
-echo gerarModalNovaConta('contas.php');
-?>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Toggle filtro

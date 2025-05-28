@@ -10,7 +10,7 @@ require './categorias/funcoes.php';
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="transacaoModalLabel">Nova Transação</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-modal-close="#transacaoModal">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -143,7 +143,7 @@ require './categorias/funcoes.php';
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-modal-close="#transacaoModal">Cancelar</button>
                     <button type="submit" class="btn btn-success">Salvar</button>
                 </div>
             </form>
@@ -157,7 +157,7 @@ require './categorias/funcoes.php';
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editarTransacaoModalLabel">Editar Transação</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-modal-close="#editarTransacaoModal">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -291,7 +291,7 @@ require './categorias/funcoes.php';
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-modal-close='#editarTransacaoModal'>Cancelar</button>
                     <button type="submit" class="btn btn-primary">Atualizar</button>
                 </div>
             </form>
@@ -305,7 +305,7 @@ require './categorias/funcoes.php';
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="excluirTransacaoModalLabel">Excluir Transação</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-modal-close='#excluirTransacaoModal'>
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -322,7 +322,7 @@ require './categorias/funcoes.php';
                 </div>
                 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-modal-close='#excluirTransacaoModal'>Cancelar</button>
                     <button type="submit" class="btn btn-danger">Excluir</button>
                 </div>
             </form>

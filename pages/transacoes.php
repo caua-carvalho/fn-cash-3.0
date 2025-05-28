@@ -19,7 +19,7 @@ error_reporting(E_ALL);
                 <h2 class="text-2xl font-bold mb-1">Transações</h2>
                 <p class="text-muted">Gerencie suas movimentações financeiras</p>
             </div>
-            <button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal">
+            <button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal" data-modal-open="#transacaoModal">
                 <i class="fas fa-plus me-2"></i>
                 Nova Transação
             </button>
@@ -214,7 +214,7 @@ error_reporting(E_ALL);
                               </button>";
                         
                         // Botão de editar
-                        echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarTransacaoModal'
+                        echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarTransacaoModal' data-modal-open='#editarTransacaoModal''
                                data-id='" . $transacao['ID_Transacao'] . "'
                                data-titulo='" . htmlspecialchars($transacao['Titulo']) . "'
                                data-descricao='" . htmlspecialchars($transacao['Descricao']) . "'
@@ -230,7 +230,7 @@ error_reporting(E_ALL);
                               </button>";
                         
                         // Botão de excluir
-                        echo "<button class='btn-action delete' title='Excluir' data-toggle='modal' data-target='#excluirTransacaoModal'
+                        echo "<button class='btn-action delete' title='Excluir' data-toggle='modal' data-target='#excluirTransacaoModal' data-modal-open='#excluirTransacaoModal'
                                data-id='" . $transacao['ID_Transacao'] . "'
                                data-titulo='" . htmlspecialchars($transacao['Titulo']) . "'>
                               <i class='fas fa-trash-alt'></i>

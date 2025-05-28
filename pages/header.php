@@ -34,7 +34,7 @@ if (!isset($_SESSION['id_usuario'])) {
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 	<!-- JS PARA MODAIS -->
-	<script src="../JavaScript/scirpt.js"></script> 
+	<script src="../JavaScript/script.js"></script> 
 	
 </head>
 <body class="dark-theme">

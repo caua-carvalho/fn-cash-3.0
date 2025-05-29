@@ -135,7 +135,7 @@ $categorias = obterCategorias();
     </div>
 
     <!-- Filtro rápido -->
-    <div class="filter-container fade-in animation-delay-200 mb-4">
+    <div class="filter-container slide-in-left mb-4">
         <div class="filter-header">
             <h3 class="filter-title">
                 <i class="fas fa-filter me-2"></i> Filtros

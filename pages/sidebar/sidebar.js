@@ -1,65 +1,120 @@
 /**
- * Controle da sidebar para o FnCash
- * Gerencia o estado de abertura/fechamento e o tema
+ * Refatoração: Sidebar com modo fixa, colapsada (hover) e responsiva
+ * - Fixa: sempre aberta
+ * - Colapsada: só ícones, expande ao hover
+ * - Mobile: vira bottom bar
  */
 document.addEventListener('DOMContentLoaded', function() {
-  // Elementos DOM
   const sidebar = document.getElementById('sidebar');
   const sidebarToggle = document.getElementById('sidebar-toggle');
   const mainContent = document.getElementById('main-content');
   const themeToggle = document.getElementById('toggle-theme');
-  
-  // Inicializa o estado da sidebar
-  function inicializar_sidebar() {
-    // Verifica se existe um estado salvo
-    const sidebarFechada = localStorage.getItem('sidebarFechada') === 'true';
-    
-    if (sidebarFechada) {
-      sidebar.classList.add('sidebar-collapsed');
-    }
-    
-    // Verifica o tamanho da tela para ajustes automáticos
-    ajustar_para_tamanho_tela();
+
+  let hoverHabilitado = true;
+  let hoverTimeout = null;
+
+  // Função para salvar estado da sidebar
+  function salvarEstadoSidebar(colapsada) {
+    localStorage.setItem('sidebarColapsada', colapsada);
   }
-  
-  // Alterna o estado da sidebar
-  function alternar_sidebar() {
+
+  // Função para alternar entre fixa e colapsada
+  function alternarSidebar() {
+    if (window.innerWidth <= 768) return; // No mobile, ignora
+    
     sidebar.classList.toggle('sidebar-collapsed');
+    const estaColapsada = sidebar.classList.contains('sidebar-collapsed');
+    salvarEstadoSidebar(estaColapsada);
+    ajustarMainContent();
     
-    // Salva o estado atual
-    const fechada = sidebar.classList.contains('sidebar-collapsed');
-    localStorage.setItem('sidebarFechada', fechada);
+    // Desabilita hover por 1s após toggle
+    hoverHabilitado = false;
+    if (hoverTimeout) clearTimeout(hoverTimeout);
+    
+    // Remove hover imediatamente ao colapsar
+    sidebar.classList.remove('sidebar-hover');
+    
+    // Reabilita hover após 1 segundo
+    hoverTimeout = setTimeout(() => {
+      hoverHabilitado = true;
+      // Se o mouse ainda estiver sobre a sidebar após 1s, reativa o hover
+      if (sidebar.matches(':hover') && sidebar.classList.contains('sidebar-collapsed')) {
+        sidebar.classList.add('sidebar-hover');
+      }
+    }, 1000);
   }
-  
-  // Ajusta a sidebar com base no tamanho da tela
-  function ajustar_para_tamanho_tela() {
-    const larguraTela = window.innerWidth;
-    
-    if (larguraTela < 992 && !sidebar.classList.contains('sidebar-collapsed') && larguraTela >= 768) {
-      sidebar.classList.add('sidebar-collapsed');
+
+  // Ajusta o margin do main-content conforme sidebar
+  function ajustarMainContent() {
+    if (window.innerWidth > 768) {
+      if (sidebar.classList.contains('sidebar-collapsed')) {
+        mainContent.style.marginLeft = '80px';
+      } else {
+        mainContent.style.marginLeft = '260px';
+      }
+    } else {
+      mainContent.style.marginLeft = '0';
     }
-    
-    if (larguraTela < 768) {
+  }
+
+  // Função para inicializar sidebar com estado salvo
+  function inicializarSidebar() {
+    if (window.innerWidth > 768) {
+      // Pega o estado salvo, se não existir assume false (expandida)
+      const colapsada = localStorage.getItem('sidebarColapsada');
+      
+      // Se tiver um estado salvo, aplica ele
+      if (colapsada !== null) {
+        sidebar.classList.toggle('sidebar-collapsed', colapsada === 'true');
+      }
+      
+      // Ajusta o main content de acordo com o estado atual
+      ajustarMainContent();
+    }
+  }
+
+  // Responsividade: mobile sempre aberta (bottom bar)
+  function onResize() {
+    if (window.innerWidth <= 768) {
       sidebar.classList.remove('sidebar-collapsed');
+      mainContent.style.marginLeft = '0';
+    } else {
+      inicializarSidebar();
     }
   }
+
+  // Expande ao hover se colapsada (desktop)
+  sidebar.addEventListener('mouseenter', function() {
+    if (window.innerWidth > 768 && sidebar.classList.contains('sidebar-collapsed') && hoverHabilitado) {
+      sidebar.classList.add('sidebar-hover');
+    }
+  });
+  sidebar.addEventListener('mouseleave', function() {
+    if (window.innerWidth > 768 && sidebar.classList.contains('sidebar-collapsed')) {
+      sidebar.classList.remove('sidebar-hover');
+    }
+  });
+
+  // Botão de toggle
+  sidebarToggle.addEventListener('click', alternarSidebar);
+  window.addEventListener('resize', onResize);
   
-  // Eventos
-  sidebarToggle.addEventListener('click', alternar_sidebar);
-  themeToggle.addEventListener('click', alternar_tema);
-  window.addEventListener('resize', ajustar_para_tamanho_tela);
-  
-  // Inicialização
-  inicializar_sidebar();
-  
-  // Carrega o tema salvo (se existir)
-  const temaSalvo = localStorage.getItem('tema');
-  if (temaSalvo) {
-    const body = document.body;
-    body.classList.remove('light-theme', 'dark-theme');
-    body.classList.add(`${temaSalvo}-theme`);
+  // Adiciona event listener do tema apenas se o elemento existir
+  if (themeToggle) {
+    themeToggle.addEventListener('click', alternar_tema);
     
-    themeToggle.innerHTML = `<i class="fas fa-${temaSalvo === 'dark' ? 'moon' : 'sun'} me-2"></i>
-                            <span class="nav-text">Tema ${temaSalvo === 'dark' ? 'Escuro' : 'Claro'}</span>`;
+    // Carrega o tema salvo apenas se o toggle existir
+    const temaSalvo = localStorage.getItem('tema');
+    if (temaSalvo) {
+      const body = document.body;
+      body.classList.remove('light-theme', 'dark-theme');
+      body.classList.add(`${temaSalvo}-theme`);
+
+      themeToggle.innerHTML = `<i class="fas fa-${temaSalvo === 'dark' ? 'moon' : 'sun'} me-2"></i>
+                              <span class="nav-text">Tema ${temaSalvo === 'dark' ? 'Escuro' : 'Claro'}</span>`;
+    }
   }
+
+  // Inicializa ao carregar
+  inicializarSidebar();
 });

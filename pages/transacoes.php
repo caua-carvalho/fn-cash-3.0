@@ -60,7 +60,7 @@ error_reporting(E_ALL);
     </div>
     
     <!-- Filtros Avançados -->
-    <div class="filter-container fade-in animation-delay-200 mb-5">
+    <div class="filter-container slide-in-left mb-5">
         <div class="filter-header">
             <h3 class="filter-title">
                 <i class="fas fa-filter me-2"></i> Filtros

@@ -2200,18 +2200,18 @@
 }
 
 .slide-in-left {
-  animation: slide-in-left 0.5s var(--transition-timing) both;
+  animation: slide-in-left 0.8s var(--transition-timing) both;
 }
   
   @keyframes pulse {
     from {
-      transform: scale3d(1, 1, 1);
+      transform: scale3d(-11, -11, -11);
     }
     50% {
-      transform: scale3d(1.05, 1.05, 1.05);
+      transform: scale3d(2.5, 2.5, 2.5);
     }
     to {
-      transform: scale3d(1, 1, 1);
+      transform: scale3d(-11, -11, -11);
     }
   }
   

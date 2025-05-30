@@ -37,4 +37,79 @@ if (!isset($_SESSION['id_usuario'])) {
 	<script src="../JavaScript/script.js"></script> 
 	
 </head>
-<body class="dark-theme">
+
+<style>
+  #theme-toggle {
+    position: fixed;
+    top: 10px;
+    left: 10px; /* ajuste se sua sidebar estiver em outro lugar */
+    width: 60px;
+    height: 30px;
+    background: #ccc;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+
+  .toggle-thumb {
+    width: 26px;
+    height: 26px;
+    background: #000;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    position: absolute;
+    left: 2px;
+  }
+
+  body.light-theme #theme-toggle .toggle-thumb {
+  transform: translateX(30px);
+    background: #fff;
+  }
+
+  .icons {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px;
+    font-size: 14px;
+    color: #000;
+    z-index: 10;
+  }
+
+  body.light-theme .icons {
+  color: #000;
+  }
+</style>
+<script>
+  window.addEventListener('load', function () {
+    const toggle = document.getElementById('theme-toggle');
+    const body = document.querySelector('body');
+
+    // Aplica tema salvo
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme === 'light-theme') {
+	body.classList.remove('dark-theme');
+		body.classList.add('light-theme');
+    } else {
+		body.classList.remove('light-theme');
+		body.classList.add('dark-theme');
+    }
+
+    // Alterna ao clicar
+    toggle.addEventListener('click', function () {
+      if (body.classList.contains('dark-theme')) {
+        body.classList.remove('dark-theme');
+        body.classList.add('light-theme');
+        localStorage.setItem('theme', 'light-theme');
+      } else {
+        body.classList.remove('light-theme');
+        body.classList.add('dark-theme');
+        localStorage.setItem('theme', 'dark-theme');
+      }
+    });
+  });
+</script>

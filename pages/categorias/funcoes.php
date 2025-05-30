@@ -1,7 +1,7 @@
 <?php
 // Incluir conexão com o banco de dados
 require_once dirname(__FILE__, 3) . "/conexao.php";
-session_start();
+
 /**
  * Obtém todas as categorias do usuário atual
  * @return array Lista de categorias

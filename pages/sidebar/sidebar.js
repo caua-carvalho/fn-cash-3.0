@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (sidebar.classList.contains('sidebar-collapsed')) {
         mainContent.style.marginLeft = '80px';
       } else {
-        mainContent.style.marginLeft = '260px';
+        mainContent.style.marginLeft = '212px';
       }
     } else {
       mainContent.style.marginLeft = '0';

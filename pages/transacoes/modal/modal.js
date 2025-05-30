@@ -36,13 +36,13 @@ document.addEventListener('DOMContentLoaded', function() {
       typeOptions.forEach(option => {
         option.addEventListener('click', function() {
           const type = this.getAttribute('data-type');
+          const form = this.closest('form');
           
           // Atualiza visual
           typeOptions.forEach(opt => opt.classList.remove('active'));
           this.classList.add('active');
           
           // Atualiza o input hidden do tipo de transação
-          const form = this.closest('form');
           const tipoInput = form.querySelector('input[name="tipoTransacao"]');
           if (tipoInput) {
             tipoInput.value = type;
@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
               formaPagamentoSelect.value = 'dinheiro';
             } else if (type === 'Transferência') {
               formaPagamentoSelect.value = 'transferencia';
+              formaPagamentoSelect.required = false; // Não precisa de forma de pagamento em transferência
             }
             // Dispara o evento change pra garantir atualização visual
             formaPagamentoSelect.dispatchEvent(new Event('change'));
@@ -65,14 +66,33 @@ document.addEventListener('DOMContentLoaded', function() {
           // Mostra/esconde campos conforme o tipo
           if (type === 'Transferência') {
             form.classList.add('transfer');
+            // Remove forma de pagamento pra transferência
+            const formaPagamentoSelect = form.querySelector('select[name="formaPagamento"]');
+            if (formaPagamentoSelect) {
+                formaPagamentoSelect.value = 'transferencia';
+                formaPagamentoSelect.required = false; // Não precisa de forma de pagamento em transferência
+            }
             // Garante que contaDestinataria está required
             const contaDestinataria = form.querySelector('[name="contaDestinataria"]');
-            if (contaDestinataria) contaDestinataria.required = true;
+            if (contaDestinataria) {
+                contaDestinataria.required = true;
+                form.querySelector('.transfer-only').style.display = 'block';
+            }
           } else {
             form.classList.remove('transfer');
-            // Remove required se não for transferência
+            // Restaura required da forma de pagamento
+            const formaPagamentoSelect = form.querySelector('select[name="formaPagamento"]');
+            if (formaPagamentoSelect) {
+                formaPagamentoSelect.required = true;
+            }
+            // Remove required do contaDestinataria
             const contaDestinataria = form.querySelector('[name="contaDestinataria"]');
-            if (contaDestinataria) contaDestinataria.required = false;
+            if (contaDestinataria) {
+                contaDestinataria.required = false;
+                contaDestinataria.setCustomValidity('');
+                contaDestinataria.value = '';
+                form.querySelector('.transfer-only').style.display = 'none';
+            }
           }
 
           // Animação

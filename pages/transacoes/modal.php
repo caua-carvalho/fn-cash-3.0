@@ -5,78 +5,97 @@ require './categorias/funcoes.php';
 
 <script src="transacoes/script.js"></script>
 <script>
-// Gerado pelo Copilot
+// Função para criar e mostrar toast
+function showToast(message, type = 'success', duration = 5000) {
+    const container = document.querySelector('.toast-container') || (() => {
+        const div = document.createElement('div');
+        div.className = 'toast-container';
+        document.body.appendChild(div);
+        return div;
+    })();
+
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    toast.innerHTML = `
+        <div class="toast-header">
+            <h4 class="toast-title">${type === 'success' ? 'Sucesso!' : 'Erro!'}</h4>
+            <button class="toast-close">&times;</button>
+        </div>
+        <p class="toast-message">${message}</p>
+        <div class="toast-progress">
+            <div class="toast-progress-bar"></div>
+        </div>
+    `;
+
+    container.appendChild(toast);
+
+    // Configura a barra de progresso
+    const progressBar = toast.querySelector('.toast-progress-bar');
+    progressBar.style.transition = `width ${duration}ms linear`;
+    
+    // Inicia a animação da barra
+    setTimeout(() => progressBar.style.width = '0%', 100);
+
+    // Configura o botão de fechar
+    toast.querySelector('.toast-close').onclick = () => {
+        toast.style.animation = 'slideOut 0.3s forwards';
+        setTimeout(() => toast.remove(), 300);
+    };
+
+    // Remove o toast automaticamente
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
+// Modifica o código do submit para usar o toast
 document.addEventListener('DOMContentLoaded', function() {
+    // Verifica se tem mensagem pendente no localStorage
+    const mensagemPendente = localStorage.getItem('toast_message');
+    const tipoMensagem = localStorage.getItem('toast_type');
+    
+    if (mensagemPendente) {
+        showToast(mensagemPendente, tipoMensagem || 'success');
+        localStorage.removeItem('toast_message');
+        localStorage.removeItem('toast_type');
+    }
+
     document.querySelectorAll('form[action="transacoes.php"]').forEach(function(form) {
         form.addEventListener('submit', function(e) {
-            // DEBUG: Mostra os dados do form
-            let debugData = [];
-            for (let [key, value] of new FormData(form).entries()) {
-                debugData.push(key + '=' + value);
-            }
-            alert('DEBUG: Dados enviados:\n' + debugData.join('\n')); // Só pra debug
-
-            // Validação manual dos campos obrigatórios
             if (!form.checkValidity()) {
-                e.preventDefault(); // Só previne se for inválido!
+                e.preventDefault(); // Previne envio só se inválido
                 form.classList.add('was-validated');
 
                 // Pega o primeiro campo inválido
-                let primeiroInvalido = Array.from(form.elements).find(el => !el.checkValidity() && el.offsetParent !== null);
+                let primeiroInvalido = Array.from(form.elements)
+                    .find(el => !el.checkValidity() && el.offsetParent !== null);
 
-                // Se não achou, tenta achar mesmo que esteja oculto (ou seja, em outra aba)
-                if (!primeiroInvalido) {
-                    primeiroInvalido = Array.from(form.elements).find(el => !el.checkValidity());
-                }
-
-                // Descobre em qual aba está o campo inválido
                 if (primeiroInvalido) {
-                    let aba = 'basic';
-                    let tabContent = primeiroInvalido.closest('.tab-content');
-                    if (tabContent && tabContent.dataset.tab === 'details') {
-                        aba = 'details';
-                    }
+                    let aba = primeiroInvalido.closest('.tab-content')?.dataset.tab === 'details' 
+                        ? 'details' 
+                        : 'basic';
+                    
                     trocarAba(form, aba);
-
-                    // Dá shake no campo inválido
                     primeiroInvalido.classList.add('shake');
                     setTimeout(() => primeiroInvalido.classList.remove('shake'), 600);
                     primeiroInvalido.focus();
                 }
-
-                // Dá shake nos outros campos inválidos também (só pra reforçar)
-                Array.from(form.elements).forEach(function(el) {
-                    if (!el.checkValidity()) {
-                        el.classList.add('shake');
-                        setTimeout(() => el.classList.remove('shake'), 600);
-                    }
-                });
-
-                return; // Não envia nada se inválido
-            }
-
-            // Se chegou aqui, deixa o submit seguir normalmente!
-            // Se quiser continuar usando fetch, tira o e.preventDefault() daqui!
-            // Se quiser usar o fetch, precisa fechar o modal manualmente e recarregar a página no .then
-
-            // Se for usar fetch:
-            e.preventDefault(); // Só aqui, se for usar fetch!
-            const formData = new FormData(form);
-            fetch(form.action, {
-                method: form.method,
-                body: formData
-            })
-            .then(async response => {
-                const erroHeader = response.headers.get('X-Transacao-Erro');
-                if (erroHeader) {
-                    alert('Erro ao cadastrar transação: ' + decodeURIComponent(erroHeader));
-                    return;
+            } else {
+                // Salva mensagem no localStorage antes de enviar
+                const acao = form.querySelector('input[name="acao"]').value;
+                let mensagem = 'Transação cadastrada com sucesso!';
+                
+                if (acao === 'editarTransacao') {
+                    mensagem = 'Transação atualizada com sucesso!';
+                } else if (acao === 'excluirTransacao') {
+                    mensagem = 'Transação excluída com sucesso!';
                 }
-                location.reload();
-            })
-            .catch(err => {
-                alert('Erro inesperado ao cadastrar transação.');
-            });
+
+                localStorage.setItem('toast_message', mensagem);
+                localStorage.setItem('toast_type', 'success');
+            }
+            // Se válido, deixa o form ser enviado naturalmente
         });
     });
 });
@@ -187,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         <!-- Conta Destinatária (apenas para transferências) -->
                         <div class="form-group transfer-only">
-                            <select class="form-control" id="contaDestinataria" name="contaDestinataria">
+                            <select class="form-control" id="contaDestinataria" name="contaDestinataria" required> <!-- Adiciona required aqui -->
                                 <option value="" disabled selected></option>
                                 <?php
                                 if ($contas) {
@@ -440,3 +459,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Incorpore as folhas de estilo e scripts -->
 <link rel="stylesheet" href="transacoes/modal/modal.css">
 <script src="transacoes/modal/modal.js"></script>
+
+<!-- Adiciona CSS do toast -->
+<link rel="stylesheet" href="/assets/css/toast.css">

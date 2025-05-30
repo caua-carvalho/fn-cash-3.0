@@ -123,12 +123,16 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPaga
         return false;
     }
 
-    // Validação: transferência precisa de conta destinatária
-    if ($tipo === 'Transferência' && empty($idContaDestinataria)) {
-        $msg = "Transferência exige conta destinatária!";
-        logErroConsole($msg);
-        erro($msg);
-        return false;
+    // Validação específica para transferência
+    if ($tipo === 'Transferência') {
+        if (empty($idContaDestinataria)) {
+            $msg = "Transferência exige conta destinatária!";
+            logErroConsole($msg);
+            erro($msg);
+            return false;
+        }
+        // Em transferência, ignora forma de pagamento
+        $formaPagamento = 'transferencia';
     }
 
     // Verifica saldo para despesas ou transferências

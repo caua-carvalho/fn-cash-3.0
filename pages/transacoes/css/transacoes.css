@@ -1,0 +1,104 @@
+/* Gerado pelo Copilot */
+
+/* Layout específico da página de transações */
+.transaction-page-header {
+    margin-bottom: var(--spacing-6);
+}
+
+/* Cards de resumo específicos */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+}
+
+/* Área de gráficos */
+.charts-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-6);
+}
+
+@media (min-width: 992px) {
+    .charts-container {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+/* Tabela de transações customizada */
+.transaction-list {
+    background: var(--color-surface);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.transaction-list__header {
+    padding: var(--spacing-4);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transaction-filters {
+    display: flex;
+    gap: var(--spacing-2);
+}
+
+.transaction-filter {
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--border-radius-pill);
+    font-size: var(--font-size-sm);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    transition: all var(--transition-duration-fast) var(--transition-timing);
+}
+
+.transaction-filter:hover {
+    background: var(--color-background-alt);
+}
+
+.transaction-filter.active {
+    background: var(--color-primary-500);
+    border-color: var(--color-primary-500);
+    color: white;
+}
+
+/* Animações */
+.fade-enter {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.fade-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 300ms, transform 300ms;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .transaction-filters {
+        overflow-x: auto;
+        padding-bottom: var(--spacing-2);
+    }
+}

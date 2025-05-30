@@ -207,4 +207,64 @@ function deletarTransacao($id) {
 
     return $stmt->execute(); // Retorna true em caso de sucesso ou false em caso de falha
 }
+
+/**
+ * Obtém o total de receitas do período atual
+ * Gerado pelo Copilot
+ */
+function obterTotalReceitas($periodo = 'mes') {
+    global $conn;
+    $sql = "SELECT COALESCE(SUM(Valor), 0) as total 
+            FROM TRANSACAO 
+            WHERE Tipo = 'Receita' 
+            AND ID_Usuario = 1";
+    
+    if ($periodo === 'mes') {
+        $sql .= " AND MONTH(Data) = MONTH(CURRENT_DATE) 
+                  AND YEAR(Data) = YEAR(CURRENT_DATE)";
+    }
+    
+    $result = $conn->query($sql);
+    return $result->fetch_assoc()['total'] ?? 0;
+}
+
+/**
+ * Obtém o total de despesas do período atual
+ * Gerado pelo Copilot
+ */
+function obterTotalDespesas($periodo = 'mes') {
+    global $conn;
+    $sql = "SELECT COALESCE(SUM(Valor), 0) as total 
+            FROM TRANSACAO 
+            WHERE Tipo = 'Despesa' 
+            AND ID_Usuario = 1";
+    
+    if ($periodo === 'mes') {
+        $sql .= " AND MONTH(Data) = MONTH(CURRENT_DATE) 
+                  AND YEAR(Data) = YEAR(CURRENT_DATE)";
+    }
+    
+    $result = $conn->query($sql);
+    return $result->fetch_assoc()['total'] ?? 0;
+}
+
+/**
+ * Obtém o total de transferências do período atual
+ * Gerado pelo Copilot
+ */
+function obterTotalTransferencias($periodo = 'mes') {
+    global $conn;
+    $sql = "SELECT COALESCE(SUM(Valor), 0) as total 
+            FROM TRANSACAO 
+            WHERE Tipo = 'Transferência' 
+            AND ID_Usuario = 1";
+    
+    if ($periodo === 'mes') {
+        $sql .= " AND MONTH(Data) = MONTH(CURRENT_DATE) 
+                  AND YEAR(Data) = YEAR(CURRENT_DATE)";
+    }
+    
+    $result = $conn->query($sql);
+    return $result->fetch_assoc()['total'] ?? 0;
+}
 ?>

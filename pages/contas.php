@@ -1,4 +1,12 @@
 <?php
+
+// Inclui os arquivos necessários
+require_once 'header.php';
+require_once 'sidebar.php';
+require_once 'contas/modal.php';
+require_once 'contas/funcoes.php';
+require_once 'dialog.php';
+
 // Processamento dos formulários - DEVE vir antes de qualquer saída HTML
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once dirname(__FILE__, 1) . '/contas/funcoes.php';
@@ -55,12 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Inclui os arquivos necessários
-require_once 'header.php';
-require_once 'sidebar.php';
-require_once 'contas/modal.php';
-require_once 'contas/funcoes.php';
-require_once 'dialog.php';
+
 ?>
 
 <!-- Aqui começa o conteúdo principal -->
@@ -72,7 +75,7 @@ require_once 'dialog.php';
                 <h2 class="text-2xl font-bold mb-1">Contas</h2>
                 <p class="text-muted">Gerencie suas contas e saldos</p>
             </div>
-            <button class="btn btn-primary btn-icon" data-modal-open="#contaModal">
+            <button class="btn btn-primary btn-icon" data-modal-open="#modalNovaConta">
                 <i class="fas fa-plus me-2"></i>
                 Nova Conta
             </button>
@@ -214,54 +217,6 @@ require_once 'dialog.php';
     </div>
 </div>
 
-<!-- Modal de Nova Conta -->
-    <div class="modal fade" id="contaModal" tabindex="-1" aria-labelledby="contaModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="contaModalLabel">Nova Conta</h5>
-                    <button type="button" class="close" data-modal-close aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="' . htmlspecialchars($caminhoForm) . '" method="POST" autocomplete="off">
-                    <input type="hidden" name="acao" value="cadastrarConta">
-                    <div class="modal-body">
-                        <!-- Tipo de Conta -->
-                        <div class="form-group">
-                            <label class="form-label" for="tipoConta">Tipo de Conta</label>
-                            <select class="form-control" id="tipoConta" name="tipoConta" required>
-                                <option value="Corrente">Corrente</option>
-                                <option value="Poupança">Poupança</option>
-                                <option value="Cartão de Crédito">Cartão de Crédito</option>
-                                <option value="Investimento">Investimento</option>
-                                <option value="Outros">Outros</option>
-                            </select>
-                        </div>
-                        <!-- Nome da Conta -->
-                        <div class="form-group">
-                            <label class="form-label" for="nomeConta">Nome da Conta</label>
-                            <input type="text" class="form-control" id="nomeConta" name="nomeConta" required placeholder="Digite o nome da conta">
-                        </div>
-                        <!-- Saldo Inicial -->
-                        <div class="form-group value-container">
-                            <label class="form-label" for="saldoConta">Saldo Inicial</label>
-                            <input type="number" class="form-control" id="saldoConta" name="saldoConta" step="0.01" required placeholder="0,00">
-                        </div>
-                        <!-- Instituição Financeira -->
-                        <div class="form-group">
-                            <label class="form-label" for="instituicaoConta">Instituição Financeira</label>
-                            <input type="text" class="form-control" id="instituicaoConta" name="instituicaoConta" required placeholder="Ex: Nubank, Itaú...">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-modal-close>Cancelar</button>
-                        <button type="submit" class="btn btn-success">Salvar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Toggle filtro

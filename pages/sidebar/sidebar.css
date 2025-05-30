@@ -172,11 +172,6 @@
   transition: opacity var(--transition-duration-normal) var(--transition-timing);
 }
 
-.sidebar-divider {
-  height: 1px;
-  background: var(--color-border);
-  margin: var(--spacing-4) 0;
-}
 
 .main-content {
   margin-left: 260px;

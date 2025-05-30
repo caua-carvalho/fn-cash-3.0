@@ -26,88 +26,149 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     };
   
-    // Handle transaction type selection
+    /**
+     * Atualiza o tipo de transação e a forma de pagamento conforme o tipo selecionado.
+     * Gerado pelo Copilot
+     */
     const setupTypeSelector = () => {
       const typeOptions = document.querySelectorAll('.type-option');
-      const typeInputs = document.querySelectorAll('select[name="tipoTransacao"]');
       
       typeOptions.forEach(option => {
         option.addEventListener('click', function() {
           const type = this.getAttribute('data-type');
+          const form = this.closest('form');
           
-          // Update visual state
+          // Atualiza visual
           typeOptions.forEach(opt => opt.classList.remove('active'));
           this.classList.add('active');
           
-          // Update form state
-          typeInputs.forEach(input => {
-            input.value = type;
-            
-            // Show/hide relevant fields
-            const form = input.closest('form');
+          // Atualiza o input hidden do tipo de transação
+          const tipoInput = form.querySelector('input[name="tipoTransacao"]');
+          if (tipoInput) {
+            tipoInput.value = type;
+          }
+
+          // Atualiza o select de forma de pagamento conforme o tipo
+          const formaPagamentoSelect = form.querySelector('select[name="formaPagamento"]');
+          if (formaPagamentoSelect) {
+            if (type === 'Despesa') {
+              formaPagamentoSelect.value = 'debito';
+            } else if (type === 'Receita') {
+              formaPagamentoSelect.value = 'dinheiro';
+            } else if (type === 'Transferência') {
+              formaPagamentoSelect.value = 'transferencia';
+              formaPagamentoSelect.required = false; // Não precisa de forma de pagamento em transferência
+            }
+            // Dispara o evento change pra garantir atualização visual
+            formaPagamentoSelect.dispatchEvent(new Event('change'));
+          }
+
+          // Mostra/esconde campos conforme o tipo
+          if (type === 'Transferência') {
+            form.classList.add('transfer');
+            // Remove forma de pagamento pra transferência
+            const formaPagamentoSelect = form.querySelector('select[name="formaPagamento"]');
+            if (formaPagamentoSelect) {
+                formaPagamentoSelect.value = 'transferencia';
+                formaPagamentoSelect.required = false; // Não precisa de forma de pagamento em transferência
+            }
+            // Garante que contaDestinataria está required
+            const contaDestinataria = form.querySelector('[name="contaDestinataria"]');
+            if (contaDestinataria) {
+                contaDestinataria.required = true;
+                form.querySelector('.transfer-only').style.display = 'block';
+            }
+          } else {
+            form.classList.remove('transfer');
+            // Restaura required da forma de pagamento
+            const formaPagamentoSelect = form.querySelector('select[name="formaPagamento"]');
+            if (formaPagamentoSelect) {
+                formaPagamentoSelect.required = true;
+            }
+            // Remove required do contaDestinataria
+            const contaDestinataria = form.querySelector('[name="contaDestinataria"]');
+            if (contaDestinataria) {
+                contaDestinataria.required = false;
+                contaDestinataria.setCustomValidity('');
+                contaDestinataria.value = '';
+                form.querySelector('.transfer-only').style.display = 'none';
+            }
+          }
+
+          // Animação
+          animateFields();
+        });
+      });
+      
+      // Estado inicial
+      document.querySelectorAll('form').forEach(form => {
+        const tipoInput = form.querySelector('input[name="tipoTransacao"]');
+        if (tipoInput) {
+          const type = tipoInput.value;
+          const option = form.querySelector(`.type-option[data-type="${type}"]`);
+          if (option) {
+            option.classList.add('active');
+            // Garante que os campos certos aparecem no load
             if (type === 'Transferência') {
               form.classList.add('transfer');
             } else {
               form.classList.remove('transfer');
             }
-            
-            // Set payment method defaults based on type
-            const paymentMethod = form.querySelector('select[name="formaPagamento"]');
-            if (paymentMethod) {
+            // Atualiza forma de pagamento no load também
+            const formaPagamentoSelect = form.querySelector('select[name="formaPagamento"]');
+            if (formaPagamentoSelect) {
               if (type === 'Despesa') {
-                paymentMethod.value = 'debito';
+                formaPagamentoSelect.value = 'debito';
               } else if (type === 'Receita') {
-                paymentMethod.value = 'dinheiro';
-              } else {
-                paymentMethod.value = 'transferencia';
+                formaPagamentoSelect.value = 'dinheiro';
+              } else if (type === 'Transferência') {
+                formaPagamentoSelect.value = 'transferencia';
               }
+              formaPagamentoSelect.dispatchEvent(new Event('change'));
             }
-          });
-          
-          // Animate the change
-          animateFields();
-        });
-      });
-      
-      // Set initial state
-      typeInputs.forEach(input => {
-        const type = input.value;
-        const form = input.closest('form');
-        const option = form.querySelector(`.type-option[data-type="${type}"]`);
-        
-        if (option) {
-          option.click();
+            // Garante required correto no load
+            const contaDestinataria = form.querySelector('[name="contaDestinataria"]');
+            if (contaDestinataria) {
+              contaDestinataria.required = (type === 'Transferência');
+            }
+          }
         }
       });
     };
   
-    // Handle status selection
+    /**
+     * Atualiza o status da transação no input hidden ao clicar no botão de status.
+     * Gerado pelo Copilot
+     */
     const setupStatusSelector = () => {
       const statusOptions = document.querySelectorAll('.status-option');
-      const statusInputs = document.querySelectorAll('select[name="statusTransacao"]');
       
       statusOptions.forEach(option => {
         option.addEventListener('click', function() {
           const status = this.getAttribute('data-status');
           const form = this.closest('form');
           
-          // Update visual state
+          // Atualiza visual
           form.querySelectorAll('.status-option').forEach(opt => opt.classList.remove('active'));
           this.classList.add('active');
           
-          // Update form state
-          form.querySelector('select[name="statusTransacao"]').value = status;
+          // Atualiza o input hidden do status
+          const statusInput = form.querySelector('input[name="statusTransacao"]');
+          if (statusInput) {
+            statusInput.value = status;
+          }
         });
       });
-      
-      // Set initial state
-      statusInputs.forEach(input => {
-        const status = input.value;
-        const form = input.closest('form');
-        const option = form.querySelector(`.status-option[data-status="${status}"]`);
-        
-        if (option) {
-          option.click();
+
+      // Estado inicial
+      document.querySelectorAll('form').forEach(form => {
+        const statusInput = form.querySelector('input[name="statusTransacao"]');
+        if (statusInput) {
+          const status = statusInput.value;
+          const option = form.querySelector(`.status-option[data-status="${status}"]`);
+          if (option) {
+            option.classList.add('active');
+          }
         }
       });
     };

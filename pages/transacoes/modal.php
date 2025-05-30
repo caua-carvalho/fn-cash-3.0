@@ -1,9 +1,105 @@
 <?php
-require 'script.php';
 require './contas/funcoes.php';
 require './categorias/funcoes.php';
 ?>
 
+<script src="transacoes/script.js"></script>
+<script>
+// Função para criar e mostrar toast
+function showToast(message, type = 'success', duration = 5000) {
+    const container = document.querySelector('.toast-container') || (() => {
+        const div = document.createElement('div');
+        div.className = 'toast-container';
+        document.body.appendChild(div);
+        return div;
+    })();
+
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    toast.innerHTML = `
+        <div class="toast-header">
+            <h4 class="toast-title">${type === 'success' ? 'Sucesso!' : 'Erro!'}</h4>
+            <button class="toast-close">&times;</button>
+        </div>
+        <p class="toast-message">${message}</p>
+        <div class="toast-progress">
+            <div class="toast-progress-bar"></div>
+        </div>
+    `;
+
+    container.appendChild(toast);
+
+    // Configura a barra de progresso
+    const progressBar = toast.querySelector('.toast-progress-bar');
+    progressBar.style.transition = `width ${duration}ms linear`;
+    
+    // Inicia a animação da barra
+    setTimeout(() => progressBar.style.width = '0%', 100);
+
+    // Configura o botão de fechar
+    toast.querySelector('.toast-close').onclick = () => {
+        toast.style.animation = 'slideOut 0.3s forwards';
+        setTimeout(() => toast.remove(), 300);
+    };
+
+    // Remove o toast automaticamente
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
+// Modifica o código do submit para usar o toast
+document.addEventListener('DOMContentLoaded', function() {
+    // Verifica se tem mensagem pendente no localStorage
+    const mensagemPendente = localStorage.getItem('toast_message');
+    const tipoMensagem = localStorage.getItem('toast_type');
+    
+    if (mensagemPendente) {
+        showToast(mensagemPendente, tipoMensagem || 'success');
+        localStorage.removeItem('toast_message');
+        localStorage.removeItem('toast_type');
+    }
+
+    document.querySelectorAll('form[action="transacoes.php"]').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            if (!form.checkValidity()) {
+                e.preventDefault(); // Previne envio só se inválido
+                form.classList.add('was-validated');
+
+                // Pega o primeiro campo inválido
+                let primeiroInvalido = Array.from(form.elements)
+                    .find(el => !el.checkValidity() && el.offsetParent !== null);
+
+                if (primeiroInvalido) {
+                    let aba = primeiroInvalido.closest('.tab-content')?.dataset.tab === 'details' 
+                        ? 'details' 
+                        : 'basic';
+                    
+                    trocarAba(form, aba);
+                    primeiroInvalido.classList.add('shake');
+                    setTimeout(() => primeiroInvalido.classList.remove('shake'), 600);
+                    primeiroInvalido.focus();
+                }
+            } else {
+                // Salva mensagem no localStorage antes de enviar
+                const acao = form.querySelector('input[name="acao"]').value;
+                let mensagem = 'Transação cadastrada com sucesso!';
+                
+                if (acao === 'editarTransacao') {
+                    mensagem = 'Transação atualizada com sucesso!';
+                } else if (acao === 'excluirTransacao') {
+                    mensagem = 'Transação excluída com sucesso!';
+                }
+
+                localStorage.setItem('toast_message', mensagem);
+                localStorage.setItem('toast_type', 'success');
+            }
+            // Se válido, deixa o form ser enviado naturalmente
+        });
+    });
+});
+</script>
 <!-- Nova Transação Modal -->
 <div class="modal fade" id="transacaoModal" tabindex="-1" aria-labelledby="transacaoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -64,9 +160,9 @@ require './categorias/funcoes.php';
                         <!-- Status da Transação -->
                         <h6 class="mb-3">Status</h6>
                         <div class="status-selector mb-4">
-                            <button type="button" class="status-option pending" data-status="Pendente">Pendente</button>
-                            <button type="button" class="status-option completed" data-status="Efetivada">Efetivada</button>
-                            <button type="button" class="status-option canceled" data-status="Cancelada">Cancelada</button>
+                            <button type="button" class="status-option pending" data-status="Pendente" value='Pendente'>Pendente</button>
+                            <button type="button" class="status-option completed" data-status="Efetivada" value='Efetivada'>Efetivada</button>
+                            <button type="button" class="status-option canceled" data-status="Cancelada" value='Cancelada'>Cancelada</button>
                         </div>
                         <input type="hidden" name="statusTransacao" value="Pendente">
                     </div>
@@ -74,7 +170,7 @@ require './categorias/funcoes.php';
                     <div class="tab-content" data-tab="details" style="display: none;">
                         <!-- Descrição da Transação -->
                         <div class="form-group">
-                            <textarea class="form-control" id="descricaoTransacao" name="descricaoTransacao" placeholder=" " rows="3"></textarea>
+                            <textarea class="form-control" id="descricaoTransacao" name="descricaoTransacao" placeholder=" " rows="3" required></textarea> <!-- Gerado pelo Copilot: agora é required -->
                             <label for="descricaoTransacao">Descrição</label>
                         </div>
 
@@ -110,7 +206,7 @@ require './categorias/funcoes.php';
 
                         <!-- Conta Destinatária (apenas para transferências) -->
                         <div class="form-group transfer-only">
-                            <select class="form-control" id="contaDestinataria" name="contaDestinataria">
+                            <select class="form-control" id="contaDestinataria" name="contaDestinataria" required> <!-- Adiciona required aqui -->
                                 <option value="" disabled selected></option>
                                 <?php
                                 if ($contas) {
@@ -222,7 +318,7 @@ require './categorias/funcoes.php';
                     <div class="tab-content" data-tab="details" style="display: none;">
                         <!-- Descrição da Transação -->
                         <div class="form-group">
-                            <textarea class="form-control" id="editarDescricaoTransacao" name="descricaoTransacao" placeholder=" " rows="3"></textarea>
+                            <textarea class="form-control" id="editarDescricaoTransacao" name="descricaoTransacao" placeholder=" " rows="3" required></textarea> <!-- Gerado pelo Copilot: agora é required -->
                             <label for="editarDescricaoTransacao">Descrição</label>
                         </div>
 
@@ -363,3 +459,6 @@ require './categorias/funcoes.php';
 <!-- Incorpore as folhas de estilo e scripts -->
 <link rel="stylesheet" href="transacoes/modal/modal.css">
 <script src="transacoes/modal/modal.js"></script>
+
+<!-- Adiciona CSS do toast -->
+<link rel="stylesheet" href="/assets/css/toast.css">

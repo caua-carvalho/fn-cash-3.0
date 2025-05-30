@@ -16,7 +16,7 @@ function obterTransacoes() {
             LEFT JOIN CONTA cr ON t.ID_ContaRemetente = cr.ID_Conta
             LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
             WHERE t.ID_Usuario = 1
-            ORDER BY t.Data DESC";
+            ORDER BY t.Id_Transacao DESC";
     $result = $conn->query($sql);
     $transacoes = array();
 
@@ -67,8 +67,28 @@ function obterSaldoConta($idConta) {
     return $saldo;
 }
 
+/**
+ * Função para logar erro no console do navegador via header customizado.
+ * Gerado pelo Copilot
+ */
+function logErroConsole($mensagem) {
+    header("X-Transacao-Erro: " . rawurlencode($mensagem));
+}
+
+/**
+ * Função para cadastrar uma nova transação com tratamento de erros detalhado.
+ * Gerado pelo Copilot
+ */
 function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPagamento, $data, $tipo, $status, $idCategoria, $idContaRemetente, $idContaDestinataria = null) {
     global $conn;
+
+    // Validação básica dos parâmetros
+    if (empty($titulo) || empty($valor) || empty($data) || empty($tipo) || empty($status) || empty($idContaRemetente)) {
+        $msg = "Parâmetros obrigatórios ausentes no cadastro de transação.";
+        logErroConsole($msg);
+        erro($msg);
+        return false;
+    }
 
     // Converte os valores para inteiros
     $idContaRemetente = intval($idContaRemetente);
@@ -76,27 +96,60 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPaga
 
     // Verifica se as contas são iguais em caso de transferência
     if ($tipo === 'Transferência' && $idContaRemetente === $idContaDestinataria) {
-        erro('Conta remetente e destinatária não podem ser iguais.');
-        exit;
+        $msg = 'Conta remetente e destinatária não podem ser iguais.';
+        logErroConsole($msg);
+        erro($msg);
+        return false;
     }
 
     // Verifica se a conta remetente existe
     $stmt = $conn->prepare("SELECT COUNT(*) FROM CONTA WHERE ID_Conta = ?");
+    if (!$stmt) {
+        $msg = "Erro ao preparar verificação de conta remetente: " . $conn->error;
+        logErroConsole($msg);
+        erro($msg);
+        return false;
+    }
     $stmt->bind_param("i", $idContaRemetente);
     $stmt->execute();
     $stmt->bind_result($contaRemetenteExiste);
     $stmt->fetch();
     $stmt->close();
 
-    if ($contaRemetenteExiste === 0) { // Verifica se a conta não existe
-        echo '<script>alert("Conta remetente inválida. ID = ' . htmlspecialchars($idContaRemetente) . '")</script>';
-        exit;
+    if ($contaRemetenteExiste === 0) {
+        $msg = "Conta remetente inválida. ID = " . htmlspecialchars($idContaRemetente);
+        logErroConsole($msg);
+        erro($msg);
+        return false;
+    }
+
+    // Validação específica para transferência
+    if ($tipo === 'Transferência') {
+        if (empty($idContaDestinataria)) {
+            $msg = "Transferência exige conta destinatária!";
+            logErroConsole($msg);
+            erro($msg);
+            return false;
+        }
+        // Em transferência, ignora forma de pagamento
+        $formaPagamento = 'transferencia';
     }
 
     // Verifica saldo para despesas ou transferências
-    if (($tipo === 'Despesa' || $tipo === 'Transferência') && obterSaldoConta($idContaRemetente) < $valor) {
-        erro("Saldo insuficiente na conta remetente.");
-        exit;
+    if (($tipo === 'Despesa' || $tipo === 'Transferência')) {
+        $saldoConta = obterSaldoConta($idContaRemetente);
+        if ($saldoConta === null) {
+            $msg = "Não foi possível obter o saldo da conta remetente.";
+            logErroConsole($msg);
+            erro($msg);
+            return false;
+        }
+        if ($saldoConta < $valor) {
+            $msg = "Saldo insuficiente na conta remetente.";
+            logErroConsole($msg);
+            erro($msg);
+            return false;
+        }
     }
 
     // Query SQL para inserir a transação
@@ -105,7 +158,10 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPaga
 
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
-        die("Erro ao preparar a declaração SQL: " . $conn->error);
+        $msg = "Erro ao preparar a declaração SQL: " . $conn->error;
+        logErroConsole($msg);
+        erro($msg);
+        return false;
     }
 
     $stmt->bind_param(
@@ -124,7 +180,10 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPaga
     );
 
     if (!$stmt->execute()) {
-        die("Erro ao executar a declaração SQL: " . $stmt->error);
+        $msg = "Erro ao executar a declaração SQL: " . $stmt->error;
+        logErroConsole($msg);
+        erro($msg);
+        return false;
     }
 
     return true;

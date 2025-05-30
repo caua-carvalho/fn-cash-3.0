@@ -1,9 +1,86 @@
 <?php
-require 'script.php';
 require './contas/funcoes.php';
 require './categorias/funcoes.php';
 ?>
 
+<script src="transacoes/script.js"></script>
+<script>
+// Gerado pelo Copilot
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('form[action="transacoes.php"]').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            // DEBUG: Mostra os dados do form
+            let debugData = [];
+            for (let [key, value] of new FormData(form).entries()) {
+                debugData.push(key + '=' + value);
+            }
+            alert('DEBUG: Dados enviados:\n' + debugData.join('\n')); // Só pra debug
+
+            // Validação manual dos campos obrigatórios
+            if (!form.checkValidity()) {
+                e.preventDefault(); // Só previne se for inválido!
+                form.classList.add('was-validated');
+
+                // Pega o primeiro campo inválido
+                let primeiroInvalido = Array.from(form.elements).find(el => !el.checkValidity() && el.offsetParent !== null);
+
+                // Se não achou, tenta achar mesmo que esteja oculto (ou seja, em outra aba)
+                if (!primeiroInvalido) {
+                    primeiroInvalido = Array.from(form.elements).find(el => !el.checkValidity());
+                }
+
+                // Descobre em qual aba está o campo inválido
+                if (primeiroInvalido) {
+                    let aba = 'basic';
+                    let tabContent = primeiroInvalido.closest('.tab-content');
+                    if (tabContent && tabContent.dataset.tab === 'details') {
+                        aba = 'details';
+                    }
+                    trocarAba(form, aba);
+
+                    // Dá shake no campo inválido
+                    primeiroInvalido.classList.add('shake');
+                    setTimeout(() => primeiroInvalido.classList.remove('shake'), 600);
+                    primeiroInvalido.focus();
+                }
+
+                // Dá shake nos outros campos inválidos também (só pra reforçar)
+                Array.from(form.elements).forEach(function(el) {
+                    if (!el.checkValidity()) {
+                        el.classList.add('shake');
+                        setTimeout(() => el.classList.remove('shake'), 600);
+                    }
+                });
+
+                return; // Não envia nada se inválido
+            }
+
+            // Se chegou aqui, deixa o submit seguir normalmente!
+            // Se quiser continuar usando fetch, tira o e.preventDefault() daqui!
+            // Se quiser usar o fetch, precisa fechar o modal manualmente e recarregar a página no .then
+
+            // Se for usar fetch:
+            e.preventDefault(); // Só aqui, se for usar fetch!
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: form.method,
+                body: formData
+            })
+            .then(async response => {
+                const erroHeader = response.headers.get('X-Transacao-Erro');
+                if (erroHeader) {
+                    alert('Erro ao cadastrar transação: ' + decodeURIComponent(erroHeader));
+                    return;
+                }
+                location.reload();
+            })
+            .catch(err => {
+                alert('Erro inesperado ao cadastrar transação.');
+            });
+        });
+    });
+});
+</script>
 <!-- Nova Transação Modal -->
 <div class="modal fade" id="transacaoModal" tabindex="-1" aria-labelledby="transacaoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -64,9 +141,9 @@ require './categorias/funcoes.php';
                         <!-- Status da Transação -->
                         <h6 class="mb-3">Status</h6>
                         <div class="status-selector mb-4">
-                            <button type="button" class="status-option pending" data-status="Pendente">Pendente</button>
-                            <button type="button" class="status-option completed" data-status="Efetivada">Efetivada</button>
-                            <button type="button" class="status-option canceled" data-status="Cancelada">Cancelada</button>
+                            <button type="button" class="status-option pending" data-status="Pendente" value='Pendente'>Pendente</button>
+                            <button type="button" class="status-option completed" data-status="Efetivada" value='Efetivada'>Efetivada</button>
+                            <button type="button" class="status-option canceled" data-status="Cancelada" value='Cancelada'>Cancelada</button>
                         </div>
                         <input type="hidden" name="statusTransacao" value="Pendente">
                     </div>
@@ -74,7 +151,7 @@ require './categorias/funcoes.php';
                     <div class="tab-content" data-tab="details" style="display: none;">
                         <!-- Descrição da Transação -->
                         <div class="form-group">
-                            <textarea class="form-control" id="descricaoTransacao" name="descricaoTransacao" placeholder=" " rows="3"></textarea>
+                            <textarea class="form-control" id="descricaoTransacao" name="descricaoTransacao" placeholder=" " rows="3" required></textarea> <!-- Gerado pelo Copilot: agora é required -->
                             <label for="descricaoTransacao">Descrição</label>
                         </div>
 
@@ -222,7 +299,7 @@ require './categorias/funcoes.php';
                     <div class="tab-content" data-tab="details" style="display: none;">
                         <!-- Descrição da Transação -->
                         <div class="form-group">
-                            <textarea class="form-control" id="editarDescricaoTransacao" name="descricaoTransacao" placeholder=" " rows="3"></textarea>
+                            <textarea class="form-control" id="editarDescricaoTransacao" name="descricaoTransacao" placeholder=" " rows="3" required></textarea> <!-- Gerado pelo Copilot: agora é required -->
                             <label for="editarDescricaoTransacao">Descrição</label>
                         </div>
 

@@ -1,98 +1,104 @@
-<?php
-function modalCreateConta() {
-  return '
-          <!-- Novo Conta Modal -->
-          <div class="modal fade" id="modalNovaConta" tabindex="-1" aria-labelledby="modalNovaContaLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                
-                <div class="modal-header">
-                  <h5 class="modal-title" id="modalNovaContaLabel">Cadastrar Nova Conta</h5>
-                  <button type="button" class="close" aria-label="Fechar" data-modal-close="#modalNovaConta">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                
-                <form action="contas.php" method="POST" class="needs-validation" novalidate>
-                  <input type="hidden" name="acao" value="cadastrarConta">
-                  <!-- guarda o tipo selecionado -->
-                  <input type="hidden" name="tipoConta" id="tipoContaHidden" value="Corrente">
+<!-- Novo Conta Modal -->
+<div class="modal fade" id="modalNovaConta" tabindex="-1" aria-labelledby="modalNovaContaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalNovaContaLabel">Cadastrar Nova Conta</h5>
+        <button type="button" class="close" aria-label="Fechar" data-modal-close="#modalNovaConta">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <form action="contas.php" method="POST" class="needs-validation" novalidate>
+        <input type="hidden" name="acao" value="cadastrarConta">
+        <!-- guarda o tipo selecionado -->
+        <input type="hidden" name="tipoConta" id="tipoContaHidden" value="Corrente">
 
-                  <div class="modal-body">
-                    <!-- Seletor visual de tipo -->
-                    <div class="type-selector mb-4">
-                      <div class="type-option" data-type="Corrente">
-                        <i class="fas fa-university type-icon"></i>
-                        <span class="type-name">Corrente</span>
-                      </div>
-                      <div class="type-option" data-type="Poupança">
-                        <i class="fas fa-piggy-bank type-icon"></i>
-                        <span class="type-name">Poupança</span>
-                      </div>
-                      <div class="type-option" data-type="Cartão de Crédito">
-                        <i class="fas fa-credit-card type-icon"></i>
-                        <span class="type-name">Cartão</span>
-                      </div>
-                      <div class="type-option" data-type="Investimento">
-                        <i class="fas fa-chart-line type-icon"></i>
-                        <span class="type-name">Investimento</span>
-                      </div>
-                    </div>
-
-                    <!-- Nome da Conta -->
-                    <div class="form-group mb-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="novaNomeConta"
-                        name="nomeConta"
-                        placeholder=" "
-                        required
-                      >
-                      <label for="novaNomeConta">Nome da Conta</label>
-                    </div>
-
-                    <!-- Saldo Inicial -->
-                    <div class="form-group mb-3 value-container">
-                      <input
-                        type="number"
-                        class="form-control"
-                        id="novaSaldoConta"
-                        name="saldoConta"
-                        placeholder=" "
-                        step="0.01"
-                        required
-                      >
-                      <label for="novaSaldoConta">Saldo Inicial</label>
-                    </div>
-
-                    <!-- Instituição -->
-                    <div class="form-group mb-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="novaInstituicaoConta"
-                        name="instituicaoConta"
-                        placeholder=" "
-                        required
-                      >
-                      <label for="novaInstituicaoConta">Instituição</label>
-                    </div>
-                  </div>
-                  
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-modal-close="#modalNovaConta">Cancelar</button>
-                    <button type="submit" class="btn btn-success">Salvar Conta</button>
-                  </div>
-                </form>
-
-              </div>
+        <div class="modal-body">
+          <!-- Seletor visual de tipo (mantido como grid de ícones) -->
+          <div class="type-selector mb-4">
+            <div class="type-option active" data-type="Corrente">
+              <i class="fas fa-university type-icon"></i>
+              <span class="type-name">Corrente</span>
+            </div>
+            <div class="type-option" data-type="Poupança">
+              <i class="fas fa-piggy-bank type-icon"></i>
+              <span class="type-name">Poupança</span>
+            </div>
+            <div class="type-option" data-type="Cartão de Crédito">
+              <i class="fas fa-credit-card type-icon"></i>
+              <span class="type-name">Cartão</span>
+            </div>
+            <div class="type-option" data-type="Investimento">
+              <i class="fas fa-chart-line type-icon"></i>
+              <span class="type-name">Investimento</span>
             </div>
           </div>
-  ';
-}
-?>
 
+          <!-- Nome da Conta -->
+          <div class="form-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="novaNomeConta"
+              name="nomeConta"
+              placeholder=" "
+              required
+            >
+            <label for="novaNomeConta">Nome da Conta</label>
+          </div>
+
+          <!-- Saldo Inicial -->
+          <div class="form-group mb-3 value-container">
+            <input
+              type="number"
+              class="form-control"
+              id="novaSaldoConta"
+              name="saldoConta"
+              placeholder=" "
+              step="0.01"
+              required
+            >
+            <label for="novaSaldoConta">Saldo Inicial</label>
+          </div>
+
+          <!-- Instituição -->
+          <div class="form-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="novaInstituicaoConta"
+              name="instituicaoConta"
+              placeholder=" "
+              required
+            >
+            <label for="novaInstituicaoConta">Instituição</label>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close="#modalNovaConta">Cancelar</button>
+          <button type="submit" class="btn btn-success">Salvar Conta</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- JS para ativar seleção de tipo -->
+<script>
+  document.querySelectorAll('#modalNovaConta .type-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document
+        .querySelectorAll('#modalNovaConta .type-option')
+        .forEach(x => x.classList.remove('active'));
+      opt.classList.add('active');
+      document.getElementById('tipoContaHidden').value = opt.dataset.type;
+    });
+  });
+</script>
 
 
 

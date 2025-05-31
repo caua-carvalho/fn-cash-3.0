@@ -3,7 +3,7 @@
    Estilos para os modais de “Contas” (Cadastrar, Editar, Excluir).
    Este arquivo DEVE ser carregado APÓS o style.css, pois faz
    uso exclusivo das variáveis (--*) definidas em style.css.
-
+   
    No <head> da sua página, certifique-se de ter:
    ------------------------------------------------------------
    <link rel="stylesheet" href="css/style.css">
@@ -14,10 +14,6 @@
 /*==============================================================================
   1) ANIMAÇÃO GERAL (fade-in)
 ==============================================================================*/
-.modal.fade .modal-dialog {
-  animation: fadeIn 0.4s var(--transition-timing);
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -29,6 +25,10 @@
   }
 }
 
+.modal.fade .modal-dialog {
+  animation: fadeIn 0.4s var(--transition-timing);
+}
+
 /*==============================================================================
   2) CONTAINER DO MODAL
 ==============================================================================*/
@@ -37,146 +37,79 @@
 }
 
 /*==============================================================================
-  3) “CAIXA” DO MODAL (modal-content)
+  3) TAMANHO DO MODAL (neste exemplo, reduzimos a largura para 450px 
+     e aumentamos a altura mínima para dar mais espaço interno)
 ==============================================================================*/
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 450px;        /* antes era 500px, agora fica mais estreito */
+    margin: var(--spacing-6) auto;
+  }
+}
+
+/* Se você quiser forçar uma altura mínima, pode aplicar em .modal-content */
 .modal-content {
-  background-color: var(--color-surface);
+  min-height: 600px;         /* aumenta a “altura útil” do modal */
+  display: flex;
+  flex-direction: column;
+  background-color: var(--base-clr);
   border-radius: var(--border-radius-md);
-  border: var(--border-width) solid var(--color-border);
+  box-shadow: 0 2px 10px var(--box-shadow-clr);
   overflow: hidden;
-  box-shadow: var(--shadow-md);
 }
 
 /*==============================================================================
-  4) CABEÇALHO DO MODAL
+  4) HEADER DO MODAL
 ==============================================================================*/
 .modal-header {
-  padding: var(--spacing-3) var(--spacing-3);
-  background-image: linear-gradient(
+  background: linear-gradient(
     135deg,
-    var(--color-primary-500),
-    var(--color-primary-400)
+    var(--accent-clr),
+    var(--hover-clr)
   );
-  color: var(--color-white);
-  position: relative;
+  color: var(--color-on-primary);
+  padding: var(--spacing-3) var(--spacing-4);
 }
 
 .modal-header .modal-title {
   margin: 0 auto;
   font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-base);
-  text-align: center;
+  font-weight: 600;
 }
 
-.modal-header .close {
-  position: absolute;
-  right: var(--spacing-4);
-  top: var(--spacing-4);
-  font-size: var(--font-size-xl);
-  color: var(--color-white);
-  background: transparent;
-  border: none;
+.modal-header .close,
+.modal-header .btn-close {
+  color: var(--color-on-primary);
   opacity: 0.8;
-  transition:
-    transform var(--transition-duration-fast) var(--transition-timing),
-    opacity  var(--transition-duration-fast) var(--transition-timing);
-}
-
-.modal-header .close:hover {
-  opacity: 1;
-  transform: rotate(90deg);
+  font-size: var(--font-size-xl);
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 /*==============================================================================
-  5) CORPO DO MODAL (modal-body)
-  — Área interna escurecida conforme desejado
+  5) CORPO DO MODAL
+     - Reorganizamos o seletor de tipo em um grid 2x2, cada “card” com tamanho fixo
+     - Garantimos que TODOS os inputs ocupem 100% da largura disponível
 ==============================================================================*/
 .modal-body {
-  padding: var(--spacing-3);
-  background-color: var(--color-background-alt);
-  color: var(--color-text);
-  font-size: var(--font-size-base);
-}
-
-/*==============================================================================
-  6) RODAPÉ DO MODAL
-==============================================================================*/
-.modal-footer {
-  padding: var(--spacing-3);
-  background-color: var(--color-background-alt);
+  padding: var(--spacing-4);
+  flex: 1; /* para que o modal-footer fique sempre “embaixo” */
   display: flex;
-  justify-content: flex-end;
-  gap: var(--spacing-2);
+  flex-direction: column;
+  gap: var(--spacing-4);
 }
 
-/*==============================================================================
-  7) FORM CONTROLS + FLOATING LABELS
-==============================================================================*/
-.form-group {
-  position: relative;
-  margin-bottom: var(--spacing-4);
-}
-
-.form-group .form-control {
-  width: 100%;
-  padding: var(--spacing-2) var(--spacing-3);
-  font-size: var(--font-size-base);
-  background-color: transparent;
-  border: 1px solid var(--color-primary-500);
-  border-radius: var(--border-radius-sm);
-  color: var(--color-white);
-  transition: border-color var(--transition-duration-fast) var(--transition-timing);
-}
-
-.form-group .form-control:focus {
-  outline: none;
-  border-color: var(--color-primary-400);
-}
-
-/* Label posicionado sobre o placeholder */
-.form-group label {
-  position: absolute;
-  top: var(--spacing-2);
-  left: var(--spacing-3);
-  font-size: var(--font-size-base);
-  color: var(--color-text-muted);
-  background-color: transparent;
-  pointer-events: none;
-  transition: all var(--transition-duration-fast) var(--transition-timing);
-  padding: 0 var(--spacing-1);
-}
-
-/* Faz o label “subir” quando há foco ou valor */
-.form-group .form-control:focus ~ label,
-.form-group .form-control:not(:placeholder-shown) ~ label,
-.form-group .form-control.has-value ~ label {
-  top: calc(-1 * var(--spacing-1));
-  left: var(--spacing-3);
-  background-color: var(--color-surface-dark);
-  font-size: var(--font-size-sm);
-  color: var(--color-primary-500);
-}
-
-/* Mensagem de feedback em caso de erro */
-.needs-validation .form-control:invalid ~ .invalid-feedback {
-  display: block;
-  color: var(--color-danger);
-  margin-top: var(--spacing-1);
-  font-size: var(--font-size-sm);
-}
-
-/*==============================================================================
-  8) SELETOR DE TIPO (botões Corrente / Poupança / Cartão / Investimento)
-==============================================================================*/
+/*===== 5.1) GRID 2x2 PARA OS CARDS DE SELEÇÃO DE TIPO =====*/
 .type-selector {
-  display: flex;
-  gap: var(--spacing-2);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3);
   margin-bottom: var(--spacing-4);
 }
 
+/* Cada “card” de tipo de conta ocupa 100% da célula do grid e tem altura fixa */
 .type-option {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -188,163 +121,73 @@
   color: var(--color-text);
   cursor: pointer;
   transition: all var(--transition-duration-fast) var(--transition-timing);
+  width: 100%;            /* ocupa 100% da coluna do grid */
+  height: 100px;          /* altura fixa para todos ficarem uniformes */
+}
+
+.type-option.active {
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-500);
 }
 
 .type-option:hover {
   border-color: var(--color-primary-400);
 }
 
+/* Ícone e texto dentro de cada card */
 .type-option .type-icon {
   font-size: var(--font-size-lg);
   margin-bottom: var(--spacing-1);
-  color: var(--color-text-muted);
-  transition: color var(--transition-duration-fast) var(--transition-timing);
+  color: var(--color-on-surface);
 }
 
 .type-option .type-name {
   font-size: var(--font-size-base);
-  color: var(--color-text-muted);
-  transition: color var(--transition-duration-fast) var(--transition-timing);
+  color: var(--color-on-surface);
 }
 
-/* Quando a opção estiver ativa: fundo verde + texto branco */
-.type-option.active {
-  background-color: var(--color-primary-500);
+/*===== 5.2) INPUTS OCUPANDO 100% DA LARGURA =====*/
+.modal-body .form-group {
+  width: 100%;
 }
 
-.type-option.active .type-icon,
-.type-option.active .type-name {
-  color: var(--color-white);
-}
-
-/*==============================================================================
-  9) ABAS (Dados Básicos / Detalhes)
-==============================================================================*/
-.tab-container {
-  display: flex;
-  border-bottom: 2px solid var(--color-primary-500);
-  margin-bottom: var(--spacing-3);
-  gap: var(--spacing-2);
-}
-
-.tab-btn {
-  background: transparent;
-  border: none;
-  color: var(--color-text);
+.modal-body .form-group .form-control {
+  width: 100%;
   padding: var(--spacing-2) var(--spacing-3);
-  font-size: var(--font-size-base);
-  cursor: pointer;
-  position: relative;
-  transition: color var(--transition-duration-fast) var(--transition-timing);
-}
-
-.tab-btn:hover {
-  color: var(--color-primary-400);
-}
-
-.tab-btn.active {
-  color: var(--color-primary-500);
-}
-
-/* Barra abaixo do botão ativo */
-.tab-btn.active::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background-color: var(--color-primary-500);
+  border: 1px solid var(--color-primary-500);
   border-radius: var(--border-radius-sm);
-}
-
-/* Conteúdo das abas: só fica visível quando tiver .active */
-.tab-content {
-  display: none;
-  margin-bottom: var(--spacing-4);
-}
-
-.tab-content.active {
-  display: block;
-  animation: fadeIn var(--transition-duration-fast) var(--transition-timing);
-}
-
-/*==============================================================================
- 10) EFEITO “SHAKE” NO MODAL DE EXCLUSÃO
-==============================================================================*/
-@keyframes shake {
-  0%   { transform: translateX(0); }
-  25%  { transform: translateX(-5px); }
-  50%  { transform: translateX(5px); }
-  75%  { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
-}
-
-#excluirContaModal .modal-content.shake {
-  animation: shake 0.6s var(--transition-timing);
-}
-
-/*==============================================================================
- 11) BOTÕES (Cancelar / Salvar / Cadastrar / Excluir)
-==============================================================================*/
-.btn-primary {
-  background-color: var(--color-primary-500);
-  border-color: var(--color-primary-500);
-  color: var(--color-white);
-  transition:
-    background-color var(--transition-duration-fast) var(--transition-timing),
-    border-color     var(--transition-duration-fast) var(--transition-timing);
-}
-
-.btn-primary:hover {
-  background-color: var(--color-primary-600);
-  border-color: var(--color-primary-600);
-}
-
-.btn-secondary {
   background-color: transparent;
-  border-color: var(--color-border);
   color: var(--color-text);
-  transition:
-    background-color var(--transition-duration-fast) var(--transition-timing),
-    border-color     var(--transition-duration-fast) var(--transition-timing);
+  transition: border-color var(--transition-duration-fast) var(--transition-timing);
 }
 
-.btn-secondary:hover {
-  background-color: var(--color-background-alt);
+.modal-body .form-group .form-control:focus {
+  outline: none;
+  border-color: var(--color-primary-400);
 }
 
-.btn-danger {
-  background-color: var(--color-danger);
-  border-color: var(--color-danger);
-  color: var(--color-white);
-  transition:
-    background-color var(--transition-duration-fast) var(--transition-timing),
-    border-color     var(--transition-duration-fast) var(--transition-timing);
+/* Se você estiver usando .form-floating, mantenha o behavior: */
+.modal-body .form-floating {
+  margin-bottom: var(--spacing-3);
 }
 
-.btn-danger:hover {
-  background-color: var(--color-danger-dark);
-  border-color: var(--color-danger-dark);
+.modal-body .form-floating .form-control {
+  width: 100%;
 }
 
-.btn-success {
-  background-color: var(--color-success);
-  border-color: var(--color-success);
-  color: var(--color-white);
-  transition:
-    background-color var(--transition-duration-fast) var(--transition-timing),
-    border-color     var(--transition-duration-fast) var(--transition-timing);
+.modal-body .form-floating .form-control::placeholder {
+  /* placeholder transparente para “flutuar” a label */
+  color: transparent;
 }
 
-.btn-success:hover {
-  background-color: var(--color-success-dark);
-  border-color: var(--color-success-dark);
+/* Mantém a label “flutuando” em cima do input */
+.modal-body .form-floating label {
+  color: var(--color-text-muted);
+  padding-left: var(--spacing-3);
 }
 
 /*==============================================================================
- 12) CAMPO “SALDO” COM PREFIXO “R$”
-      e correção de “appearance” para compatibilidade 
+  6) RÓTULO “SALDO” COM PREFIXO “R$”
 ==============================================================================*/
 .value-container {
   position: relative;
@@ -359,53 +202,56 @@
   color: var(--color-text-muted);
 }
 
-/* Aqui fazemos o reset de aparência do input numérico:
-   1) Propriedade padrão
-   2) Prefixos para navegadores antigos */
-.value-container input[type="number"] {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: textfield;
-  
-  padding-left: calc(var(--spacing-3) * 2);
+/*==============================================================================
+  7) FOOTER DO MODAL
+==============================================================================*/
+.modal-footer {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-top: 1px solid var(--color-line);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  background-color: var(--base-clr);
+}
+
+/* Botões padrão (Cancelar e Salvar/Excluir) */
+.modal-footer .btn {
+  min-width: 120px;
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--border-radius-round);
   font-size: var(--font-size-base);
+  font-weight: 500;
+}
+
+/* Estilização específica para botões secundário e primário */
+.modal-footer .btn-secondary {
   background-color: transparent;
   border: 1px solid var(--color-primary-500);
-  border-radius: var(--border-radius-sm);
-  color: var(--color-white);
-  box-sizing: border-box;
+  color: var(--color-text);
+  transition: background var(--transition-duration-fast) var(--transition-timing);
 }
 
-/* Remove “spinner” em WebKit/Chrome */
-.value-container input::-webkit-outer-spin-button,
-.value-container input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.modal-footer .btn-secondary:hover {
+  background-color: var(--color-primary-50);
 }
 
-.value-container label {
-  left: calc(var(--spacing-3) * 2);
+.modal-footer .btn-success {
+  background-color: var(--color-primary-500);
+  border: none;
+  color: var(--color-on-primary);
+  transition: background var(--transition-duration-fast) var(--transition-timing);
 }
 
-.value-container .form-control:focus ~ label,
-.value-container .form-control:not(:placeholder-shown) ~ label {
-  left: var(--spacing-3);
-  background-color: var(--color-surface-dark);
+.modal-footer .btn-success:hover {
+  background-color: var(--color-primary-600);
 }
 
 /*==============================================================================
- 13) RESPONSIVIDADE
+  8) MEDIA QUERIES (se precisar ajustar proporcionalmente)
 ==============================================================================*/
-@media (min-width: 576px) {
-  .modal-dialog {
-    max-width: 500px;
-    margin: var(--spacing-6) auto;
-  }
-}
-
-@media (min-width: 992px) {
-  .modal-lg,
-  .modal-xl {
-    max-width: 800px;
+@media (max-height: 600px) {
+  .modal-content {
+    min-height: auto; /* para telas muito baixas, libera altura fixa */
+    max-height: 90vh;
   }
 }

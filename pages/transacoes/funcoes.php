@@ -2,10 +2,14 @@
 // Incluir o cabeçalho
 require_once "../conexao.php";
 
-function obterTransacoes() {
+/**
+ * Busca transações filtrando por tipo, status e intervalo de datas.
+ * Corrigido: ignora filtros com valor 'all' ou vazio.
+ * Gerado pelo Copilot
+ */
+function obterTransacoes($tipo, $status, $dataInicial, $dataFinal) {
     global $conn;
-    // Gerado pelo Copilot
-    // Consulta transações com JOINs corretos e filtro por usuário
+
     $sql = "SELECT 
                 t.*, 
                 cr.ID_Conta AS ID_ContaRemetente, 
@@ -15,16 +19,54 @@ function obterTransacoes() {
             FROM TRANSACAO t
             LEFT JOIN CONTA cr ON t.ID_ContaRemetente = cr.ID_Conta
             LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
-            WHERE t.ID_Usuario = 1
-            ORDER BY t.Id_Transacao DESC";
-    $result = $conn->query($sql);
-    $transacoes = array();
+            WHERE t.ID_Usuario = 1";
+    $tipos = [];
+    $valores = [];
 
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $transacoes[] = $row;
-        }
+    // Só filtra se não for 'all' e não for vazio
+    if (!empty($tipo) && $tipo !== 'all') {
+        $sql .= " AND t.Tipo = ?";
+        $tipos[] = "s";
+        $valores[] = $tipo;
     }
+    if (!empty($status) && $status !== 'all') {
+        $sql .= " AND t.Status = ?";
+        $tipos[] = "s";
+        $valores[] = $status;
+    }
+    if (!empty($dataInicial)) {
+        $sql .= " AND t.Data >= ?";
+        $tipos[] = "s";
+        $valores[] = $dataInicial;
+    }
+    if (!empty($dataFinal)) {
+        $sql .= " AND t.Data <= ?";
+        $tipos[] = "s";
+        $valores[] = $dataFinal;
+    }
+
+    $sql .= " ORDER BY t.ID_Transacao DESC";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        logErroConsole("Erro ao preparar consulta de transações: " . $conn->error);
+        return [];
+    }
+
+    // Faz o bind dos parâmetros se houver filtros
+    if (count($valores) > 0) {
+        $stmt->bind_param(implode('', $tipos), ...$valores);
+    }
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $transacoes = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $transacoes[] = $row;
+    }
+
+    $stmt->close();
     return $transacoes;
 }
 

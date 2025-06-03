@@ -55,51 +55,54 @@ require_once '../conexao.php';
         </div>
     </div>
     
-    <!-- Filtros Avançados -->
-    <div class="filter-container slide-in-left mb-5">
-        <div class="filter-header">
-            <h3 class="filter-title">
+    <!-- Filtros Avançados - Gerado pelo Copilot -->
+    <div class="filter-container-minimal slide-in-left mb-5">
+        <div class="filter-header-minimal">
+            <h3 class="filter-title-minimal">
                 <i class="fas fa-filter me-2"></i> Filtros
             </h3>
-            <button class="btn-action" id="toggleFilter">
+            <button class="btn-action btn-action-minimal" id="toggleFilter">
                 <i class="fas fa-chevron-down"></i>
             </button>
         </div>
-        
-        <div class="filter-content mt-4" style="display: none;">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="form-group mb-3">
-                    <label class="form-label">Tipo</label>
-                    <div class="status-selector mb-0">
-                        <button type="button" class="status-option active" data-filter="all">Todos</button>
-                        <button type="button" class="status-option income" data-filter="Receita">Receitas</button>
-                        <button type="button" class="status-option expense" data-filter="Despesa">Despesas</button>
-                        <button type="button" class="status-option transfer" data-filter="Transferência">Transferências</button>
+        <div class="filter-content-minimal mt-4" style="display: none;">
+            <form class="filter-form-minimal grid grid-cols-1 md:grid-cols-3 gap-4" id="formFiltros" method="get">
+                <!-- Tipo -->
+                <div class="form-group-minimal">
+                    <label class="form-label-minimal">Tipo</label>
+                    <div class="status-selector-minimal" id="filtroTipo">
+                        <button type="button" class="status-option-minimal<?php echo ($_GET['tipo'] ?? 'all') === 'all' ? ' active' : ''; ?>" data-filter="all">Todos</button>
+                        <button type="button" class="status-option-minimal income<?php echo ($_GET['tipo'] ?? '') === 'Receita' ? ' active' : ''; ?>" data-filter="Receita">Receitas</button>
+                        <button type="button" class="status-option-minimal expense<?php echo ($_GET['tipo'] ?? '') === 'Despesa' ? ' active' : ''; ?>" data-filter="Despesa">Despesas</button>
+                        <button type="button" class="status-option-minimal transfer<?php echo ($_GET['tipo'] ?? '') === 'Transferência' ? ' active' : ''; ?>" data-filter="Transferência">Transferências</button>
+                    </div>
+                    <input type="hidden" name="tipo" id="inputTipo" value="<?php echo htmlspecialchars($_GET['tipo'] ?? 'all'); ?>">
+                </div>
+                <!-- Status -->
+                <div class="form-group-minimal">
+                    <label class="form-label-minimal">Status</label>
+                    <div class="status-selector-minimal" id="filtroStatus">
+                        <button type="button" class="status-option-minimal<?php echo ($_GET['status'] ?? 'all') === 'all' ? ' active' : ''; ?>" data-filter="all">Todos</button>
+                        <button type="button" class="status-option-minimal pending<?php echo ($_GET['status'] ?? '') === 'Pendente' ? ' active' : ''; ?>" data-filter="Pendente">Pendentes</button>
+                        <button type="button" class="status-option-minimal completed<?php echo ($_GET['status'] ?? '') === 'Efetivada' ? ' active' : ''; ?>" data-filter="Efetivada">Efetivadas</button>
+                        <button type="button" class="status-option-minimal canceled<?php echo ($_GET['status'] ?? '') === 'Cancelada' ? ' active' : ''; ?>" data-filter="Cancelada">Canceladas</button>
+                    </div>
+                    <input type="hidden" name="status" id="inputStatus" value="<?php echo htmlspecialchars($_GET['status'] ?? 'all'); ?>">
+                </div>
+                <!-- Período -->
+                <div class="form-group-minimal">
+                    <label class="form-label-minimal">Período</label>
+                    <div class="periodo-inputs-minimal flex-col flex gap-1">
+                        <input type="date" class="form-control-minimal" name="data_inicio" id="inputDataInicio" placeholder="Data inicial"
+                            value="<?php echo htmlspecialchars($_GET['data_inicio'] ?? ''); ?>">
+                        <input type="date" class="form-control-minimal" name="data_fim" id="inputDataFim" placeholder="Data final"
+                            value="<?php echo htmlspecialchars($_GET['data_fim'] ?? ''); ?>">
                     </div>
                 </div>
-                
-                <div class="form-group mb-3">
-                    <label class="form-label">Status</label>
-                    <div class="status-selector mb-0">
-                        <button type="button" class="status-option active" data-filter="all">Todos</button>
-                        <button type="button" class="status-option pending" data-filter="Pendente">Pendentes</button>
-                        <button type="button" class="status-option completed" data-filter="Efetivada">Efetivadas</button>
-                        <button type="button" class="status-option canceled" data-filter="Cancelada">Canceladas</button>
-                    </div>
-                </div>
-                
-                <div class="form-group mb-3">
-                    <label class="form-label">Período</label>
-                    <div class="flex gap-3">
-                        <input type="date" class="form-control" placeholder="Data inicial">
-                        <input type="date" class="form-control" placeholder="Data final">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="flex justify-end mt-4">
-                <button class="btn btn-secondary me-2">Limpar Filtros</button>
-                <button class="btn btn-primary">Aplicar Filtros</button>
+            </form>
+            <div class="flex justify-end mt-4 gap-2">
+                <button class="btn btn-secondary btn-minimal me-2" id="btnLimparFiltros" type="button">Limpar</button>
+                <button class="btn btn-primary btn-minimal" id="btnFiltrar" type="submit" form="formFiltros">Filtrar</button>
             </div>
         </div>
     </div>
@@ -136,7 +139,22 @@ require_once '../conexao.php';
             </thead>
             <tbody>
                 <?php
-                $transacoes = obterTransacoes();
+                // Gerado pelo Copilot
+
+                $tipoFiltro = $_GET['tipo'] ?? 'all';
+                $statusFiltro = $_GET['status'] ?? 'all';
+
+                // Corrigido: só aplica filtro de data se o parâmetro EXISTIR E NÃO FOR VAZIO E NÃO FOR IGUAL À DATA DE HOJE
+                function dataFiltroValida($param) {
+                    if (!isset($_GET[$param]) || $_GET[$param] === '') return null;
+                    $hoje = date('Y-m-d');
+                    return ($_GET[$param] === $hoje) ? null : $_GET[$param];
+                }
+
+                $dataInicioFiltro = dataFiltroValida('data_inicio');
+                $dataFimFiltro = dataFiltroValida('data_fim');
+
+                $transacoes = obterTransacoes($tipoFiltro, $statusFiltro, $dataInicioFiltro, $dataFimFiltro);
                 
                 if (empty($transacoes)) {
                     echo '<tr><td colspan="8">';
@@ -272,107 +290,79 @@ require_once '../conexao.php';
 
 <!-- JavaScript para funcionalidades adicionais -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Toggle para filtros
-    const toggleFilterBtn = document.getElementById('toggleFilter');
-    const filterContent = document.querySelector('.filter-content');
-    
-    toggleFilterBtn.addEventListener('click', function() {
-        filterContent.style.display = filterContent.style.display === 'none' ? 'block' : 'none';
-        toggleFilterBtn.querySelector('i').classList.toggle('fa-chevron-down');
-        toggleFilterBtn.querySelector('i').classList.toggle('fa-chevron-up');
-    });
-    
-    // Funcionalidades originais dos modais de edição e exclusão
-    const editarButtons = document.querySelectorAll('[data-target="#editarTransacaoModal"]');
-    editarButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Obter atributos do botão clicado
-            const id = this.getAttribute('data-id');
-            const titulo = this.getAttribute('data-titulo');
-            const descricao = this.getAttribute('data-descricao');
-            const valor = this.getAttribute('data-valor');
-            const data = this.getAttribute('data-data');
-            const tipo = this.getAttribute('data-tipo');
-            const status = this.getAttribute('data-status');
-            const contaRemetenteId = this.getAttribute('data-conta-remetente-id');
-            const contaDestinatariaId = this.getAttribute('data-conta-destinataria-id');
+// Gerado pelo Copilot
 
-            // Preencher os campos do modal
-            document.getElementById('editarTransacaoId').value = id;
-            document.getElementById('editarTituloTransacao').value = titulo;
-            document.getElementById('editarDescricaoTransacao').value = descricao;
-            document.getElementById('editarValorTransacao').value = valor;
-            document.getElementById('editarDataTransacao').value = data;
-            
-            // Selecionar tipo de transação
-            const tipoOptions = document.querySelectorAll('#editarTransacaoModal .type-option');
-            tipoOptions.forEach(option => {
-                if(option.getAttribute('data-type') === tipo) {
-                    option.classList.add('active');
-                } else {
-                    option.classList.remove('active');
-                }
-            });
-            document.getElementById('editarTipoTransacao').value = tipo;
-            
-            // Selecionar status
-            const statusOptions = document.querySelectorAll('#editarTransacaoModal .status-option');
-            statusOptions.forEach(option => {
-                if(option.getAttribute('data-status') === status) {
-                    option.classList.add('active');
-                } else {
-                    option.classList.remove('active');
-                }
-            });
-            document.getElementById('editarStatusTransacao').value = status;
-            
-            // Selecionar contas
-            document.getElementById('editarContaRemetente').value = contaRemetenteId;
-            
-            // Exibe ou oculta o campo "Conta Destinatária" com base no tipo de transação
-            const contaDestinatariaGroup = document.getElementById('editarContaDestinataria').parentElement;
-            if (tipo === 'Transferência') {
-                contaDestinatariaGroup.style.display = 'block';
-                document.getElementById('editarContaDestinataria').required = true;
-                document.getElementById('editarContaDestinataria').value = contaDestinatariaId;
-            } else {
-                contaDestinatariaGroup.style.display = 'none';
-                document.getElementById('editarContaDestinataria').required = false;
-            }
-        });
-    });
-
-    // Modal de exclusão
-    const excluirButtons = document.querySelectorAll('[data-target="#excluirTransacaoModal"]');
-    excluirButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            const titulo = this.getAttribute('data-titulo');
-            
-            document.getElementById('excluirTransacaoId').value = id;
-            document.getElementById('transacaoTituloExcluir').textContent = titulo;
-        });
-    });
-    
-    // Filtros de tipo de transação
-    const filterButtons = document.querySelectorAll('[data-filter]');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const filter = this.getAttribute('data-filter');
-            const parentGroup = this.closest('.form-group');
-            
-            // Remove a classe 'active' de todos os botões do mesmo grupo
-            parentGroup.querySelectorAll('.status-option').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Adiciona a classe 'active' ao botão clicado
+// Função para ativar grupo de botões de filtro
+function ativarFiltroGrupo(grupoId, inputId) {
+    const grupo = document.getElementById(grupoId);
+    const input = document.getElementById(inputId);
+    if (!grupo || !input) return;
+    grupo.querySelectorAll('.status-option-minimal').forEach(btn => {
+        btn.addEventListener('click', function () {
+            grupo.querySelectorAll('.status-option-minimal').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            
-            // Aqui implementaria a lógica de filtro
-            console.log('Filtrar por:', filter);
+            input.value = this.getAttribute('data-filter');
         });
+    });
+}
+
+// Função para limpar filtros
+function limparFiltros() {
+    document.getElementById('inputTipo').value = 'all';
+    document.querySelectorAll('#filtroTipo .status-option-minimal').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === 0);
+    });
+    document.getElementById('inputStatus').value = 'all';
+    document.querySelectorAll('#filtroStatus .status-option-minimal').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === 0);
+    });
+    document.getElementById('inputDataInicio').value = '';
+    document.getElementById('inputDataFim').value = '';
+}
+
+// Função para remover campos vazios antes de submeter (evita poluir a URL)
+function removerCamposVaziosDoForm(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    // Remove name dos inputs de data se estiverem vazios
+    const dataInicio = document.getElementById('inputDataInicio');
+    const dataFim = document.getElementById('inputDataFim');
+    if (dataInicio && !dataInicio.value) dataInicio.removeAttribute('name');
+    if (dataFim && !dataFim.value) dataFim.removeAttribute('name');
+}
+
+// Inicialização dos filtros ao carregar a página
+document.addEventListener('DOMContentLoaded', function () {
+    // Toggle para filtros minimalistas
+    const toggleFilterBtn = document.getElementById('toggleFilter');
+    const filterContent = document.querySelector('.filter-content-minimal');
+    if (toggleFilterBtn && filterContent) {
+        toggleFilterBtn.addEventListener('click', function () {
+            if (filterContent.style.display === 'none' || filterContent.style.display === '') {
+                filterContent.style.display = 'block';
+            } else {
+                filterContent.style.display = 'none';
+            }
+            toggleFilterBtn.querySelector('i').classList.toggle('fa-chevron-down');
+            toggleFilterBtn.querySelector('i').classList.toggle('fa-chevron-up');
+        });
+    }
+
+    ativarFiltroGrupo('filtroTipo', 'inputTipo');
+    ativarFiltroGrupo('filtroStatus', 'inputStatus');
+
+    // Submit do filtro ao clicar em "Filtrar"
+    document.getElementById('btnFiltrar').addEventListener('click', function (e) {
+        e.preventDefault();
+        removerCamposVaziosDoForm('formFiltros'); // Só envia o que o usuário preencheu
+        document.getElementById('formFiltros').submit();
+    });
+
+    // Limpar filtros e submeter
+    document.getElementById('btnLimparFiltros').addEventListener('click', function () {
+        limparFiltros();
+        removerCamposVaziosDoForm('formFiltros');
+        document.getElementById('formFiltros').submit();
     });
 });
 </script>

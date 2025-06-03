@@ -2,7 +2,8 @@
 // Processamento dos formulários - DEVE vir antes de qualquer saída HTML
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once dirname(__FILE__, 1) . '/contas/funcoes.php';
-    
+    session_start();
+
     // Verifica se a ação foi definida
     $acao = $_POST['acao'] ?? null;
 
@@ -61,6 +62,10 @@ require_once 'sidebar.php';
 require_once 'contas/modal.php';
 require_once 'contas/funcoes.php';
 require_once 'dialog.php';
+
+$contas = obterContas();
+$totalSaldo = array_sum(array_column($contas, 'Saldo'));
+$count = count($contas);
 ?>
 
 <!-- Aqui começa o conteúdo principal -->
@@ -80,202 +85,267 @@ require_once 'dialog.php';
 
         <!-- Cards de Resumo -->
         <div class="d-flex justify-between gap-4 mt-5">
-            <?php
-            $totalSaldo = 0;
-            $contas = obterContas();
-            foreach ($contas as $conta) {
-                $totalSaldo += $conta['Saldo'];
-            }
-            ?>
-
             <div class="summary-card income fade-in animation-delay-100 w-full">
                 <span class="summary-label">Saldo Total</span>
                 <div class="d-flex justify-between items-center">
-                    <h3 class="summary-value income">R$ <?php echo number_format($totalSaldo, 2, ',', '.'); ?></h3>
+                    <h3 class="summary-value income">
+                        R$ <?php echo number_format($totalSaldo, 2, ',', '.'); ?>
+                    </h3>
                 </div>
             </div>
 
             <div class="summary-card expense fade-in animation-delay-200 w-full">
                 <span class="summary-label">Total de Contas</span>
                 <div class="d-flex justify-between items-center">
-                    <h3 class="summary-value"><?php echo count($contas); ?></h3>
+                    <h3 class="summary-value"><?php echo $count; ?></h3>
                 </div>
             </div>
 
             <div class="summary-card balance fade-in animation-delay-300 w-full">
                 <span class="summary-label">Saldo Médio</span>
                 <div class="d-flex justify-between items-center">
-                    <h3 class="summary-value">R$
-                        <?php echo count($contas) > 0 ? number_format($totalSaldo / count($contas), 2, ',', '.') : '0,00'; ?>
+                    <h3 class="summary-value">
+                        R$ <?php echo $count > 0 ? number_format($totalSaldo / $count, 2, ',', '.') : '0,00'; ?>
                     </h3>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tabela de Contas -->
-    <div class="transaction-table-container fade-in-up">
+    <!-- Barra de Pesquisa e Filtro por Tipo -->
+    <div class="flex justify-between items-center mb-6 px-4">
+        <input
+            type="search"
+            id="searchConta"
+            class="form-control w-64"
+            placeholder="🔍 Buscar conta"
+        />
+        <select id="filterTipo" class="form-control w-48">
+            <option value="">Todos os tipos</option>
+            <option value="Corrente">Corrente</option>
+            <option value="Poupança">Poupança</option>
+            <option value="Cartão de Crédito">Cartão de Crédito</option>
+            <option value="Investimento">Investimento</option>
+            <option value="Outros">Outros</option>
+        </select>
+    </div>
+
+    <!-- Grid de Cards de Contas -->
+    <div class="fade-in-up">
         <div class="p-4 flex justify-between items-center border-bottom">
             <h4 class="font-semibold m-0">Suas Contas</h4>
             <div class="flex gap-2">
                 <button class="btn-action" title="Exportar para Excel">
                     <i class="fas fa-file-excel"></i>
                 </button>
-                <button class="btn-action" title="Imprimir">
-                    <i class="fas fa-print"></i>
-                </button>
             </div>
         </div>
 
-        <table class="transaction-table">
-            <thead>
-                <tr>
-                    <th width="25%">Nome</th>
-                    <th width="15%">Tipo</th>
-                    <th width="20%">Saldo</th>
-                    <th width="25%">Instituição</th>
-                    <th width="15%" class="text-center">Ações</th>
-                </tr>
-            </thead>
-            <tbody id="tabelaContas">
+        <?php if (empty($contas)): ?>
+            <div class="empty-state my-5 text-center">
+                <i class="fas fa-wallet empty-state__icon"></i>
+                <h3 class="empty-state__title">Nenhuma conta encontrada</h3>
+                <p class="empty-state__description">
+                    Comece a registrar suas contas financeiras para visualizá-las aqui.
+                </p>
+                <button class="btn btn-primary btn-icon" data-modal-open="#contaModal">
+                    <i class="fas fa-plus me-2"></i> Criar Primeira Conta
+                </button>
+            </div>
+        <?php else: ?>
+            <div id="contasGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
                 <?php
-                if (empty($contas)) {
-                    echo '<tr><td colspan="5">';
-                    echo '<div class="empty-state my-5">';
-                    echo '<i class="fas fa-wallet empty-state__icon"></i>';
-                    echo '<h3 class="empty-state__title">Nenhuma conta encontrada</h3>';
-                    echo '<p class="empty-state__description">Comece a registrar suas contas financeiras para visualizá-las aqui.</p>';
-                    echo '<button class="btn btn-primary btn-icon" data-modal-open="#contaModal">';
-                    echo '<i class="fas fa-plus me-2"></i> Criar Primeira Conta';
-                    echo '</button>';
-                    echo '</div>';
-                    echo '</td></tr>';
-                } else {
-                    $delay = 100;
-                    foreach ($contas as $conta) {
-                        // Determina as classes para tipo de conta
-                        $tipoBadgeClass = 'badge-info';
-                        if ($conta['Tipo'] === 'Corrente') {
-                            $tipoBadgeClass = 'badge-primary';
-                        } elseif ($conta['Tipo'] === 'Poupança') {
-                            $tipoBadgeClass = 'badge-income';
-                        } elseif ($conta['Tipo'] === 'Cartão de Crédito') {
-                            $tipoBadgeClass = 'badge-expense';
-                        }
-
-                        $icone = obterIconeTipoConta($conta['Tipo']);
-
-                        echo "<tr class='fade-in-up' style='animation-delay: {$delay}ms'>";
-                        echo "<td class='font-medium'>" . htmlspecialchars($conta['Nome']) . "</td>";
-
-                        // Badge para o tipo de conta
-                        echo "<td><span class='badge {$tipoBadgeClass}'>" .
-                            "<i class='fas {$icone} me-1'></i>" .
-                            htmlspecialchars($conta['Tipo']) . "</span></td>";
-
-                        // Formata saldo
-                        echo "<td class='font-semibold'>" .
-                            "R$ " . number_format($conta['Saldo'], 2, ',', '.') .
-                            "</td>";
-
-                        echo "<td>" . htmlspecialchars($conta['Instituicao']) . "</td>";
-
-                        // Botões de ação
-                        echo "<td>";
-                        echo "<div class='flex justify-center gap-2'>";
-
-                        // Botão de editar
-                        echo "<button class='btn-action edit' title='Editar' data-modal-open='#editarContaModal'
-                            data-id='" . $conta['ID_Conta'] . "'
-                            data-nome='" . htmlspecialchars($conta['Nome']) . "'
-                            data-tipo='" . $conta['Tipo'] . "'
-                            data-saldo='" . $conta['Saldo'] . "'
-                            data-instituicao='" . htmlspecialchars($conta['Instituicao']) . "'>
-                            <i class='fas fa-edit'></i>
-                            </button>";
-
-                        // Botão de excluir
-                        echo "<button class='btn-action delete' title='Excluir' data-modal-open='#excluirContaModal'
-                            data-id='" . $conta['ID_Conta'] . "'
-                            data-nome='" . htmlspecialchars($conta['Nome']) . "'>
-                            <i class='fas fa-trash-alt'></i>
-                            </button>";
-
-                        echo "</div>";
-                        echo "</td>";
-                        echo "</tr>";
-
-                        $delay += 50; // Incrementa o delay para o próximo item
+                $delay = 100;
+                foreach ($contas as $conta):
+                    // Classes de borda e badge conforme Tipo de Conta
+                    switch ($conta['Tipo']) {
+                        case 'Corrente':
+                            $borderClass = 'border-corrente';
+                            $badgeClass  = 'badge-corrente';
+                            break;
+                        case 'Poupança':
+                            $borderClass = 'border-poupanca';
+                            $badgeClass  = 'badge-poupanca';
+                            break;
+                        case 'Cartão de Crédito':
+                            $borderClass = 'border-credit-card';
+                            $badgeClass  = 'badge-credit-card';
+                            break;
+                        case 'Investimento':
+                            $borderClass = 'border-investimento';
+                            $badgeClass  = 'badge-investimento';
+                            break;
+                        default:
+                            $borderClass = 'border-outros';
+                            $badgeClass  = 'badge-outros';
                     }
-                }
                 ?>
-            </tbody>
-        </table>
+                <div
+                  class="account-card <?= $borderClass ?> fade-in-up animation-delay-<?= $delay ?> p-4"
+                  data-tipo="<?= htmlspecialchars($conta['Tipo']) ?>"
+                >
+                  <!-- Cabeçalho do card: badge de tipo + nome -->
+                  <div class="account-card__header">
+                    <span class="badge-type <?= $badgeClass ?>">
+                      <?= htmlspecialchars($conta['Tipo']) ?>
+                    </span>
+                    <h3 class="account-card__title">
+                      <?= htmlspecialchars($conta['Nome']) ?>
+                    </h3>
+                  </div>
+
+                  <!-- Detalhes ocultos por padrão -->
+                  <div class="account-card__details">
+                    <div class="account-card__balance">
+                      <strong>Saldo:</strong> R$ <?= number_format($conta['Saldo'], 2, ',', '.') ?>
+                    </div>
+                    <p class="account-card__info">
+                      <strong>Instituição:</strong> <?= htmlspecialchars($conta['Instituicao']) ?>
+                    </p>
+                    <div class="flex justify-end gap-2 mt-4">
+                      <button
+                        class="btn-action edit"
+                        data-modal-open="#editarContaModal"
+                        data-id="<?= $conta['ID_Conta'] ?>"
+                        data-nome="<?= htmlspecialchars($conta['Nome']) ?>"
+                        data-tipo="<?= $conta['Tipo'] ?>"
+                        data-saldo="<?= $conta['Saldo'] ?>"
+                        data-instituicao="<?= htmlspecialchars($conta['Instituicao']) ?>"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button
+                        class="btn-action delete"
+                        data-modal-open="#excluirContaModal"
+                        data-id="<?= $conta['ID_Conta'] ?>"
+                        data-nome="<?= htmlspecialchars($conta['Nome']) ?>"
+                      >
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <?php
+                    $delay += 50;
+                endforeach;
+                ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Paginação semelhante a Transações -->
+        <div class="flex justify-between items-center mt-5 px-4">
+          <div class="text-muted">
+            Mostrando 1-10 de <?= $count ?> contas
+          </div>
+          <nav aria-label="Navegação de páginas">
+            <ul class="pagination">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Anterior">
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Próxima">
+                  <i class="fas fa-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
     </div>
 </div>
 
 <!-- Modal de Nova Conta -->
-    <div class="modal fade" id="contaModal" tabindex="-1" aria-labelledby="contaModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="contaModalLabel">Nova Conta</h5>
-                    <button type="button" class="close" data-modal-close aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="' . htmlspecialchars($caminhoForm) . '" method="POST" autocomplete="off">
-                    <input type="hidden" name="acao" value="cadastrarConta">
-                    <div class="modal-body">
-                        <!-- Tipo de Conta -->
-                        <div class="form-group">
-                            <label class="form-label" for="tipoConta">Tipo de Conta</label>
-                            <select class="form-control" id="tipoConta" name="tipoConta" required>
-                                <option value="Corrente">Corrente</option>
-                                <option value="Poupança">Poupança</option>
-                                <option value="Cartão de Crédito">Cartão de Crédito</option>
-                                <option value="Investimento">Investimento</option>
-                                <option value="Outros">Outros</option>
-                            </select>
-                        </div>
-                        <!-- Nome da Conta -->
-                        <div class="form-group">
-                            <label class="form-label" for="nomeConta">Nome da Conta</label>
-                            <input type="text" class="form-control" id="nomeConta" name="nomeConta" required placeholder="Digite o nome da conta">
-                        </div>
-                        <!-- Saldo Inicial -->
-                        <div class="form-group value-container">
-                            <label class="form-label" for="saldoConta">Saldo Inicial</label>
-                            <input type="number" class="form-control" id="saldoConta" name="saldoConta" step="0.01" required placeholder="0,00">
-                        </div>
-                        <!-- Instituição Financeira -->
-                        <div class="form-group">
-                            <label class="form-label" for="instituicaoConta">Instituição Financeira</label>
-                            <input type="text" class="form-control" id="instituicaoConta" name="instituicaoConta" required placeholder="Ex: Nubank, Itaú...">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-modal-close>Cancelar</button>
-                        <button type="submit" class="btn btn-success">Salvar</button>
-                    </div>
-                </form>
+<div class="modal fade" id="contaModal" tabindex="-1" aria-labelledby="contaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nova Conta</h5>
+                <button type="button" class="close" data-modal-close aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
+            <form action="contas.php" method="POST" autocomplete="off">
+                <input type="hidden" name="acao" value="cadastrarConta">
+                <div class="modal-body">
+                    <!-- Tipo de Conta -->
+                    <div class="form-group">
+                        <label class="form-label" for="tipoConta">Tipo de Conta</label>
+                        <select class="form-control" id="tipoConta" name="tipoConta" required>
+                            <option value="Corrente">Corrente</option>
+                            <option value="Poupança">Poupança</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Investimento">Investimento</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <!-- Nome da Conta -->
+                    <div class="form-group">
+                        <label class="form-label" for="nomeConta">Nome da Conta</label>
+                        <input type="text" class="form-control" id="nomeConta" name="nomeConta" required placeholder="Digite o nome da conta">
+                    </div>
+                    <!-- Saldo Inicial -->
+                    <div class="form-group">
+                        <label class="form-label" for="saldoConta">Saldo Inicial</label>
+                        <input type="number" class="form-control" id="saldoConta" name="saldoConta" step="0.01" required placeholder="0,00">
+                    </div>
+                    <!-- Instituição Financeira -->
+                    <div class="form-group">
+                        <label class="form-label" for="instituicaoConta">Instituição Financeira</label>
+                        <input type="text" class="form-control" id="instituicaoConta" name="instituicaoConta" required placeholder="Ex: Nubank, Itaú...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-modal-close>Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Toggle filtro
-        const toggleBtn = document.getElementById('toggleFilter');
-        const filterContent = document.querySelector('.filter-content');
+        // Abrir modais ao clicar nos botões
+        document.querySelectorAll('[data-modal-open]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modal = document.querySelector(btn.getAttribute('data-modal-open'));
+                const bsModal = new bootstrap.Modal(modal);
+                bsModal.show();
+            });
+        });
 
-        if (toggleBtn && filterContent) {
-            toggleBtn.addEventListener('click', function () {
-                const isVisible = filterContent.style.display !== 'none';
-                filterContent.style.display = isVisible ? 'none' : 'block';
-                toggleBtn.querySelector('i').classList.toggle('fa-chevron-down', isVisible);
-                toggleBtn.querySelector('i').classList.toggle('fa-chevron-up', !isVisible);
+        // Filtragem por pesquisa e tipo
+        const searchInput = document.getElementById('searchConta');
+        const filterSelect = document.getElementById('filterTipo');
+        const cards = document.querySelectorAll('.account-card');
+
+        function filtrarContas() {
+            const termo = searchInput.value.toLowerCase();
+            const tipoSelecionado = filterSelect.value;
+            cards.forEach(card => {
+                const nome = card.querySelector('.account-card__title').textContent.toLowerCase();
+                const instituicao = card.querySelector('.account-card__info')?.textContent.toLowerCase() ?? '';
+                const tipoConta = card.getAttribute('data-tipo');
+                const passaTexto = nome.includes(termo) || instituicao.includes(termo);
+                const passaTipo = (!tipoSelecionado || tipoConta === tipoSelecionado);
+                card.style.display = (passaTexto && passaTipo) ? '' : 'none';
             });
         }
+
+        searchInput.addEventListener('input', filtrarContas);
+        filterSelect.addEventListener('change', filtrarContas);
+
+        // Accordion: expande/retrai detalhes ao clicar no card
+        cards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('[data-modal-open]')) return;
+                card.classList.toggle('expanded');
+            });
+        });
     });
 </script>
 

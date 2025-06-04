@@ -66,11 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
         group.setAttribute('data-tipo', tipo);
         group.innerHTML = `
           <h4 class="account-group__title"><i class="fas ${iconMap[tipo] || iconMap['Outros']} me-2"></i>${tipo}</h4>
-          <div class="account-group__grid"></div>
+          <div class="account-group__list"></div>
         `;
         groups[tipo] = group;
       }
-      groups[tipo].querySelector('.account-group__grid').appendChild(card);
+      groups[tipo].querySelector('.account-group__list').appendChild(card);
     });
 
     grid.innerHTML = '';

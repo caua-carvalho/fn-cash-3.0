@@ -36,52 +36,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 4) Agrupamento visual por tipo de conta em tres colunas
-  const grid = document.getElementById('contasGrid');
-  if (grid) {
-    const iconMap = {
-      'Corrente': 'fa-university',
-      'Poupança': 'fa-piggy-bank',
-      'Cartão de Crédito': 'fa-credit-card',
-      'Investimento': 'fa-chart-line',
-      'Outros': 'fa-wallet'
-    };
-
-    const groupOrder = ['Corrente', 'Poupança', 'Outros'];
-    const groupLabels = {
-      'Corrente': 'Corrente',
-      'Poupança': 'Poupança',
-      'Outros': 'Cartão / Investimento'
-    };
-
-    const groups = {};
-    groupOrder.forEach(key => {
-      const group = document.createElement('div');
-      group.className = 'account-group';
-      group.dataset.tipo = key;
-      const iconClass = key === 'Outros' ? 'fa-credit-card' : iconMap[key];
-      group.innerHTML = `
-        <h4 class="account-group__title"><i class="fas ${iconClass} me-2"></i>${groupLabels[key]}</h4>
-        <div class="account-group__list"></div>
-      `;
-      groups[key] = group;
-    });
-
-    cards.forEach(card => {
-      const tipo = card.getAttribute('data-tipo') || 'Outros';
-      const header = card.querySelector('.account-card__header');
-      if (header && !header.querySelector('.account-card__icon')) {
-        const iconDiv = document.createElement('div');
-        iconDiv.className = 'account-card__icon';
-        iconDiv.innerHTML = `<i class="fas ${iconMap[tipo] || iconMap['Outros']}"></i>`;
-        header.prepend(iconDiv);
-      }
-
-      const key = (tipo === 'Corrente') ? 'Corrente' : (tipo === 'Poupança') ? 'Poupança' : 'Outros';
-      groups[key].querySelector('.account-group__list').appendChild(card);
-    });
-
-    grid.innerHTML = '';
-    groupOrder.forEach(key => grid.appendChild(groups[key]));
-  }
+  // 4) Apenas disposição responsiva dos cards em grid (CSS controla colunas)
 });

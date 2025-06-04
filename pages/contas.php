@@ -327,46 +327,6 @@ $count = count($contas);
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Abrir modais ao clicar nos botões
-        document.querySelectorAll('[data-modal-open]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const modal = document.querySelector(btn.getAttribute('data-modal-open'));
-                const bsModal = new bootstrap.Modal(modal);
-                bsModal.show();
-            });
-        });
-
-        // Filtragem por pesquisa e tipo
-        const searchInput = document.getElementById('searchConta');
-        const filterSelect = document.getElementById('filterTipo');
-        const cards = document.querySelectorAll('.account-card');
-
-        function filtrarContas() {
-            const termo = searchInput.value.toLowerCase();
-            const tipoSelecionado = filterSelect.value;
-            cards.forEach(card => {
-                const nome = card.querySelector('.account-card__title').textContent.toLowerCase();
-                const instituicao = card.querySelector('.account-card__info')?.textContent.toLowerCase() ?? '';
-                const tipoConta = card.getAttribute('data-tipo');
-                const passaTexto = nome.includes(termo) || instituicao.includes(termo);
-                const passaTipo = (!tipoSelecionado || tipoConta === tipoSelecionado);
-                card.style.display = (passaTexto && passaTipo) ? '' : 'none';
-            });
-        }
-
-        searchInput.addEventListener('input', filtrarContas);
-        filterSelect.addEventListener('change', filtrarContas);
-
-        // Accordion: expande/retrai detalhes ao clicar no card
-        cards.forEach(card => {
-            card.addEventListener('click', function(e) {
-                if (e.target.closest('[data-modal-open]')) return;
-                card.classList.toggle('expanded');
-            });
-        });
-    });
-</script>
+<script src="contas.js"></script>
 
 <?php require_once 'footer.php'; ?>

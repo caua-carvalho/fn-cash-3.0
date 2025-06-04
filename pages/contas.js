@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 4) Agrupamento visual por tipo de conta
+  // 4) Agrupamento visual por tipo de conta em tres colunas
   const grid = document.getElementById('contasGrid');
   if (grid) {
     const iconMap = {
@@ -47,11 +47,28 @@ document.addEventListener('DOMContentLoaded', () => {
       'Outros': 'fa-wallet'
     };
 
+    const groupOrder = ['Corrente', 'Poupança', 'Outros'];
+    const groupLabels = {
+      'Corrente': 'Corrente',
+      'Poupança': 'Poupança',
+      'Outros': 'Cartão / Investimento'
+    };
+
     const groups = {};
+    groupOrder.forEach(key => {
+      const group = document.createElement('div');
+      group.className = 'account-group';
+      group.dataset.tipo = key;
+      const iconClass = key === 'Outros' ? 'fa-credit-card' : iconMap[key];
+      group.innerHTML = `
+        <h4 class="account-group__title"><i class="fas ${iconClass} me-2"></i>${groupLabels[key]}</h4>
+        <div class="account-group__list"></div>
+      `;
+      groups[key] = group;
+    });
+
     cards.forEach(card => {
       const tipo = card.getAttribute('data-tipo') || 'Outros';
-
-      // adiciona ícone ao card
       const header = card.querySelector('.account-card__header');
       if (header && !header.querySelector('.account-card__icon')) {
         const iconDiv = document.createElement('div');
@@ -60,20 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
         header.prepend(iconDiv);
       }
 
-      if (!groups[tipo]) {
-        const group = document.createElement('div');
-        group.className = 'account-group';
-        group.setAttribute('data-tipo', tipo);
-        group.innerHTML = `
-          <h4 class="account-group__title"><i class="fas ${iconMap[tipo] || iconMap['Outros']} me-2"></i>${tipo}</h4>
-          <div class="account-group__list"></div>
-        `;
-        groups[tipo] = group;
-      }
-      groups[tipo].querySelector('.account-group__list').appendChild(card);
+      const key = (tipo === 'Corrente') ? 'Corrente' : (tipo === 'Poupança') ? 'Poupança' : 'Outros';
+      groups[key].querySelector('.account-group__list').appendChild(card);
     });
 
     grid.innerHTML = '';
-    Object.values(groups).forEach(group => grid.appendChild(group));
+    groupOrder.forEach(key => grid.appendChild(groups[key]));
   }
 });

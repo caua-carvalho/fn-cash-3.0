@@ -1679,10 +1679,16 @@
 
   /* Agrupamento de contas por tipo */
   #contasGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+  }
+
+  .account-group {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-6);
+    gap: var(--spacing-4);
   }
 
   .account-group__title {
@@ -1704,6 +1710,10 @@
 
   @media (min-width: 768px) {
     #contasGrid {
+      grid-template-columns: repeat(3, 1fr);
+      align-items: flex-start;
+    }
+    .account-group {
       align-items: flex-start;
     }
     .account-group__list {

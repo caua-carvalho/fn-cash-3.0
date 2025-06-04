@@ -208,7 +208,8 @@
 }
 
 .modal-body .form-group .form-control:focus + label,
-.modal-body .form-group .form-control:not(:placeholder-shown) + label {
+.modal-body .form-group .form-control:not(:placeholder-shown) + label,
+.modal-body .form-group .form-control.has-value + label {
   top: 0;
   left: var(--spacing-3);
   font-size: var(--font-size-sm);

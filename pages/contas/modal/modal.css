@@ -194,7 +194,7 @@
   left: var(--spacing-3);
   font-size: var(--font-size-base);
   color: var(--secondary-text-clr, #777);
-  background-color: var(--base-clr);
+  background-color: transparent;
   padding: 0 var(--spacing-1);
   pointer-events: none;
   transition: all var(--transition-duration-fast) var(--transition-timing);
@@ -210,11 +210,11 @@
 .modal-body .form-group .form-control:focus + label,
 .modal-body .form-group .form-control:not(:placeholder-shown) + label,
 .modal-body .form-group .form-control.has-value + label {
-  top: 0;
+  top: calc(-1 * var(--spacing-2));
   left: var(--spacing-3);
   font-size: var(--font-size-sm);
   color: var(--hover-clr);
-  background-color: var(--base-clr);
+  background-color: transparent;
   transform: none;
 }
 

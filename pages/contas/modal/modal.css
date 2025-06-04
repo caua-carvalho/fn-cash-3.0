@@ -6,9 +6,8 @@
      --accent-clr        (verde usado no header)
      --hover-clr         (verde de hover)
      --line-clr          (linha/borda verde)
-     --text-clr          (texto claro sobre fundo escuro)
-     --color-on-primary  (texto branco sobre fundo verde)
-     --box-shadow-clr    (sombra usada no modal)
+    --text-clr          (texto claro sobre fundo escuro)
+    --box-shadow-clr    (sombra usada no modal)
      --border-radius-sm  (pequeno raio de borda)
      --border-radius-md  (médio raio de borda)
      --border-radius-round (raio de borda bem arredondado)
@@ -40,6 +39,12 @@
 
 .modal.fade .modal-dialog {
   animation: fadeIn 0.4s var(--transition-timing);
+  transform: scale(0.9);
+  transition: transform var(--transition-duration-fast) var(--transition-timing);
+}
+
+.modal.show .modal-dialog {
+  transform: scale(1);
 }
 
 /* 3) CONTAINER DO MODAL */
@@ -58,8 +63,9 @@
 /* 5) MODAL-CONTENT */
 .modal-content {
   background-color: var(--base-clr);             /* fundo escuro opaco */
+  border: 1px solid var(--line-clr);
   border-radius: var(--border-radius-md);
-  box-shadow: 0 2px 10px var(--box-shadow-clr);
+  box-shadow: 0 15px 30px var(--box-shadow-clr);
   min-height: 600px;
   display: flex;
   flex-direction: column;
@@ -70,7 +76,7 @@
 /* 6) HEADER DO MODAL */
 .modal-header {
   background: linear-gradient(135deg, var(--accent-clr), var(--hover-clr));
-  color: var(--color-on-primary);
+  color: var(--text-clr);
   padding: var(--spacing-3) var(--spacing-4);
   border-bottom: none;
   position: relative;
@@ -80,14 +86,14 @@
   margin: 0 auto;
   font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--color-on-primary);
+  color: var(--text-clr);
 }
 
-.modal-header .btn-close {
+.modal-header .close {
   position: absolute;
   top: var(--spacing-3);
   right: var(--spacing-4);
-  color: var(--color-on-primary);
+  color: var(--text-clr);
   opacity: 0.8;
   font-size: var(--font-size-xl);
   background: transparent;
@@ -96,7 +102,7 @@
   transition: transform var(--transition-duration-fast) var(--transition-timing);
 }
 
-.modal-header .btn-close:hover {
+.modal-header .close:hover {
   transform: rotate(90deg);
 }
 
@@ -138,9 +144,8 @@
 }
 
 .type-option.active {
-  background-color: var(--accent-clr);            /* verde do header */
+  background-color: rgba(7, 163, 98, 0.1);
   border-color: var(--accent-clr);
-  color: var(--color-on-primary);                  /* texto branco */
 }
 
 .type-option .type-icon {
@@ -154,9 +159,13 @@
   transition: color var(--transition-duration-fast) var(--transition-timing);
 }
 
-.type-option.active .type-icon,
+.type-option.active .type-icon {
+  color: var(--accent-clr);
+}
+
 .type-option.active .type-name {
-  color: var(--color-on-primary);
+  color: var(--text-clr);
+  font-weight: 600;
 }
 
 /* 8) CAMPOS DE FORMULÁRIO E FLOATING LABELS */
@@ -278,13 +287,13 @@
 /* Botão “Cancelar” (fundo transparente, borda verde, texto claro) */
 .modal-footer .btn-secondary {
   background-color: transparent;
-  border: 1px solid var(--line-clr);
+  border: 2px solid var(--line-clr);
   color: var(--text-clr);
 }
 
 .modal-footer .btn-secondary:hover {
-  background-color: var(--hover-clr);
-  color: var(--color-on-primary);
+  background-color: var(--line-clr);
+  color: var(--text-clr);
   transform: scale(1.05);
 }
 
@@ -292,7 +301,7 @@
 .modal-footer .btn-success {
   background-color: var(--accent-clr);
   border: none;
-  color: var(--color-on-primary);
+  color: var(--text-clr);
 }
 
 .modal-footer .btn-success:hover {
@@ -304,7 +313,7 @@
 .modal-footer .btn-primary {
   background-color: var(--accent-clr);
   border: none;
-  color: var(--color-on-primary);
+  color: var(--text-clr);
 }
 
 .modal-footer .btn-primary:hover {

@@ -1673,6 +1673,35 @@
     font-size: var(--font-size-sm);
     margin: 0;
   }
+
+  /* Agrupamento de contas por tipo */
+  #contasGrid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+  }
+
+  .account-group__title {
+    color: var(--color-text);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-4);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  .account-group__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-5);
+  }
+
+  @media (min-width: 768px) {
+    .account-group__grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+  }
   
   /* Summary Card */
   .summary-card {

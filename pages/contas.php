@@ -153,7 +153,7 @@ $count = count($contas);
                 </button>
             </div>
         <?php else: ?>
-            <div id="contasGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+            <div id="contasGrid" class="p-4">
                 <?php
                 $delay = 100;
                 foreach ($contas as $conta):
@@ -186,6 +186,26 @@ $count = count($contas);
                 >
                   <!-- Cabeçalho do card: badge de tipo + nome -->
                   <div class="account-card__header">
+                    <div class="account-card__icon">
+                      <i class="fas <?php
+                        switch ($conta['Tipo']) {
+                            case 'Corrente':
+                                echo 'fa-university';
+                                break;
+                            case 'Poupança':
+                                echo 'fa-piggy-bank';
+                                break;
+                            case 'Cartão de Crédito':
+                                echo 'fa-credit-card';
+                                break;
+                            case 'Investimento':
+                                echo 'fa-chart-line';
+                                break;
+                            default:
+                                echo 'fa-wallet';
+                        }
+                      ?>"></i>
+                    </div>
                     <span class="badge-type <?= $badgeClass ?>">
                       <?= htmlspecialchars($conta['Tipo']) ?>
                     </span>

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 2) Filtragem de cards
   const searchInput  = document.getElementById('searchConta');
   const filterSelect = document.getElementById('filterTipo');
-  const cards        = document.querySelectorAll('.account-card');
+  const cards        = Array.from(document.querySelectorAll('.account-card'));
 
   function filterCards() {
     const q    = searchInput.value.toLowerCase();
@@ -35,4 +35,45 @@ document.addEventListener('DOMContentLoaded', () => {
       card.classList.toggle('expanded');
     });
   });
+
+  // 4) Agrupamento visual por tipo de conta
+  const grid = document.getElementById('contasGrid');
+  if (grid) {
+    const iconMap = {
+      'Corrente': 'fa-university',
+      'Poupança': 'fa-piggy-bank',
+      'Cartão de Crédito': 'fa-credit-card',
+      'Investimento': 'fa-chart-line',
+      'Outros': 'fa-wallet'
+    };
+
+    const groups = {};
+    cards.forEach(card => {
+      const tipo = card.getAttribute('data-tipo') || 'Outros';
+
+      // adiciona ícone ao card
+      const header = card.querySelector('.account-card__header');
+      if (header && !header.querySelector('.account-card__icon')) {
+        const iconDiv = document.createElement('div');
+        iconDiv.className = 'account-card__icon';
+        iconDiv.innerHTML = `<i class="fas ${iconMap[tipo] || iconMap['Outros']}"></i>`;
+        header.prepend(iconDiv);
+      }
+
+      if (!groups[tipo]) {
+        const group = document.createElement('div');
+        group.className = 'account-group';
+        group.setAttribute('data-tipo', tipo);
+        group.innerHTML = `
+          <h4 class="account-group__title"><i class="fas ${iconMap[tipo] || iconMap['Outros']} me-2"></i>${tipo}</h4>
+          <div class="account-group__grid"></div>
+        `;
+        groups[tipo] = group;
+      }
+      groups[tipo].querySelector('.account-group__grid').appendChild(card);
+    });
+
+    grid.innerHTML = '';
+    Object.values(groups).forEach(group => grid.appendChild(group));
+  }
 });

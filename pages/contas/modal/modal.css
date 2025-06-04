@@ -218,6 +218,11 @@
   transform: none;
 }
 
+.modal-body .form-group .form-control.has-value {
+  background-color: var(--base-clr);
+  color: var(--text-clr);
+}
+
 /* 8.1) Para inputs numéricos com prefixo “R$” */
 .value-container {
   position: relative;

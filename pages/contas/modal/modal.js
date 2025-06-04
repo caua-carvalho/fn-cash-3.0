@@ -64,10 +64,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const updateLabelState = () => {
         if (input.value) {
           input.classList.add('has-value');
-          input.setAttribute('placeholder', ' ');
         } else {
           input.classList.remove('has-value');
-          input.setAttribute('placeholder', '');
         }
       };
 
@@ -77,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
       // Event listeners
       input.addEventListener('focus', updateLabelState);
       input.addEventListener('blur', updateLabelState);
-      input.addEventListener('input', updateLabelState);
       input.addEventListener('change', updateLabelState);
     });
   };

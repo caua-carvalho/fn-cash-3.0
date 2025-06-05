@@ -227,19 +227,19 @@ function obterDadosGraficoReceitasDespesasPorMes($intervalo, $idUsuario = null) 
 }
 
 /**
- * Retorna dados para o gráfico de despesas por categoria.
+ * Retorna dados para o gráfico de categorias, incluindo receitas e despesas.
  */
 function obterDadosGraficoCategorias($intervalo = null, $idUsuario = null) {
     global $conn;
     $idUsuario = $idUsuario ?? ($_SESSION['id_usuario'] ?? null);
     $intervalo = $intervalo ?? obterIntervaloDatas('mes-atual');
 
-    $sql = "SELECT c.Nome, SUM(t.Valor) as Valor
+    $sql = "SELECT c.Nome, t.Tipo, SUM(t.Valor) as Valor
             FROM TRANSACAO t
             JOIN CATEGORIA c ON t.ID_Categoria = c.ID_Categoria
-            WHERE t.Tipo = 'Despesa' AND t.ID_Usuario = ?
+            WHERE t.ID_Usuario = ?
             AND t.Data BETWEEN ? AND ?
-            GROUP BY c.Nome
+            GROUP BY c.Nome, t.Tipo
             ORDER BY Valor DESC";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iss", $idUsuario, $intervalo['inicio'], $intervalo['fim']);
@@ -247,27 +247,45 @@ function obterDadosGraficoCategorias($intervalo = null, $idUsuario = null) {
     $result = $stmt->get_result();
 
     $categorias = [];
-    $valores = [];
-    $totalOutros = 0;
+    $valoresReceita = [];
+    $valoresDespesa = [];
+    $totalOutrosReceita = 0;
+    $totalOutrosDespesa = 0;
     $i = 0;
 
     while ($row = $result->fetch_assoc()) {
         if ($i < LIMITE_CATEGORIAS) {
-            $categorias[] = $row['Nome'];
-            $valores[] = floatval($row['Valor']);
-            $i++;
+            if (!isset($categorias[$row['Nome']])) {
+                $categorias[$row['Nome']] = true;
+                $valoresReceita[$row['Nome']] = 0;
+                $valoresDespesa[$row['Nome']] = 0;
+                $i++;
+            }
+            if ($row['Tipo'] === 'Receita') {
+                $valoresReceita[$row['Nome']] += floatval($row['Valor']);
+            } else {
+                $valoresDespesa[$row['Nome']] += floatval($row['Valor']);
+            }
         } else {
-            $totalOutros += floatval($row['Valor']);
+            if ($row['Tipo'] === 'Receita') {
+                $totalOutrosReceita += floatval($row['Valor']);
+            } else {
+                $totalOutrosDespesa += floatval($row['Valor']);
+            }
         }
     }
-    if ($totalOutros > 0) {
-        $categorias[] = 'Outros';
-        $valores[] = $totalOutros;
+
+    if ($totalOutrosReceita > 0 || $totalOutrosDespesa > 0) {
+        $categorias['Outros'] = true;
+        $valoresReceita['Outros'] = $totalOutrosReceita;
+        $valoresDespesa['Outros'] = $totalOutrosDespesa;
     }
+
     $cores = array_slice(CORES_CATEGORIAS, 0, count($categorias));
     return [
-        'labels' => $categorias,
-        'data' => $valores,
+        'labels' => array_keys($categorias),
+        'receitas' => array_values($valoresReceita),
+        'despesas' => array_values($valoresDespesa),
         'backgroundColor' => $cores
     ];
 }
@@ -362,7 +380,7 @@ function calcularVariacaoPercentual($tipo, $intervalo, $idUsuario = null) {
     switch ($tipo) {
         case 'saldo':
             $valorAtual = obterSaldoTotal($idUsuario);
-            $valorAnterior = $valorAtual * 0.9; // Simulação
+            $valorAnterior = 0.9 * $valorAtual; // Simulação
             break;
         case 'receita':
             $valorAtual = obterReceita($intervalo, $idUsuario);

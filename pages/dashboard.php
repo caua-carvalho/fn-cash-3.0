@@ -70,7 +70,7 @@ $variacaoSaldoMensal = calcularVariacaoPercentual('saldo_mensal', $intervaloData
 
 // Contas e transações recentes
 $contasUsuario = obterContasUsuario(2);
-$transacoesRecentes = obterTransacoesRecentes(20, null); // sem filtro de data, pega 20 últimas
+$transacoesRecentes = obterTransacoesRecentes(10, null); // sem filtro de data, pega 20 últimas
 
 // Converte os dados para JSON para uso no JavaScript
 $dadosGraficoReceitasDespesasJSON = json_encode($dadosGraficoReceitasDespesas);
@@ -247,19 +247,19 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
         <div class="grid grid-cols-1 grid-md-cols-2 gap-4 mb-6">
             <!-- Gráfico de Categorias -->
             <div class="card fade-in-up animation-delay-200">
-                <div class="card__header">
-                    <h4 class="card__title">Despesas por Categoria</h4>
-                    <p class="card__subtitle"><?php echo $periodoSelecionado === 'mes-atual' ? 'Mês atual' : ($periodoSelecionado === 'mes-anterior' ? 'Mês anterior' : ($periodoSelecionado === 'ano-atual' ? 'Ano atual' : 'Período personalizado')); ?></p>
+                <div class="card__header flex justify-between items-center">
+                    <h4 class="card__title">Categorias</h4>
+                    <button class="btn btn-secondary btn-sm" id="toggleCategoryMode">
+                        Alternar para Receitas
+                    </button>
                 </div>
-                <div class="card__body">
-                    <div class="chart-area" style="height: 250px;">
+                <div class="card__body p-0 d-flex justify-center" style="align-items: center;">
+                    <div class="chart-area" style="height:300px;">
                         <canvas id="categoryChart"></canvas>
                     </div>
                 </div>
-                <div class="card__footer">
-                    <div class="text-muted text-sm">
-                        <i class="fas fa-chart-pie"></i> Distribuição de despesas
-                    </div>
+                <div class="card__footer text-muted text-sm">
+                    <i class="fas fa-info-circle me-2"></i> Clique no botão para alternar entre receitas e despesas.
                 </div>
             </div>
 
@@ -317,9 +317,9 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
             <div class="flex justify-between items-center p-4 border-bottom">
                 <h4 class="m-0">Transações Recentes</h4>
                 <div class="flex gap-2">
-                    <button class="btn btn-sm btn-secondary active">Todas</button>
-                    <button class="btn btn-sm btn-secondary">Receitas</button>
-                    <button class="btn btn-sm btn-secondary">Despesas</button>
+                    <button id="filter-all" class="btn btn-sm btn-secondary active">Todas</button>
+                    <button id="filter-income" class="btn btn-sm btn-secondary">Receitas</button>
+                    <button id="filter-expense" class="btn btn-sm btn-secondary">Despesas</button>
                 </div>
             </div>
             <div class="table-responsive">
@@ -368,7 +368,6 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                                     </td>
                                     <td>
                                         <div class="flex gap-2">
-                                            <button class="btn-action view" title="Visualizar"><i class="fas fa-eye"></i></button>
                                             <button class="btn-action edit" title="Editar"><i class="fas fa-edit"></i></button>
                                             <button class="btn-action delete" title="Excluir"><i class="fas fa-trash"></i></button>
                                         </div>
@@ -458,24 +457,54 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Configuração do gráfico de Categorias
-    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-    const categoryChart = new Chart(categoryCtx, {
+    let modoCategoria = 'despesas'; // Modo inicial
+    const dadosCategorias = <?php echo $dadosGraficoCategoriasJSON; ?>;
+
+    const atualizarGraficoCategorias = () => {
+        const chartData = modoCategoria === 'despesas' ? dadosCategorias.despesas : dadosCategorias.receitas;
+        const chartLabel = modoCategoria === 'despesas' ? 'Despesas' : 'Receitas';
+        categoryChart.data.datasets[0].data = chartData;
+        categoryChart.data.datasets[0].label = chartLabel;
+        categoryChart.update();
+    };
+
+    document.getElementById('toggleCategoryMode').addEventListener('click', () => {
+        modoCategoria = modoCategoria === 'despesas' ? 'receitas' : 'despesas';
+        document.getElementById('toggleCategoryMode').textContent = modoCategoria === 'despesas' ? 'Alternar para Receitas' : 'Alternar para Despesas';
+        atualizarGraficoCategorias();
+    });
+
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    const categoryChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: dadosCategorias.labels,
             datasets: [{
-                data: dadosCategorias.data,
+                label: 'Despesas',
+                data: dadosCategorias.despesas,
                 backgroundColor: dadosCategorias.backgroundColor,
-                borderWidth: 0,
-                cutout: '70%'
+                hoverOffset: 10
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'bottom'
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            size: 12,
+                            family: 'Arial, sans-serif'
+                        },
+                        color: '#fff'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': R$ ' + tooltipItem.raw.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                        }
+                    }
                 }
             }
         }

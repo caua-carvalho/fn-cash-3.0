@@ -6,7 +6,7 @@ $contas = obterContas();
 ?>
 
 <script>
-// Função para criar e mostrar toast
+// Atualiza a função showToast para armazenar no localStorage
 function showToast(message, type = 'success', duration = 5000, callback = null) {
     // Gerado pelo Copilot
     const container = document.querySelector('.toast-container') || (() => {
@@ -48,75 +48,12 @@ function showToast(message, type = 'success', duration = 5000, callback = null) 
     setTimeout(() => {
         toast.style.animation = 'slideOut 0.3s forwards';
         setTimeout(() => toast.remove(), 300);
-        // Removido o reload da página aqui! UX agradece.
         if (typeof callback === 'function') callback(); // Gerado pelo Copilot
     }, duration);
 
-    // Gerado pelo Copilot
-    if (typeof callback !== 'function') {
-        callback = () => window.location.reload();
-    }
-}
-
-/**
- * Adiciona uma nova transação na tabela sem reload.
- * Fecha o modal antes de montar a linha e exibir o toast.
- * Gerado pelo Copilot
- */
-function adicionarTransacaoNaTabela(dados, form) {
-    // Fecha o modal antes de tudo
-    const modal = form ? form.closest('.modal') : null;
-    if (modal) {
-        if (typeof $ !== 'undefined' && $.fn.modal) {
-            $(modal).modal('hide');
-        } else {
-            modal.style.display = 'none';
-        }
-    }
-
-    // Monta a linha da tabela
-    const tbody = document.querySelector('.transaction-table tbody');
-    if (!tbody) return;
-
-    // Define classes de tipo e status
-    let tipoBadgeClass = 'badge-transfer', valorClass = '';
-    if (dados.tipoTransacao === 'Receita') {
-        tipoBadgeClass = 'badge-income';
-        valorClass = 'text-income';
-    } else if (dados.tipoTransacao === 'Despesa') {
-        tipoBadgeClass = 'badge-expense';
-        valorClass = 'text-expense';
-    }
-    let statusBadgeClass = 'badge-pending';
-    if (dados.statusTransacao === 'Efetivada') statusBadgeClass = 'badge-completed';
-    else if (dados.statusTransacao === 'Cancelada') statusBadgeClass = 'badge-canceled';
-
-    // Formata valor e data
-    const valorFormatado = (dados.tipoTransacao === 'Despesa' ? '- ' : '') + 'R$ ' + Number(dados.valorTransacao).toLocaleString('pt-BR', {minimumFractionDigits: 2});
-    const dataFormatada = new Date(dados.dataTransacao).toLocaleDateString('pt-BR');
-
-    // Monta a linha
-    const tr = document.createElement('tr');
-    tr.className = 'fade-in-up';
-    tr.innerHTML = `
-        <td class="font-medium">${dados.tituloTransacao}</td>
-        <td class="font-semibold ${valorClass}">${valorFormatado}</td>
-        <td>${dataFormatada}</td>
-        <td><span class="badge ${tipoBadgeClass}">
-            <i class="fas fa-${dados.tipoTransacao === 'Receita' ? 'arrow-up' : (dados.tipoTransacao === 'Despesa' ? 'arrow-down' : 'exchange-alt')} me-1"></i>
-            ${dados.tipoTransacao}
-        </span></td>
-        <td><span class="badge ${statusBadgeClass}">${dados.statusTransacao}</span></td>
-        <td>${dados.nomeContaRemetente || '-'}</td>
-        <td>${dados.nomeContaDestinataria || '-'}</td>
-        <td>
-            <div class="flex justify-center gap-2">
-                <!-- Aqui você pode adicionar os botões de ação se quiser -->
-            </div>
-        </td>
-    `;
-    // Adiciona no topo da tabela
-    tbody.prepend(tr);
+    // Armazena a mensagem no localStorage
+    localStorage.setItem('toast_message', message);
+    localStorage.setItem('toast_type', type);
 }
 
 /**
@@ -221,9 +158,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Sucesso: fecha modal, adiciona na tabela e mostra toast
                     if (respHtml.includes('Operação realizada com sucesso')) {
                         fecharModal(form.closest('.modal')); // Fecha modal de forma confiável
-                        adicionarTransacaoNaTabela(dados, form);
                         showToast('Transação cadastrada com sucesso!', 'success', 2500);
                         form.reset();
+                        // Agora o reload da página exibe a nova linha
+                        window.location.reload();
                     } else {
                         showToast('Erro ao cadastrar transação. Verifique os dados.', 'danger');
                     }

@@ -210,10 +210,10 @@
 .modal-body .form-group .form-control:focus + label,
 .modal-body .form-group .form-control:not(:placeholder-shown) + label,
 .modal-body .form-group .form-control.has-value + label {
-  top: 0;
+  top: calc(-1 * var(--spacing-2));
   left: var(--spacing-3);
   font-size: var(--font-size-sm);
-  color: var(--hover-clr);
+  color: var(--text-clr);
   background-color: var(--base-clr);
   transform: none;
 }

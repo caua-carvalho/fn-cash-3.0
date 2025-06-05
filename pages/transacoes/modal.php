@@ -1,9 +1,10 @@
 <?php
 require './contas/funcoes.php';
 require './categorias/funcoes.php';
+
+$contas = obterContas();
 ?>
 
-<script src="transacoes/script.js"></script>
 <script>
 // Função para criar e mostrar toast
 function showToast(message, type = 'success', duration = 5000, callback = null) {
@@ -328,7 +329,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="contaRemetente" name="contaRemetente" required>
                                 <option value="" disabled selected></option>
                                 <?php
-                                $contas = obterContas();
                                 if ($contas) {
                                     foreach ($contas as $conta) {
                                         $saldo = number_format($conta['Saldo'], 2, ',', '.');
@@ -361,7 +361,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="categoriaTransacao" name="categoriaTransacao">
                                 <option value="" disabled selected></option>
                                 <?php
-                                $categorias = obterCategorias();
                                 if ($categorias) {
                                     foreach ($categorias as $categoria) {
                                         echo '<option value="' . $categoria['ID_Categoria'] . '">' . htmlspecialchars($categoria['Nome']) . '</option>';
@@ -476,7 +475,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="editarContaRemetente" name="contaRemetente" required>
                                 <option value="" disabled selected></option>
                                 <?php
-                                $contas = obterContas();
                                 if ($contas) {
                                     foreach ($contas as $conta) {
                                         $saldo = number_format($conta['Saldo'], 2, ',', '.');

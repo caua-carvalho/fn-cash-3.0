@@ -1,12 +1,17 @@
 <?php
 // Gerado pelo Copilot
 
+// Exibe todos os erros do PHP para facilitar o debug (NUNCA use isso em produção!)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once 'header.php';
 require_once 'sidebar.php';
-require_once 'contas/funcoes.php';
 require_once 'contas/modal.php';
 require_once 'dialog.php';
 require_once 'dashboard/funcoes.php';
+require_once 'transacoes/modal.php';
 
 // Interpreta corretamente o período customizado vindo da URL
 $periodoSelecionado = $_GET['periodo'] ?? 'mes-atual';
@@ -91,7 +96,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                 <h2><?php echo 'Olá, ' . $_SESSION['usuario'] . '!' ?></h2>
                 <p class="text-muted">Aqui está um resumo da sua situação financeira atual.</p>
             </div>
-            <button class="btn btn-primary btn-icon">
+            <button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal" data-modal-open="#transacaoModal">
                 <i class="fas fa-plus me-2"></i> Nova Transação
             </button>
         </div>

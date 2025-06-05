@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 2) Filtragem de cards
   const searchInput  = document.getElementById('searchConta');
   const filterSelect = document.getElementById('filterTipo');
-  const cards        = Array.from(document.querySelectorAll('.account-card'));
+  const cards        = document.querySelectorAll('.account-card');
 
   function filterCards() {
     const q    = searchInput.value.toLowerCase();
@@ -35,6 +35,4 @@ document.addEventListener('DOMContentLoaded', () => {
       card.classList.toggle('expanded');
     });
   });
-
-  // 4) Apenas disposição responsiva dos cards em grid (CSS controla colunas)
 });

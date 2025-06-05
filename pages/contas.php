@@ -153,7 +153,7 @@ $count = count($contas);
                 </button>
             </div>
         <?php else: ?>
-            <div id="contasGrid" class="p-4">
+            <div id="contasGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
                 <?php
                 $delay = 100;
                 foreach ($contas as $conta):
@@ -186,26 +186,6 @@ $count = count($contas);
                 >
                   <!-- Cabeçalho do card: badge de tipo + nome -->
                   <div class="account-card__header">
-                    <div class="account-card__icon">
-                      <i class="fas <?php
-                        switch ($conta['Tipo']) {
-                            case 'Corrente':
-                                echo 'fa-university';
-                                break;
-                            case 'Poupança':
-                                echo 'fa-piggy-bank';
-                                break;
-                            case 'Cartão de Crédito':
-                                echo 'fa-credit-card';
-                                break;
-                            case 'Investimento':
-                                echo 'fa-chart-line';
-                                break;
-                            default:
-                                echo 'fa-wallet';
-                        }
-                      ?>"></i>
-                    </div>
                     <span class="badge-type <?= $badgeClass ?>">
                       <?= htmlspecialchars($conta['Tipo']) ?>
                     </span>
@@ -327,6 +307,46 @@ $count = count($contas);
     </div>
 </div>
 
-<script src="contas.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Abrir modais ao clicar nos botões
+        document.querySelectorAll('[data-modal-open]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modal = document.querySelector(btn.getAttribute('data-modal-open'));
+                const bsModal = new bootstrap.Modal(modal);
+                bsModal.show();
+            });
+        });
+
+        // Filtragem por pesquisa e tipo
+        const searchInput = document.getElementById('searchConta');
+        const filterSelect = document.getElementById('filterTipo');
+        const cards = document.querySelectorAll('.account-card');
+
+        function filtrarContas() {
+            const termo = searchInput.value.toLowerCase();
+            const tipoSelecionado = filterSelect.value;
+            cards.forEach(card => {
+                const nome = card.querySelector('.account-card__title').textContent.toLowerCase();
+                const instituicao = card.querySelector('.account-card__info')?.textContent.toLowerCase() ?? '';
+                const tipoConta = card.getAttribute('data-tipo');
+                const passaTexto = nome.includes(termo) || instituicao.includes(termo);
+                const passaTipo = (!tipoSelecionado || tipoConta === tipoSelecionado);
+                card.style.display = (passaTexto && passaTipo) ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filtrarContas);
+        filterSelect.addEventListener('change', filtrarContas);
+
+        // Accordion: expande/retrai detalhes ao clicar no card
+        cards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('[data-modal-open]')) return;
+                card.classList.toggle('expanded');
+            });
+        });
+    });
+</script>
 
 <?php require_once 'footer.php'; ?>

@@ -53,22 +53,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         if ($_POST['acao'] === 'alterar_senha') {
-            $senha = trim($_POST['nova_senha'] ?? '');
-            if (!$senha) {
-                $_SESSION['mensagem_erro'] = "A nova senha não pode ser vazia.";
+            $senhaAtual = trim($_POST['senha_atual'] ?? '');
+            $novaSenha = trim($_POST['nova_senha'] ?? '');
+
+            if (!$senhaAtual || !$novaSenha) {
+                $_SESSION['mensagem_erro'] = "Preencha todos os campos.";
             } else {
-                if (atualizarUsuario($idUsuario, null, null, $senha, $conn)) {
-                    $_SESSION['mensagem_sucesso'] = "Senha alterada com sucesso!";
+                // Verifica senha atual
+                $usuario = obterUsuario($idUsuario, $conn);
+                $senhaAtualHash = hash('sha256', $senhaAtual);
+                if ($usuario && $usuario['Senha'] === $senhaAtualHash) {
+                    // Senha atual correta, pode alterar
+                    if (atualizarUsuario($idUsuario, null, null, $novaSenha, $conn)) {
+                        $_SESSION['mensagem_sucesso'] = "Senha alterada com sucesso!";
+                    } else {
+                        $_SESSION['mensagem_erro'] = "Erro ao alterar senha.";
+                    }
                 } else {
-                    $_SESSION['mensagem_erro'] = "Erro ao alterar senha.";
+                    $_SESSION['mensagem_erro'] = "Senha atual incorreta.";
                 }
             }
         }
         if ($_POST['acao'] === 'excluir_conta_confirmada') {
             if (excluirUsuario($idUsuario, $conn)) {
                 session_destroy();
-                header("Location: ../index.php");
-                exit;
+
             } else {
                 $_SESSION['mensagem_erro'] = "Erro ao excluir conta.";
             }
@@ -78,8 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['mensagem_sucesso'] = "Tema alterado!";
         }
     }
-    header("Location: perfil.php");
-    exit;
 }
 
 // Obter dados do usuário logado
@@ -110,7 +117,10 @@ $temaAtual = $_SESSION['tema'] ?? (isset($_COOKIE['theme']) ? $_COOKIE['theme'] 
                     <i class="bi bi-person-circle text-xl"></i>
                     <div>
                         <div class="font-semibold">Dados Pessoais</div>
-                        <div class="text-muted text-xs"><?php echo htmlspecialchars($usuario['Nome'] ?? ''); ?><br><?php echo htmlspecialchars($usuario['Email'] ?? ''); ?></div>
+                        <div class="text-muted text-xs" id="nomeAtualExibicao">
+                            <strong><?php echo htmlspecialchars($usuario['Nome'] ?? ''); ?></strong><br>
+                            <?php echo htmlspecialchars($usuario['Email'] ?? ''); ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -130,7 +140,9 @@ $temaAtual = $_SESSION['tema'] ?? (isset($_COOKIE['theme']) ? $_COOKIE['theme'] 
                     <i class="bi bi-moon-stars-fill text-xl"></i>
                     <div>
                         <div class="font-semibold">Tema</div>
-                        <div class="text-muted text-xs"><?php echo $temaAtual === 'dark-theme' ? 'Escuro' : 'Claro'; ?></div>
+                        <div class="text-muted text-xs" id="temaAtualExibicao">
+                            <?php echo $temaAtual === 'dark-theme' ? 'Escuro' : 'Claro'; ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -186,8 +198,12 @@ $temaAtual = $_SESSION['tema'] ?? (isset($_COOKIE['theme']) ? $_COOKIE['theme'] 
     <div class="modal-content" style="max-width:340px;">
         <span class="close" onclick="fecharModal('modalAlterarSenha')">&times;</span>
         <h3 class="mb-2">Alterar Senha</h3>
-        <form method="POST" autocomplete="off">
+        <form id="formAlterarSenha" method="POST" autocomplete="off" onsubmit="event.preventDefault(); abrirModal('modalConfirmarAlterarSenha');">
             <input type="hidden" name="acao" value="alterar_senha">
+            <div class="form-group mb-2">
+                <label for="senha_atual" class="form-label">Senha Atual</label>
+                <input type="password" class="form-control" id="senha_atual" name="senha_atual" required>
+            </div>
             <div class="form-group mb-2">
                 <label for="nova_senha" class="form-label">Nova Senha</label>
                 <input type="password" class="form-control" id="nova_senha" name="nova_senha" required>
@@ -200,16 +216,29 @@ $temaAtual = $_SESSION['tema'] ?? (isset($_COOKIE['theme']) ? $_COOKIE['theme'] 
     </div>
 </div>
 
+<!-- Modal Confirmar Alteração de Senha -->
+<div id="modalConfirmarAlterarSenha" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:340px;">
+        <span class="close" onclick="fecharModal('modalConfirmarAlterarSenha')">&times;</span>
+        <h3 class="mb-2">Confirmar Alteração</h3>
+        <p style="font-size:0.95em;">Tem certeza que deseja alterar sua senha?</p>
+        <div class="flex justify-end gap-2 mt-2">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="fecharModal('modalConfirmarAlterarSenha')">Cancelar</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="confirmarAlterarSenha()">Confirmar</button>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Tema -->
 <div id="modalTema" class="modal" style="display:none;">
     <div class="modal-content" style="max-width:340px;">
         <span class="close" onclick="fecharModal('modalTema')">&times;</span>
         <h3 class="mb-2">Alterar Tema</h3>
-        <form method="POST">
+        <form id="formTema" method="POST" onsubmit="event.preventDefault(); salvarTema();">
             <input type="hidden" name="acao" value="alterar_tema">
             <div class="form-group mb-2">
                 <label class="form-label">Escolha o tema:</label>
-                <select name="tema" class="form-control">
+                <select name="tema" id="selectTema" class="form-control">
                     <option value="dark" <?php echo $temaAtual === 'dark-theme' ? 'selected' : ''; ?>>Escuro</option>
                     <option value="light" <?php echo $temaAtual === 'light-theme' ? 'selected' : ''; ?>>Claro</option>
                 </select>
@@ -228,13 +257,26 @@ $temaAtual = $_SESSION['tema'] ?? (isset($_COOKIE['theme']) ? $_COOKIE['theme'] 
         <span class="close" onclick="fecharModal('modalConfirmarExcluirConta')">&times;</span>
         <h3 class="mb-2 text-danger">Excluir Conta</h3>
         <p style="font-size:0.95em;">Tem certeza que deseja excluir sua conta? Esta ação não poderá ser desfeita.</p>
-        <form method="POST">
+        <form id="formExcluirConta" method="POST" onsubmit="event.preventDefault(); abrirModal('modalConfirmarExcluirContaFinal');">
             <input type="hidden" name="acao" value="excluir_conta_confirmada">
             <div class="flex justify-end gap-2 mt-2">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="fecharModal('modalConfirmarExcluirConta')">Cancelar</button>
                 <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal Confirmar Exclusão Final -->
+<div id="modalConfirmarExcluirContaFinal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:340px;">
+        <span class="close" onclick="fecharModal('modalConfirmarExcluirContaFinal')">&times;</span>
+        <h3 class="mb-2 text-danger">Confirmação Final</h3>
+        <p style="font-size:0.95em;">Esta ação é irreversível. Deseja realmente excluir sua conta?</p>
+        <div class="flex justify-end gap-2 mt-2">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="fecharModal('modalConfirmarExcluirContaFinal')">Cancelar</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="confirmarExcluirConta()">Confirmar</button>
+        </div>
     </div>
 </div>
 
@@ -285,7 +327,45 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => el.remove(), 500);
         });
     }, 3000);
+
+    // Aplica o tema salvo na sessão/cookie ao carregar
+    let tema = '<?php echo $temaAtual; ?>';
+    document.body.classList.remove('dark-theme', 'light-theme');
+    document.body.classList.add(tema);
 });
+
+// Confirmação de alteração de senha
+function confirmarAlterarSenha() {
+    fecharModal('modalConfirmarAlterarSenha');
+    document.getElementById('formAlterarSenha').submit();
+}
+
+// Confirmação de exclusão de conta
+function confirmarExcluirConta() {
+    fecharModal('modalConfirmarExcluirContaFinal');
+    document.getElementById('formExcluirConta').submit();
+}
+
+// Troca o tema no frontend e envia para o backend
+function salvarTema() {
+    var select = document.getElementById('selectTema');
+    var tema = select.value === 'dark' ? 'dark-theme' : 'light-theme';
+    document.body.classList.remove('dark-theme', 'light-theme');
+    document.body.classList.add(tema);
+
+    // Atualiza texto do card
+    document.getElementById('temaAtualExibicao').innerText = tema === 'dark-theme' ? 'Escuro' : 'Claro';
+
+    // Envia para o backend
+    var form = document.getElementById('formTema');
+    var formData = new FormData(form);
+    fetch('', {
+        method: 'POST',
+        body: formData
+    }).then(() => {
+        fecharModal('modalTema');
+    });
+}
 </script>
 
 <?php require_once 'footer.php'; ?>

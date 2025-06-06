@@ -318,12 +318,17 @@ function obterContasUsuario($limite = 2, $idUsuario = null) {
 function obterTransacoesRecentes($limite = 4, $intervalo = null, $idUsuario = null) {
     global $conn;
     $idUsuario = $idUsuario ?? ($_SESSION['id_usuario'] ?? null);
-    $sql = "SELECT t.ID_Transacao, t.Titulo, t.Valor, t.Data, t.Tipo, t.Status, 
-                   c.Nome as NomeCategoria, 
-                   cr.Nome as ContaRemetente
+    $sql = "SELECT 
+                t.*, 
+                cr.ID_Conta AS ID_ContaRemetente, 
+                cr.Nome AS NomeContaRemetente, 
+                cd.ID_Conta AS ID_ContaDestinataria, 
+                cd.Nome AS NomeContaDestinataria,
+                c.Nome AS NomeCategoria
             FROM TRANSACAO t
-            LEFT JOIN CATEGORIA c ON t.ID_Categoria = c.ID_Categoria
             LEFT JOIN CONTA cr ON t.ID_ContaRemetente = cr.ID_Conta
+            LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
+            LEFT JOIN CATEGORIA c ON t.ID_Categoria = c.ID_Categoria
             WHERE t.ID_Usuario = ?";
     $params = [$idUsuario];
     $types = "i";

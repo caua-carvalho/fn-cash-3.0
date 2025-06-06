@@ -12,6 +12,8 @@ require_once 'contas/modal.php';
 require_once 'dialog.php';
 require_once 'dashboard/funcoes.php';
 require_once 'transacoes/modal.php';
+require_once 'contas/modal.php';
+require_once 'transacoes/funcoes.php';
 
 // Interpreta corretamente o período customizado vindo da URL
 $periodoSelecionado = $_GET['periodo'] ?? 'mes-atual';
@@ -303,7 +305,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                         <?php endforeach; ?>
 
                         <div class="flex justify-center mt-4">
-                            <button class="btn btn-secondary btn-icon" data-toggle="modal" data-target="#contaModal">
+                            <button class="btn btn-secondary btn-icon" data-toggle="modal" data-target="#contaModal" data-modal-open="#modalNovaConta">
                                 <i class="fas fa-plus me-2"></i> Adicionar Conta
                             </button>
                         </div>
@@ -368,8 +370,29 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                                     </td>
                                     <td>
                                         <div class="flex gap-2">
-                                            <button class="btn-action edit" title="Editar"><i class="fas fa-edit"></i></button>
-                                            <button class="btn-action delete" title="Excluir"><i class="fas fa-trash"></i></button>
+                                            <button class="btn-action edit" title="Editar" data-modal-open="#editarTransacaoModal"
+                                                data-id="<?php echo $transacao['ID_Transacao']; ?>"
+                                                data-titulo="<?php echo htmlspecialchars($transacao['Titulo']); ?>">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+
+                                            <?php
+                                            echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarTransacaoModal' data-modal-open='#editarTransacaoModal''
+                                                    data-id='" . $transacao['ID_Transacao'] . "'
+                                                    data-titulo='" . htmlspecialchars($transacao['Titulo']) . "'
+                                                    data-descricao='" . htmlspecialchars($transacao['Descricao']) . "'
+                                                    data-valor='" . $transacao['Valor'] . "'
+                                                    data-data='" . $transacao['Data'] . "'
+                                                    data-tipo='" . htmlspecialchars($transacao['Tipo']) . "'
+                                                    data-status='" . $transacao['Status'] . "'
+                                                    data-conta-remetente-id='" . htmlspecialchars($transacao['ID_ContaRemetente']) . "'
+                                                    data-conta-remetente-nome='" . htmlspecialchars($transacao['NomeContaRemetente']) . "'
+                                                    data-conta-destinataria-id='" . ($transacao['ID_ContaDestinataria'] !== null ? htmlspecialchars($transacao['ID_ContaDestinataria']) : '') . "'
+                                                    data-conta-destinataria-nome='" . ($transacao['NomeContaDestinataria'] !== null ? htmlspecialchars($transacao['NomeContaDestinataria']) : '-') . "'>
+
+                                                <i class='fas fa-edit'></i>
+                                                </button>";
+                                            ?>
                                         </div>
                                     </td>
                                 </tr>

@@ -345,8 +345,6 @@ function confirmarExcluirConta() {
     fecharModal('modalConfirmarExcluirContaFinal');
     document.getElementById('formExcluirConta').submit();
 }
-
-// Troca o tema no frontend e envia para o backend
 function salvarTema() {
     var select = document.getElementById('selectTema');
     var tema = select.value === 'dark' ? 'dark-theme' : 'light-theme';
@@ -355,6 +353,10 @@ function salvarTema() {
 
     // Atualiza texto do card
     document.getElementById('temaAtualExibicao').innerText = tema === 'dark-theme' ? 'Escuro' : 'Claro';
+
+    // Salva no localStorage e no cookie
+    localStorage.setItem('theme', tema);
+    document.cookie = 'theme=' + tema + ';path=/;max-age=31536000';
 
     // Envia para o backend
     var form = document.getElementById('formTema');

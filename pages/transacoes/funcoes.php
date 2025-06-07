@@ -70,6 +70,19 @@ function obterTransacoes($tipo, $status, $dataInicial, $dataFinal) {
     return $transacoes;
 }
 
+function obterSomasTransacoes($tipo) {
+    global $conn;
+    $sql = 'SELECT sum(Valor) FROM TRANSACOES WHERE Tipo = ? AND ID_Usuario = ?';
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('si', $tipo, $_SESSION['ID_Usuario']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $stmt->close();
+
+    return $result->fetch_row()[0] ?? 0; // Retorna 0 se não houver resultados
+}
+
 function obterTransacoesPorId($id_transacao){
     global $conn;
     $sql = "SELECT 

@@ -46,7 +46,7 @@ switch ($periodoSelecionado) {
             'receitas' => [],
             'despesas' => []
         ];
-        $modoGrafico = 'indefinido';
+
         break;
 }
 $dadosGraficoCategorias = obterDadosGraficoCategorias($intervaloDatas);

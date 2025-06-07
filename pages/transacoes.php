@@ -162,7 +162,7 @@ require_once '../conexao.php';
                     echo '<i class="fas fa-receipt empty-state__icon"></i>';
                     echo '<h3 class="empty-state__title">Nenhuma transação encontrada</h3>';
                     echo '<p class="empty-state__description">Comece a registrar suas transações financeiras para visualizá-las aqui.</p>';
-                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal">';
+                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal" data-modal-open="#transacaoModal">';
                     echo '<i class="fas fa-plus me-2"></i> Criar Primeira Transação';
                     echo '</button>';
                     echo '</div>';

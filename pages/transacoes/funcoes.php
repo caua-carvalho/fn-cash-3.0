@@ -21,7 +21,7 @@ function obterTransacoes($tipo, $status, $dataInicial, $dataFinal) {
             LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
             WHERE t.ID_Usuario = ?";
     $tipos = ['i'];
-    $valores = [1];
+    $valores = [$_SESSION['ID_Usuario']];
 
     // Só filtra se não for 'all' e não for vazio
     if (!empty($tipo) && $tipo !== 'all') {

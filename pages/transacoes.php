@@ -15,8 +15,6 @@ $receitaSoma = obterSomaTipoTransacao('Receita');
 $despesaSoma = obterSomaTipoTransacao('Despesa');
 $balanco     = $receitaSoma - $despesaSoma;
 
-$msgmToast = null;
-
 ?>
 
 <div class="content">

@@ -152,25 +152,27 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
             <?php endif; ?>
         </div>
     </div>
-    <!-- Modal para editar informações -->
+    <!-- Modal para editar informações - AGORA PADRONIZADO -->
     <div id="modalEditarInfo" class="modal" style="display:none;">
-        <div class="modal-dialog" style="max-width:420px; width:100%;">
-            <div class="modal-content" style="background:#222; color:#fff; border-radius:8px;">
-                <div class="modal-header" style="border-bottom:1px solid #444;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:420px; width:100%;">
+            <div class="modal-content">
+                <div class="modal-header">
                     <h5 class="modal-title">Alterar Informações</h5>
-                    <button type="button" class="close" onclick="fecharModalEditarInfo()" style="font-size:1.3rem;color:#fff;">&times;</button>
+                    <button type="button" class="close" onclick="fecharModalEditarInfo()" aria-label="Fechar">
+                        &times;
+                    </button>
                 </div>
                 <form method="POST" autocomplete="off" class="config-form" style="margin-bottom:0;">
                     <input type="hidden" name="acao" value="editar_dados">
                     <input type="hidden" name="aba_ativa" id="inputAbaAtivaModal" value="aba-dados">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="modal_nome" class="form-label">Nome</label>
-                            <input type="text" class="form-control-underline" id="modal_nome" name="nome" value="<?php echo htmlspecialchars($usuario['Nome'] ?? ''); ?>" required>
+                        <label for="modal_nome" class="form-label">Nome</label>
+                        <input type="text" class="form-control-underline" id="modal_nome" name="nome" value="<?php echo htmlspecialchars($usuario['Nome'] ?? ''); ?>" required>
                         </div>
                         <div class="form-group">
-                            <label for="modal_email" class="form-label">E-mail</label>
-                            <input type="email" class="form-control-underline" id="modal_email" name="email" value="<?php echo htmlspecialchars($usuario['Email'] ?? ''); ?>" required>
+                        <label for="modal_email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control-underline" id="modal_email" name="email" value="<?php echo htmlspecialchars($usuario['Email'] ?? ''); ?>" required>
                         </div>
                     </div>
                     <div class="modal-footer flex justify-end gap-2 mt-2">
@@ -180,15 +182,6 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
                 </form>
             </div>
         </div>
-        <style>
-        /* Gerado pelo Copilot - Modal escuro e sem coluna branca */
-        .modal { position: fixed; z-index: 9999; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
-        .modal-dialog { background: transparent; border-radius: 8px; }
-        .modal-content { background: #222; color: #fff; }
-        .modal-header { background: #222; color: #fff; }
-        .modal-footer { background: #222; color: #fff; }
-        .close { background: none; border: none; cursor: pointer; color: #fff; }
-        </style>
     </div>
     <!-- Preferências -->
     <div id="aba-preferencias" class="config-tab-content">
@@ -260,10 +253,12 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
         <!-- Modal de confirmação de alteração de senha -->
         <div id="modalConfirmarSenha" class="modal" style="display:none;">
             <div class="modal-dialog" style="max-width:380px; width:100%;">
-                <div class="modal-content" style="background:#222; color:#fff; border-radius:8px;">
-                    <div class="modal-header" style="border-bottom:1px solid #444;">
+                <div class="modal-content">
+                    <div class="modal-header">
                         <h5 class="modal-title">Confirmar Alteração</h5>
-                        <button type="button" class="close" onclick="fecharModalConfirmarSenha()" style="font-size:1.3rem;color:#fff;">&times;</button>
+                        <button type="button" class="close" onclick="fecharModalConfirmarSenha()" aria-label="Fechar">
+                            &times;
+                        </button>
                     </div>
                     <div class="modal-body">
                         Tem certeza que deseja alterar sua senha?
@@ -288,6 +283,7 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
 </div>
 
 <style>
+/* Gerado pelo Copilot */
 .page-title {
     font-size: 2rem;
     font-weight: bold;
@@ -378,9 +374,97 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
     .page-title { font-size: 1.3rem; margin-top: 1.2rem; }
     .config-tab-btn { font-size: 0.98rem; padding: 0.6rem 0.7rem 0.4rem 0.7rem; }
 }
-/* Gerado pelo Copilot - select do tema igual ao padrão do site */
-.select-tema-dark { /* Não usar mais, deixar só .form-control-underline */ }
-.select-tema-dark option { /* Não usar mais, deixar só .form-control-underline */ }
+/* Modal padrão do sistema - Gerado pelo Copilot */
+.modal {
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal-dialog {
+    background: transparent;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal-content {
+    background: var(--color-surface, #222);
+    color: var(--color-text, #fff);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    width: 100%;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.modal-header {
+    background: linear-gradient(135deg, var(--color-primary, #07a362), var(--color-primary-700, #053f27));
+    color: #fff;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--color-border, #444);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+.modal-title {
+    margin-bottom: 0;
+    line-height: 1.5;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    color: #fff;
+}
+.modal-header .close {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border: 0;
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1;
+    opacity: 0.7;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.2rem;
+    transition: all 0.2s;
+}
+.modal-header .close:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+}
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 2rem 1.5rem;
+    background: var(--color-surface, #222);
+    color: var(--color-text, #fff);
+}
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--color-border, #444);
+    gap: 0.5rem;
+    background: var(--color-surface, #222);
+}
+@media (max-width: 600px) {
+    .modal-dialog { max-width: 98vw; }
+    .modal-body, .modal-header, .modal-footer { padding-left: 1rem; padding-right: 1rem; }
+}
 </style>
 
 <script>

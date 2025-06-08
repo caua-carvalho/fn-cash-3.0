@@ -6,8 +6,8 @@ $documento = pathinfo(basename($_SERVER['REQUEST_URI']), PATHINFO_FILENAME);
     <aside id="sidebar" class="sidebar sidebar-fixed sidebar-collapsed">
       <div class="sidebar-header">
         <h3 class="sidebar-brand">
-          <img src="../logo/logo_escrita.svg" alt="Fn-Cash" class="sidebar-logo-escrita">
-          <img src="../logo/icone.svg" alt="Fn-Cash" class="sidebar-logo-icone">
+<img src="../logo/logo_escrita_light.svg" alt="Fn-Cash" class="sidebar-logo-escrita" id="logo-escrita">
+<img src="../logo/icone.svg" alt="Fn-Cash" class="sidebar-logo-icone" id="logo-icone">
         </h3>
         <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Alternar sidebar">
           <i class="fas fa-chevron-left"></i>
@@ -49,5 +49,24 @@ $documento = pathinfo(basename($_SERVER['REQUEST_URI']), PATHINFO_FILENAME);
     </aside>
   </div>
   <main id="main-content" class="main-content transition">
+<script>
+// Gerado pelo Copilot
+function atualizarLogosTema() {
+  const body = document.body;
+  const logoEscrita = document.getElementById('logo-escrita');
+  const logoIcone = document.getElementById('logo-icone');
 
-  
+  if (!logoEscrita || !logoIcone) return;
+
+  const temaClaro = body.classList.contains('light-theme');
+  logoEscrita.src = temaClaro ? '../logo/logo_escrita_light.svg' : '../logo/logo_escrita.svg';
+  logoIcone.src   = temaClaro ? '../logo/icone_light.svg'        : '../logo/icone.svg';
+}
+
+// Observa mudanças de classe no body pra detectar troca de tema
+const observer = new MutationObserver(atualizarLogosTema);
+observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+// Atualiza logo ao carregar a página também
+document.addEventListener('DOMContentLoaded', atualizarLogosTema);
+</script>

@@ -5,6 +5,10 @@ require_once 'sidebar.php';
 require_once 'transacoes/modal.php';
 require_once 'dialog.php';
 require_once '../conexao.php';
+
+$receitaSoma = obterSomaTipoTransacao('Receita');
+$despesaSoma = obterSomaTipoTransacao('Despesa');
+$balanco     = $receitaSoma - $despesaSoma;
 ?>
 
 <div class="content">
@@ -26,7 +30,9 @@ require_once '../conexao.php';
             <div class="summary-card income fade-in animation-delay-100 w-full">
                 <span class="summary-label">Receitas</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value income">R$ 6.235,80</h3>
+                    <h3 class="summary-value income">
+                        R$ <?php echo number_format($receitaSoma, 2, ',', '.'); ?>
+                    </h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-income"><i class="fas fa-arrow-up me-1"></i> 12%</span>
                     </div>
@@ -36,7 +42,9 @@ require_once '../conexao.php';
             <div class="summary-card expense fade-in animation-delay-200 w-full">
                 <span class="summary-label">Despesas</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value expense">R$ 3.842,50</h3>
+                    <h3 class="summary-value expense">
+                        R$ <?php echo number_format($despesaSoma, 2, ',', '.'); ?>
+                    </h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-expense"><i class="fas fa-arrow-down me-1"></i> 5%</span>
                     </div>
@@ -46,7 +54,9 @@ require_once '../conexao.php';
             <div class="summary-card balance fade-in animation-delay-300 w-full">
                 <span class="summary-label">Balanço</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value">R$ 2.393,30</h3>
+                    <h3 class="summary-value text-transfer">
+                        R$ <?php echo number_format($balanco, 2, ',', '.'); ?>
+                    </h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-info"><i class="fas fa-chart-line me-1"></i> 7%</span>
                     </div>

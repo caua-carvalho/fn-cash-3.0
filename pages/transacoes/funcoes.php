@@ -70,6 +70,27 @@ function obterTransacoes($tipo, $status, $dataInicial, $dataFinal) {
     return $transacoes;
 }
 
+function obterSomaTipoTransacao($tipo) {
+    global $conn;
+
+    // uso de COALESCE e alias
+    $sql = 'SELECT COALESCE(SUM(Valor),0) AS soma_valor 
+            FROM TRANSACAO 
+            WHERE ID_Usuario = ? 
+              AND Tipo = ?';
+    $stmt = $conn->prepare($sql);
+    // ajuste aqui para bater com o nome na sessão
+    $stmt->bind_param('is', $_SESSION['id_usuario'], $tipo);
+    $stmt->execute();
+    // vincula o resultado diretamente
+    $stmt->bind_result($soma);
+    $stmt->fetch();
+    $stmt->close();
+
+    return $soma;
+}
+
+
 function obterTransacoesPorId($id_transacao){
     global $conn;
     $sql = "SELECT 

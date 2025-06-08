@@ -1,4 +1,9 @@
 <?php
+
+ini_set('display_errors', 1); // Ativa a exibição de erros
+ini_set('log_errors', 1);     // Ativa o registro de erros
+error_reporting(E_ALL);      // Define o nível de relatório de erros
+
 require_once 'transacoes/funcoes.php';
 require_once 'header.php';
 require_once 'sidebar.php';
@@ -9,6 +14,9 @@ require_once '../conexao.php';
 $receitaSoma = obterSomaTipoTransacao('Receita');
 $despesaSoma = obterSomaTipoTransacao('Despesa');
 $balanco     = $receitaSoma - $despesaSoma;
+
+$msgmToast = null;
+
 ?>
 
 <div class="content">

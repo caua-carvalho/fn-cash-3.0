@@ -5,6 +5,7 @@ require './categorias/funcoes.php';
 
 <script src="transacoes/script.js"></script>
 <script>
+
 // Função para criar e mostrar toast
 function showToast(message, type = 'success', duration = 5000, callback = null) {
     // Gerado pelo Copilot

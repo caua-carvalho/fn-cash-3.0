@@ -1,4 +1,5 @@
 <?php
+
 require_once 'transacoes/funcoes.php';
 require_once 'header.php';
 require_once 'sidebar.php';
@@ -93,7 +94,7 @@ $totalBalanco = $totalReceita - $totalDespesa;
             </div>
         </div>
     </div>
-    
+
     <!-- Filtro de Período - Design Refinado sem Opções Avançadas -->
     <div class="card mb-6 fade-in animation-delay-100">
         <div class="card__header">
@@ -181,7 +182,7 @@ $totalBalanco = $totalReceita - $totalDespesa;
                     echo '<i class="fas fa-receipt empty-state__icon"></i>';
                     echo '<h3 class="empty-state__title">Nenhuma transação encontrada</h3>';
                     echo '<p class="empty-state__description">Comece a registrar suas transações financeiras para visualizá-las aqui.</p>';
-                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal">';
+                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal" data-modal-open="#transacaoModal">';
                     echo '<i class="fas fa-plus me-2"></i> Criar Primeira Transação';
                     echo '</button>';
                     echo '</div>';
@@ -309,107 +310,79 @@ $totalBalanco = $totalReceita - $totalDespesa;
 
 <!-- JavaScript para funcionalidades adicionais -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Toggle para filtros
-    const toggleFilterBtn = document.getElementById('toggleFilter');
-    const filterContent = document.querySelector('.filter-content');
-    
-    toggleFilterBtn.addEventListener('click', function() {
-        filterContent.style.display = filterContent.style.display === 'none' ? 'block' : 'none';
-        toggleFilterBtn.querySelector('i').classList.toggle('fa-chevron-down');
-        toggleFilterBtn.querySelector('i').classList.toggle('fa-chevron-up');
-    });
-    
-    // Funcionalidades originais dos modais de edição e exclusão
-    const editarButtons = document.querySelectorAll('[data-target="#editarTransacaoModal"]');
-    editarButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Obter atributos do botão clicado
-            const id = this.getAttribute('data-id');
-            const titulo = this.getAttribute('data-titulo');
-            const descricao = this.getAttribute('data-descricao');
-            const valor = this.getAttribute('data-valor');
-            const data = this.getAttribute('data-data');
-            const tipo = this.getAttribute('data-tipo');
-            const status = this.getAttribute('data-status');
-            const contaRemetenteId = this.getAttribute('data-conta-remetente-id');
-            const contaDestinatariaId = this.getAttribute('data-conta-destinataria-id');
+// Gerado pelo Copilot
 
-            // Preencher os campos do modal
-            document.getElementById('editarTransacaoId').value = id;
-            document.getElementById('editarTituloTransacao').value = titulo;
-            document.getElementById('editarDescricaoTransacao').value = descricao;
-            document.getElementById('editarValorTransacao').value = valor;
-            document.getElementById('editarDataTransacao').value = data;
-            
-            // Selecionar tipo de transação
-            const tipoOptions = document.querySelectorAll('#editarTransacaoModal .type-option');
-            tipoOptions.forEach(option => {
-                if(option.getAttribute('data-type') === tipo) {
-                    option.classList.add('active');
-                } else {
-                    option.classList.remove('active');
-                }
-            });
-            document.getElementById('editarTipoTransacao').value = tipo;
-            
-            // Selecionar status
-            const statusOptions = document.querySelectorAll('#editarTransacaoModal .status-option');
-            statusOptions.forEach(option => {
-                if(option.getAttribute('data-status') === status) {
-                    option.classList.add('active');
-                } else {
-                    option.classList.remove('active');
-                }
-            });
-            document.getElementById('editarStatusTransacao').value = status;
-            
-            // Selecionar contas
-            document.getElementById('editarContaRemetente').value = contaRemetenteId;
-            
-            // Exibe ou oculta o campo "Conta Destinatária" com base no tipo de transação
-            const contaDestinatariaGroup = document.getElementById('editarContaDestinataria').parentElement;
-            if (tipo === 'Transferência') {
-                contaDestinatariaGroup.style.display = 'block';
-                document.getElementById('editarContaDestinataria').required = true;
-                document.getElementById('editarContaDestinataria').value = contaDestinatariaId;
-            } else {
-                contaDestinatariaGroup.style.display = 'none';
-                document.getElementById('editarContaDestinataria').required = false;
-            }
-        });
-    });
-
-    // Modal de exclusão
-    const excluirButtons = document.querySelectorAll('[data-target="#excluirTransacaoModal"]');
-    excluirButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            const titulo = this.getAttribute('data-titulo');
-            
-            document.getElementById('excluirTransacaoId').value = id;
-            document.getElementById('transacaoTituloExcluir').textContent = titulo;
-        });
-    });
-    
-    // Filtros de tipo de transação
-    const filterButtons = document.querySelectorAll('[data-filter]');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const filter = this.getAttribute('data-filter');
-            const parentGroup = this.closest('.form-group');
-            
-            // Remove a classe 'active' de todos os botões do mesmo grupo
-            parentGroup.querySelectorAll('.status-option').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Adiciona a classe 'active' ao botão clicado
+// Função para ativar grupo de botões de filtro
+function ativarFiltroGrupo(grupoId, inputId) {
+    const grupo = document.getElementById(grupoId);
+    const input = document.getElementById(inputId);
+    if (!grupo || !input) return;
+    grupo.querySelectorAll('.status-option-minimal').forEach(btn => {
+        btn.addEventListener('click', function () {
+            grupo.querySelectorAll('.status-option-minimal').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            
-            // Aqui implementaria a lógica de filtro
-            console.log('Filtrar por:', filter);
+            input.value = this.getAttribute('data-filter');
         });
+    });
+}
+
+// Função para limpar filtros
+function limparFiltros() {
+    document.getElementById('inputTipo').value = 'all';
+    document.querySelectorAll('#filtroTipo .status-option-minimal').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === 0);
+    });
+    document.getElementById('inputStatus').value = 'all';
+    document.querySelectorAll('#filtroStatus .status-option-minimal').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === 0);
+    });
+    document.getElementById('inputDataInicio').value = '';
+    document.getElementById('inputDataFim').value = '';
+}
+
+// Função para remover campos vazios antes de submeter (evita poluir a URL)
+function removerCamposVaziosDoForm(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    // Remove name dos inputs de data se estiverem vazios
+    const dataInicio = document.getElementById('inputDataInicio');
+    const dataFim = document.getElementById('inputDataFim');
+    if (dataInicio && !dataInicio.value) dataInicio.removeAttribute('name');
+    if (dataFim && !dataFim.value) dataFim.removeAttribute('name');
+}
+
+// Inicialização dos filtros ao carregar a página
+document.addEventListener('DOMContentLoaded', function () {
+    // Toggle para filtros minimalistas
+    const toggleFilterBtn = document.getElementById('toggleFilter');
+    const filterContent = document.querySelector('.filter-content-minimal');
+    if (toggleFilterBtn && filterContent) {
+        toggleFilterBtn.addEventListener('click', function () {
+            if (filterContent.style.display === 'none' || filterContent.style.display === '') {
+                filterContent.style.display = 'block';
+            } else {
+                filterContent.style.display = 'none';
+            }
+            toggleFilterBtn.querySelector('i').classList.toggle('fa-chevron-down');
+            toggleFilterBtn.querySelector('i').classList.toggle('fa-chevron-up');
+        });
+    }
+
+    ativarFiltroGrupo('filtroTipo', 'inputTipo');
+    ativarFiltroGrupo('filtroStatus', 'inputStatus');
+
+    // Submit do filtro ao clicar em "Filtrar"
+    document.getElementById('btnFiltrar').addEventListener('click', function (e) {
+        e.preventDefault();
+        removerCamposVaziosDoForm('formFiltros'); // Só envia o que o usuário preencheu
+        document.getElementById('formFiltros').submit();
+    });
+
+    // Limpar filtros e submeter
+    document.getElementById('btnLimparFiltros').addEventListener('click', function () {
+        limparFiltros();
+        removerCamposVaziosDoForm('formFiltros');
+        document.getElementById('formFiltros').submit();
     });
 });
 </script>

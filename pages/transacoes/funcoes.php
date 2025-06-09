@@ -48,9 +48,31 @@ function obterTransacoes(string $dataInicio = null, string $dataFim = null): arr
     while ($row = $result->fetch_assoc()) {
         $transacoes[] = $row;
     }
+
+    $sql .= " ORDER BY t.ID_Transacao DESC";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        logErroConsole("Erro ao preparar consulta de transações: " . $conn->error);
+        return [];
+    }
+
+    // Faz o bind dos parâmetros se houver filtros
+    if (count($valores) > 0) {
+        $stmt->bind_param(implode('', $tipos), ...$valores);
+    }
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $transacoes = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $transacoes[] = $row;
+    }
+
+    $stmt->close();
     return $transacoes;
 }
-
 
 function obterSaldoTipo($tipo): float {
     global $conn;

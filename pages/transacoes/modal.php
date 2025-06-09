@@ -1,10 +1,33 @@
 <?php
 require './contas/funcoes.php';
 require './categorias/funcoes.php';
+
+$contas = obterContas();
 ?>
 
-<script src="transacoes/script.js"></script>
 <script>
+// Atualiza a função showToast para armazenar no localStorage
+function showToast(message, type = 'success', duration = 5000, callback = null) {
+    // Gerado pelo Copilot
+    const container = document.querySelector('.toast-container') || (() => {
+        const div = document.createElement('div');
+        div.className = 'toast-container';
+        document.body.appendChild(div);
+        return div;
+    })();
+
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    toast.innerHTML = `
+        <div class="toast-header">
+            <h4 class="toast-title">${type === 'success' ? 'Sucesso!' : 'Erro!'}</h4>
+            <button class="toast-close">&times;</button>
+        </div>
+        <p class="toast-message">${message}</p>
+        <div class="toast-progress">
+            <div class="toast-progress-bar"></div>
+        </div>
+    `;
 
 // -------------- 1) Na carga da página, vê se tem toast salvo --------------
 document.addEventListener('DOMContentLoaded', () => {
@@ -231,9 +254,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Sucesso: fecha modal, adiciona na tabela e mostra toast
                     if (respHtml.includes('Operação realizada com sucesso')) {
                         fecharModal(form.closest('.modal')); // Fecha modal de forma confiável
-                        adicionarTransacaoNaTabela(dados, form);
                         showToast('Transação cadastrada com sucesso!', 'success', 2500);
                         form.reset();
+                        // Agora o reload da página exibe a nova linha
+                        window.location.reload();
                     } else {
                         showToast('Erro ao cadastrar transação. Verifique os dados.', 'danger');
                     }
@@ -339,7 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="contaRemetente" name="contaRemetente" required>
                                 <option value="" disabled selected></option>
                                 <?php
-                                $contas = obterContas();
                                 if ($contas) {
                                     foreach ($contas as $conta) {
                                         $saldo = number_format($conta['Saldo'], 2, ',', '.');
@@ -372,7 +395,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="categoriaTransacao" name="categoriaTransacao">
                                 <option value="" disabled selected></option>
                                 <?php
-                                $categorias = obterCategorias();
                                 if ($categorias) {
                                     foreach ($categorias as $categoria) {
                                         echo '<option value="' . $categoria['ID_Categoria'] . '">' . htmlspecialchars($categoria['Nome']) . '</option>';
@@ -487,7 +509,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="editarContaRemetente" name="contaRemetente" required>
                                 <option value="" disabled selected></option>
                                 <?php
-                                $contas = obterContas();
                                 if ($contas) {
                                     foreach ($contas as $conta) {
                                         $saldo = number_format($conta['Saldo'], 2, ',', '.');

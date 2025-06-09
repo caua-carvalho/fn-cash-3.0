@@ -243,4 +243,58 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aqui você pode disparar AJAX ou atualizar gráficos sem reload
         // Exemplo: atualizarGraficos();
     });
+
+    // Corrige a lógica de filtragem de transações recentes com base no ID do botão
+    function filtrarTransacoesPorId(botaoId) {
+        const linhasTransacoes = document.querySelectorAll('.transaction-table tbody tr');
+
+        linhasTransacoes.forEach(linha => {
+            const badge = linha.querySelector('.badge');
+            if (!badge) {
+                linha.style.display = 'none';
+                return;
+            }
+
+            let tipoTransacao;
+            if (botaoId === 'filter-all') {
+                tipoTransacao = 'Todas';
+            } else if (botaoId === 'filter-income') {
+                tipoTransacao = 'Receita';
+            } else if (botaoId === 'filter-expense') {
+                tipoTransacao = 'Despesa';
+            }
+
+            const classeTransacao = badge.classList.contains('badge-income') ? 'Receita' :
+                                    badge.classList.contains('badge-expense') ? 'Despesa' : 'Todas';
+
+            linha.style.display = (tipoTransacao === 'Todas' || tipoTransacao === classeTransacao) ? '' : 'none';
+        });
+    }
+
+    // Adiciona eventos aos botões de filtro com base no ID
+    function inicializarFiltrosTransacoesPorId() {
+        const botoesFiltro = [
+            document.getElementById('filter-all'),
+            document.getElementById('filter-income'),
+            document.getElementById('filter-expense')
+        ];
+
+        botoesFiltro.forEach(botao => {
+            botao.addEventListener('click', () => {
+                // Remove a classe "active" de todos os botões
+                botoesFiltro.forEach(btn => btn.classList.remove('active'));
+
+                // Adiciona a classe "active" ao botão clicado
+                botao.classList.add('active');
+
+                // Filtra as transações com base no ID do botão
+                filtrarTransacoesPorId(botao.id);
+            });
+        });
+    }
+
+    // Inicializa os filtros ao carregar a página
+    document.addEventListener('DOMContentLoaded', () => {
+        inicializarFiltrosTransacoesPorId();
+    });
 });

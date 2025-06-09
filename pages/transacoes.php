@@ -1,9 +1,5 @@
 <?php
 
-ini_set('display_errors', 1); // Ativa a exibição de erros
-ini_set('log_errors', 1);     // Ativa o registro de erros
-error_reporting(E_ALL);      // Define o nível de relatório de erros
-
 require_once 'transacoes/funcoes.php';
 require_once 'header.php';
 require_once 'sidebar.php';
@@ -178,7 +174,7 @@ $balanco     = $receitaSoma - $despesaSoma;
                     echo '<i class="fas fa-receipt empty-state__icon"></i>';
                     echo '<h3 class="empty-state__title">Nenhuma transação encontrada</h3>';
                     echo '<p class="empty-state__description">Comece a registrar suas transações financeiras para visualizá-las aqui.</p>';
-                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal">';
+                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal" data-modal-open="#transacaoModal">';
                     echo '<i class="fas fa-plus me-2"></i> Criar Primeira Transação';
                     echo '</button>';
                     echo '</div>';

@@ -2,31 +2,55 @@
 // Incluir o cabeçalho
 require_once "../conexao.php";
 
-function obterTransacoes() {
+// funcoes.php
+/**
+ * Retorna lista de transações do usuário, opcionalmente filtradas por data
+ * @param string|null $dataInicio  Formato YYYY-MM-DD
+ * @param string|null $dataFim     Formato YYYY-MM-DD
+ * @return array
+ */
+function obterTransacoes(string $dataInicio = null, string $dataFim = null): array {
     global $conn;
-    // Gerado pelo Copilot
-    // Consulta transações com JOINs corretos e filtro por usuário
-    $sql = "SELECT 
-                t.*, 
-                cr.ID_Conta AS ID_ContaRemetente, 
-                cr.Nome AS NomeContaRemetente, 
-                cd.ID_Conta AS ID_ContaDestinataria, 
-                cd.Nome AS NomeContaDestinataria
-            FROM TRANSACAO t
-            LEFT JOIN CONTA cr ON t.ID_ContaRemetente = cr.ID_Conta
-            LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
-            WHERE t.ID_Usuario = 1
-            ORDER BY t.Id_Transacao DESC";
-    $result = $conn->query($sql);
-    $transacoes = array();
+    $idUsuario = $_SESSION['id_usuario'];
 
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $transacoes[] = $row;
-        }
+    // Monta SQL base
+    $sql = "
+      SELECT 
+        t.*, 
+        cr.ID_Conta        AS ID_ContaRemetente, 
+        cr.Nome            AS NomeContaRemetente, 
+        cd.ID_Conta        AS ID_ContaDestinataria, 
+        cd.Nome            AS NomeContaDestinataria
+      FROM TRANSACAO t
+      LEFT JOIN CONTA cr ON t.ID_ContaRemetente   = cr.ID_Conta
+      LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
+      WHERE t.ID_Usuario = ?
+    ";
+    $types  = "i";
+    $params = [$idUsuario];
+
+    // Filtro por datas (campo DATE ou VARCHAR 'YYYY-MM-DD')
+    if ($dataInicio && $dataFim) {
+        $sql   .= " AND t.Data BETWEEN ? AND ?";
+        $types .= "ss";
+        $params[] = $dataInicio;
+        $params[] = $dataFim;
+    }
+
+    $sql .= " ORDER BY t.Id_Transacao DESC";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $transacoes = [];
+    while ($row = $result->fetch_assoc()) {
+        $transacoes[] = $row;
     }
     return $transacoes;
 }
+
 
 function obterSaldoTipo($tipo): float {
     global $conn;

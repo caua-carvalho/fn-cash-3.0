@@ -6,10 +6,39 @@ require_once 'transacoes/modal.php';
 require_once 'dialog.php';
 require_once '../conexao.php';
 
+// 1) Lê o “periodo” e define intervalo de datas no formato YYYY-MM-DD
+$periodoSelecionado = $_GET['periodo'] ?? 'mes-atual';
+switch ($periodoSelecionado) {
+    case 'mes-anterior':
+        $dataInicio = date('Y-m-01', strtotime('first day of last month'));
+        $dataFim    = date('Y-m-t', strtotime('last day of last month'));
+        break;
+    case 'ano-atual':
+        $dataInicio = date('Y-01-01');
+        $dataFim    = date('Y-12-31');
+        break;
+    case 'customizado':
+        // Espera formato ISO (YYYY-MM-DD) vindo do <input type="date">
+        $dataInicio = $_GET['dataInicio'] ?? date('Y-m-01');
+        $dataFim    = $_GET['dataFim']    ?? date('Y-m-d');
+        break;
+    case 'mes-atual':
+    default:
+        $dataInicio = date('Y-m-01');
+        $dataFim    = date('Y-m-d');
+        break;
+}
+$intervaloDatas = ['inicio' => $dataInicio, 'fim' => $dataFim];
+
+// 2) Busca transações já filtradas
+$transacoes = obterTransacoes($dataInicio, $dataFim);
+
 $totalReceita = obterSaldoTipo(tipo: 'Receita');
 $totalDespesa = obterSaldoTipo(tipo: 'Despesa');
 $totalBalanco = $totalReceita - $totalDespesa;
 ?>
+
+<script src='dashboard/dashboard_filtro.js'></script>
 
 <div class="content">
     <!-- Cabeçalho da Página com Estatísticas -->
@@ -65,51 +94,51 @@ $totalBalanco = $totalReceita - $totalDespesa;
         </div>
     </div>
     
-    <!-- Filtros Avançados -->
-    <div class="filter-container slide-in-left mb-5">
-        <div class="filter-header">
-            <h3 class="filter-title">
-                <i class="fas fa-filter me-2"></i> Filtros
-            </h3>
-            <button class="btn-action" id="toggleFilter">
-                <i class="fas fa-chevron-down"></i>
-            </button>
+    <!-- Filtro de Período - Design Refinado sem Opções Avançadas -->
+    <div class="card mb-6 fade-in animation-delay-100">
+        <div class="card__header">
+            <div class="flex justify-between items-center">
+                <h4 class="card__title">
+                    <i class="fas fa-calendar-alt me-2 text-primary"></i> Período de Análise
+                </h4>
+                <button class="btn-action" id="togglePeriodFilter">
+                    <i class="fas fa-chevron-down transition-fast"></i>
+                </button>
+            </div>
         </div>
         
-        <div class="filter-content mt-4" style="display: none;">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="form-group mb-3">
-                    <label class="form-label">Tipo</label>
-                    <div class="status-selector mb-0">
-                        <button type="button" class="status-option active" data-filter="all">Todos</button>
-                        <button type="button" class="status-option income" data-filter="Receita">Receitas</button>
-                        <button type="button" class="status-option expense" data-filter="Despesa">Despesas</button>
-                        <button type="button" class="status-option transfer" data-filter="Transferência">Transferências</button>
+        <div class="card__body" id="periodFilterContent" style="display: none;">
+            <!-- Seletor de Tipo (Pills) para rápida seleção -->
+            <div class="status-selector mb-5">
+                <button type="button" class="status-option <?php echo $periodoSelecionado === 'mes-atual' ? 'active' : ''; ?>" data-period="mes-atual">Mês Atual</button>
+                <button type="button" class="status-option <?php echo $periodoSelecionado === 'mes-anterior' ? 'active' : ''; ?>" data-period="mes-anterior">Mês Anterior</button>
+                <button type="button" class="status-option <?php echo $periodoSelecionado === 'ano-atual' ? 'active' : ''; ?>" data-period="ano-atual">Ano Atual</button>
+                <button type="button" class="status-option <?php echo $periodoSelecionado === 'customizado' ? 'active' : ''; ?>" data-period="customizado">Personalizado</button>
+            </div>
+            <input type="hidden" name="periodSelection" id="periodSelection" value="<?php echo $periodoSelecionado; ?>">
+            
+            <!-- Intervalo de datas personalizado (inicialmente oculto) -->
+            <div id="customPeriodSection" class="fade-in-up" style="display: <?php echo $periodoSelecionado === 'customizado' ? 'block' : 'none'; ?>;">
+                <div class="grid grid-cols-1 grid-md-cols-2 gap-4 mb-4">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="startDate" placeholder=" " value="<?php echo $dataInicio ?? $intervaloDatas['inicio']; ?>">
+                        <label for="startDate">Data Inicial</label>
                     </div>
-                </div>
-                
-                <div class="form-group mb-3">
-                    <label class="form-label">Status</label>
-                    <div class="status-selector mb-0">
-                        <button type="button" class="status-option active" data-filter="all">Todos</button>
-                        <button type="button" class="status-option pending" data-filter="Pendente">Pendentes</button>
-                        <button type="button" class="status-option completed" data-filter="Efetivada">Efetivadas</button>
-                        <button type="button" class="status-option canceled" data-filter="Cancelada">Canceladas</button>
-                    </div>
-                </div>
-                
-                <div class="form-group mb-3">
-                    <label class="form-label">Período</label>
-                    <div class="flex gap-3">
-                        <input type="date" class="form-control" placeholder="Data inicial">
-                        <input type="date" class="form-control" placeholder="Data final">
+                    
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="endDate" placeholder=" " value="<?php echo $dataFim ?? $intervaloDatas['fim']; ?>">
+                        <label for="endDate">Data Final</label>
                     </div>
                 </div>
             </div>
             
-            <div class="flex justify-end mt-4">
-                <button class="btn btn-secondary me-2">Limpar Filtros</button>
-                <button class="btn btn-primary">Aplicar Filtros</button>
+            <div class="card__footer flex justify-end gap-3 pt-4 mt-4 border-top">
+                <button class="btn btn-secondary" id="clearPeriodFilter">
+                    <i class="fas fa-undo me-2"></i> Limpar Filtros
+                </button>
+                <button class="btn btn-primary btn-icon" id="applyPeriodFilter">
+                    <i class="fas fa-filter me-2"></i> Aplicar Filtros
+                </button>
             </div>
         </div>
     </div>
@@ -146,8 +175,6 @@ $totalBalanco = $totalReceita - $totalDespesa;
             </thead>
             <tbody>
                 <?php
-                $transacoes = obterTransacoes();
-                
                 if (empty($transacoes)) {
                     echo '<tr><td colspan="8">';
                     echo '<div class="empty-state my-5">';

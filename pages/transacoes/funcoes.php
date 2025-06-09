@@ -70,29 +70,24 @@ function obterTransacoes($tipo, $status, $dataInicial, $dataFinal) {
     return $transacoes;
 }
 
-function obterSomaTransacoes(string $tipo): float {
-    global $conn;    
+function obterSomaTipoTransacao($tipo) {
+    global $conn;
 
-    // Usa IFNULL pra garantir zero ao invés de NULL
-    $sql = 'SELECT IFNULL(SUM(Valor), 0) AS total 
+    // uso de COALESCE e alias
+    $sql = 'SELECT COALESCE(SUM(Valor),0) AS soma_valor 
             FROM TRANSACAO 
-            WHERE Tipo = ? 
-              AND ID_Usuario = ?';
+            WHERE ID_Usuario = ? 
+              AND Tipo = ?';
     $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        // opcional: registrar erro no log
-        return 0.0;
-    }
-
-    $stmt->bind_param('si', $tipo, $_SESSION['ID_Usuario']);
+    // ajuste aqui para bater com o nome na sessão
+    $stmt->bind_param('is', $_SESSION['id_usuario'], $tipo);
     $stmt->execute();
-    $stmt->bind_result($total);
+    // vincula o resultado diretamente
+    $stmt->bind_result($soma);
     $stmt->fetch();
-
     $stmt->close();
 
-    // Retorna float para facilitar cálculos posteriores
-    return (float) $total;
+    return $soma;
 }
 
 

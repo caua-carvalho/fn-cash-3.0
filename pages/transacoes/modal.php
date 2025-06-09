@@ -29,31 +29,127 @@ function showToast(message, type = 'success', duration = 5000, callback = null) 
         </div>
     `;
 
-    container.appendChild(toast);
+// -------------- 1) Na carga da página, vê se tem toast salvo --------------
+document.addEventListener('DOMContentLoaded', () => {
+  const raw = localStorage.getItem('__PENDENTE_TOAST');
+  if (!raw) return;
 
-    // Configura a barra de progresso
-    const progressBar = toast.querySelector('.toast-progress-bar');
-    progressBar.style.transition = `width ${duration}ms linear`;
-    
-    // Inicia a animação da barra
-    setTimeout(() => progressBar.style.width = '0%', 100);
+  const { message, type, duration } = JSON.parse(raw);
+  localStorage.removeItem('__PENDENTE_TOAST');
+  _exibeToast(message, type, duration);
+});
 
-    // Configura o botão de fechar
-    toast.querySelector('.toast-close').onclick = () => {
-        toast.style.animation = 'slideOut 0.3s forwards';
-        setTimeout(() => toast.remove(), 300);
-    };
+// -------------- 2) Função pública: salva e recarrega --------------
+function showToast(message, type = 'success', duration = 5000) {
+  localStorage.setItem(
+    '__PENDENTE_TOAST',
+    JSON.stringify({ message, type, duration })
+  );
+  // daqui já manda um reload imediatamente
+  window.location.reload();
+}
 
-    // Remove o toast automaticamente
-    setTimeout(() => {
-        toast.style.animation = 'slideOut 0.3s forwards';
-        setTimeout(() => toast.remove(), 300);
-        if (typeof callback === 'function') callback(); // Gerado pelo Copilot
-    }, duration);
+// -------------- 3) Função interna: pega seu código original --------------
+function _exibeToast(message, type = 'success', duration = 5000) {
+  // sem mexer no seu container…
+  const container = document.querySelector('.toast-container') || (() => {
+    const div = document.createElement('div');
+    div.className = 'toast-container';
+    document.body.appendChild(div);
+    return div;
+  })();
 
-    // Armazena a mensagem no localStorage
-    localStorage.setItem('toast_message', message);
-    localStorage.setItem('toast_type', type);
+  const toast = document.createElement('div');
+  toast.className = `toast-notification ${type}`;
+  toast.innerHTML = `
+    <div class="toast-header">
+      <h4 class="toast-title">${
+        type === 'success' ? 'Sucesso!' : 'Erro!'
+      }</h4>
+      <button class="toast-close">&times;</button>
+    </div>
+    <p class="toast-message">${message}</p>
+    <div class="toast-progress"><div class="toast-progress-bar"></div></div>
+  `;
+  container.appendChild(toast);
+
+  // animação da barra
+  const progressBar = toast.querySelector('.toast-progress-bar');
+  progressBar.style.transition = `width ${duration}ms linear`;
+  setTimeout(() => (progressBar.style.width = '0%'), 100);
+
+  // fechar manual
+  toast.querySelector('.toast-close').onclick = () => {
+    toast.style.animation = 'slideOut 0.3s forwards';
+    setTimeout(() => toast.remove(), 300);
+  };
+
+  // auto‐remover
+  setTimeout(() => {
+    toast.style.animation = 'slideOut 0.3s forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+/**
+ * Adiciona uma nova transação na tabela sem reload.
+ * Fecha o modal antes de montar a linha e exibir o toast.
+ * Gerado pelo Copilot
+ */
+function adicionarTransacaoNaTabela(dados, form) {
+    // Fecha o modal antes de tudo
+    const modal = form ? form.closest('.modal') : null;
+    if (modal) {
+        if (typeof $ !== 'undefined' && $.fn.modal) {
+            $(modal).modal('hide');
+        } else {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Monta a linha da tabela
+    const tbody = document.querySelector('.transaction-table tbody');
+    if (!tbody) return;
+
+    // Define classes de tipo e status
+    let tipoBadgeClass = 'badge-transfer', valorClass = '';
+    if (dados.tipoTransacao === 'Receita') {
+        tipoBadgeClass = 'badge-income';
+        valorClass = 'text-income';
+    } else if (dados.tipoTransacao === 'Despesa') {
+        tipoBadgeClass = 'badge-expense';
+        valorClass = 'text-expense';
+    }
+    let statusBadgeClass = 'badge-pending';
+    if (dados.statusTransacao === 'Efetivada') statusBadgeClass = 'badge-completed';
+    else if (dados.statusTransacao === 'Cancelada') statusBadgeClass = 'badge-canceled';
+
+    // Formata valor e data
+    const valorFormatado = (dados.tipoTransacao === 'Despesa' ? '- ' : '') + 'R$ ' + Number(dados.valorTransacao).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    const dataFormatada = new Date(dados.dataTransacao).toLocaleDateString('pt-BR');
+
+    // Monta a linha
+    const tr = document.createElement('tr');
+    tr.className = 'fade-in-up';
+    tr.innerHTML = `
+        <td class="font-medium">${dados.tituloTransacao}</td>
+        <td class="font-semibold ${valorClass}">${valorFormatado}</td>
+        <td>${dataFormatada}</td>
+        <td><span class="badge ${tipoBadgeClass}">
+            <i class="fas fa-${dados.tipoTransacao === 'Receita' ? 'arrow-up' : (dados.tipoTransacao === 'Despesa' ? 'arrow-down' : 'exchange-alt')} me-1"></i>
+            ${dados.tipoTransacao}
+        </span></td>
+        <td><span class="badge ${statusBadgeClass}">${dados.statusTransacao}</span></td>
+        <td>${dados.nomeContaRemetente || '-'}</td>
+        <td>${dados.nomeContaDestinataria || '-'}</td>
+        <td>
+            <div class="flex justify-center gap-2">
+                <!-- Aqui você pode adicionar os botões de ação se quiser -->
+            </div>
+        </td>
+    `;
+    // Adiciona no topo da tabela
+    tbody.prepend(tr);
 }
 
 /**
@@ -496,7 +592,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </form>
         </div>
     </div>
-</div>
+</div>  
 
 <!-- Root CSS Variables (Adicionar no Head da página) -->
 <style>

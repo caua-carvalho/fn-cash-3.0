@@ -1,6 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 require_once 'transacoes/funcoes.php';
 require_once 'header.php';
@@ -9,9 +7,10 @@ require_once 'transacoes/modal.php';
 require_once 'dialog.php';
 require_once '../conexao.php';
 
-$somaReceitas = obterSomaTransacoes(tipo: 'Receita');
-$somaDespesas = obterSomaTransacoes(tipo: 'Despesa');
-$somaTransferencias = obterSomaTransacoes(tipo: 'Transferência');
+$receitaSoma = obterSomaTipoTransacao('Receita');
+$despesaSoma = obterSomaTipoTransacao('Despesa');
+$balanco     = $receitaSoma - $despesaSoma;
+
 ?>
 
 <div class="content">
@@ -33,7 +32,9 @@ $somaTransferencias = obterSomaTransacoes(tipo: 'Transferência');
             <div class="summary-card income fade-in animation-delay-100 w-full">
                 <span class="summary-label">Receitas</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value income"><?php echo $somaReceitas; ?></h3>
+                    <h3 class="summary-value income">
+                        R$ <?php echo number_format($receitaSoma, 2, ',', '.'); ?>
+                    </h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-income"><i class="fas fa-arrow-up me-1"></i> 12%</span>
                     </div>
@@ -43,7 +44,9 @@ $somaTransferencias = obterSomaTransacoes(tipo: 'Transferência');
             <div class="summary-card expense fade-in animation-delay-200 w-full">
                 <span class="summary-label">Despesas</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value expense"><?php echo $somaDespesas; ?></h3>
+                    <h3 class="summary-value expense">
+                        R$ <?php echo number_format($despesaSoma, 2, ',', '.'); ?>
+                    </h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-expense"><i class="fas fa-arrow-down me-1"></i> 5%</span>
                     </div>
@@ -53,7 +56,9 @@ $somaTransferencias = obterSomaTransacoes(tipo: 'Transferência');
             <div class="summary-card balance fade-in animation-delay-300 w-full">
                 <span class="summary-label">Balanço</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value"><?php echo $somaTransferencias; ?></h3>
+                    <h3 class="summary-value text-transfer">
+                        R$ <?php echo number_format($balanco, 2, ',', '.'); ?>
+                    </h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-info"><i class="fas fa-chart-line me-1"></i> 7%</span>
                     </div>

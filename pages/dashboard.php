@@ -500,7 +500,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 label: 'Despesas',
                 data: dadosCategorias.despesas,
                 backgroundColor: dadosCategorias.backgroundColor,
-                hoverOffset: 10
+                hoverOffset: 10,
+                borderWidth: 0
             }]
         },
         options: {
@@ -509,12 +510,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 legend: {
                     position: 'bottom',
                     labels: {
+                        boxWidth: 25,
                         font: {
-                            size: 12,
+                            size: 20,
                             family: 'Arial, sans-serif'
                         },
                         color: '#fff'
-                    }
+                    },
+                maxWidth: 200
                 },
                 tooltip: {
                     callbacks: {

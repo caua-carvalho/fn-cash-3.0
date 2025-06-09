@@ -28,6 +28,27 @@ function obterTransacoes() {
     return $transacoes;
 }
 
+function obterSaldoTipo($tipo): float {
+    global $conn;
+
+    $sql = "
+      SELECT COALESCE(SUM(Valor), 0) AS valor
+      FROM TRANSACAO
+      WHERE ID_Usuario = ? 
+        AND Tipo = ?
+    ";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('is', $_SESSION['id_usuario'], $tipo);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    // Aqui retorna só o número, não o array
+    return $row['valor'];
+}
+
+
 function obterTransacoesPorId($id_transacao){
     global $conn;
     $sql = "SELECT 

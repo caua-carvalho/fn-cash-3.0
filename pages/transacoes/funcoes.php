@@ -9,70 +9,58 @@ require_once "../conexao.php";
  * @param string|null $dataFim     Formato YYYY-MM-DD
  * @return array
  */
-function obterTransacoes(string $dataInicio = null, string $dataFim = null): array {
+function obterTransacoes($dataInicio = null, $dataFim = null): array {
     global $conn;
     $idUsuario = $_SESSION['id_usuario'];
 
     // Monta SQL base
     $sql = "
-      SELECT 
-        t.*, 
-        cr.ID_Conta        AS ID_ContaRemetente, 
-        cr.Nome            AS NomeContaRemetente, 
-        cd.ID_Conta        AS ID_ContaDestinataria, 
-        cd.Nome            AS NomeContaDestinataria
-      FROM TRANSACAO t
-      LEFT JOIN CONTA cr ON t.ID_ContaRemetente   = cr.ID_Conta
-      LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
-      WHERE t.ID_Usuario = ?
+        SELECT 
+            t.*,
+            cr.ID_Conta   AS ID_ContaRemetente,
+            cr.Nome       AS NomeContaRemetente,
+            cd.ID_Conta   AS ID_ContaDestinataria,
+            cd.Nome       AS NomeContaDestinataria
+        FROM TRANSACAO t
+        LEFT JOIN CONTA cr ON t.ID_ContaRemetente   = cr.ID_Conta
+        LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
+        WHERE t.ID_Usuario = ?
     ";
     $types  = "i";
     $params = [$idUsuario];
 
-    // Filtro por datas (campo DATE ou VARCHAR 'YYYY-MM-DD')
-    if ($dataInicio && $dataFim) {
-        $sql   .= " AND t.Data BETWEEN ? AND ?";
-        $types .= "ss";
+    // Filtros de data opcionais
+    if ($dataInicio !== null) {
+        $sql    .= " AND t.Data >= ?";
+        $types  .= "s";
         $params[] = $dataInicio;
+    }
+    if ($dataFim !== null) {
+        $sql    .= " AND t.Data <= ?";
+        $types  .= "s";
         $params[] = $dataFim;
     }
 
-    $sql .= " ORDER BY t.Id_Transacao DESC";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param($types, ...$params);
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-    $transacoes = [];
-    while ($row = $result->fetch_assoc()) {
-        $transacoes[] = $row;
-    }
-
+    // Ordenação final
     $sql .= " ORDER BY t.ID_Transacao DESC";
 
+    // Prepara e executa
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         logErroConsole("Erro ao preparar consulta de transações: " . $conn->error);
         return [];
     }
-
-    // Faz o bind dos parâmetros se houver filtros
-    if (count($valores) > 0) {
-        $stmt->bind_param(implode('', $tipos), ...$valores);
-    }
-
+    $stmt->bind_param($types, ...$params);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $transacoes = [];
 
-    while ($row = $result->fetch_assoc()) {
-        $transacoes[] = $row;
-    }
+    // Coleta resultados
+    $result = $stmt->get_result();
+    $transacoes = $result->fetch_all(MYSQLI_ASSOC);
 
     $stmt->close();
     return $transacoes;
 }
+
 
 function obterSaldoTipo($tipo): float {
     global $conn;

@@ -2,47 +2,51 @@
 // Incluir o cabeçalho
 require_once "../conexao.php";
 
+// funcoes.php
 /**
- * Busca transações filtrando por tipo, status e intervalo de datas.
- * Corrigido: ignora filtros com valor 'all' ou vazio.
- * Gerado pelo Copilot
+ * Retorna lista de transações do usuário, opcionalmente filtradas por data
+ * @param string|null $dataInicio  Formato YYYY-MM-DD
+ * @param string|null $dataFim     Formato YYYY-MM-DD
+ * @return array
  */
-function obterTransacoes($tipo, $status, $dataInicial, $dataFinal) {
+function obterTransacoes(string $dataInicio = null, string $dataFim = null): array {
     global $conn;
+    $idUsuario = $_SESSION['id_usuario'];
 
-    $sql = "SELECT 
-                t.*, 
-                cr.ID_Conta AS ID_ContaRemetente, 
-                cr.Nome AS NomeContaRemetente, 
-                cd.ID_Conta AS ID_ContaDestinataria, 
-                cd.Nome AS NomeContaDestinataria
-            FROM TRANSACAO t
-            LEFT JOIN CONTA cr ON t.ID_ContaRemetente = cr.ID_Conta
-            LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
-            WHERE t.ID_Usuario = ?";
-    $tipos = ['i'];
-    $valores = [$_SESSION['ID_Usuario']];
+    // Monta SQL base
+    $sql = "
+      SELECT 
+        t.*, 
+        cr.ID_Conta        AS ID_ContaRemetente, 
+        cr.Nome            AS NomeContaRemetente, 
+        cd.ID_Conta        AS ID_ContaDestinataria, 
+        cd.Nome            AS NomeContaDestinataria
+      FROM TRANSACAO t
+      LEFT JOIN CONTA cr ON t.ID_ContaRemetente   = cr.ID_Conta
+      LEFT JOIN CONTA cd ON t.ID_ContaDestinataria = cd.ID_Conta
+      WHERE t.ID_Usuario = ?
+    ";
+    $types  = "i";
+    $params = [$idUsuario];
 
-    // Só filtra se não for 'all' e não for vazio
-    if (!empty($tipo) && $tipo !== 'all') {
-        $sql .= " AND t.Tipo = ?";
-        $tipos[] = "s";
-        $valores[] = $tipo;
+    // Filtro por datas (campo DATE ou VARCHAR 'YYYY-MM-DD')
+    if ($dataInicio && $dataFim) {
+        $sql   .= " AND t.Data BETWEEN ? AND ?";
+        $types .= "ss";
+        $params[] = $dataInicio;
+        $params[] = $dataFim;
     }
-    if (!empty($status) && $status !== 'all') {
-        $sql .= " AND t.Status = ?";
-        $tipos[] = "s";
-        $valores[] = $status;
-    }
-    if (!empty($dataInicial)) {
-        $sql .= " AND t.Data >= ?";
-        $tipos[] = "s";
-        $valores[] = $dataInicial;
-    }
-    if (!empty($dataFinal)) {
-        $sql .= " AND t.Data <= ?";
-        $tipos[] = "s";
-        $valores[] = $dataFinal;
+
+    $sql .= " ORDER BY t.Id_Transacao DESC";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $transacoes = [];
+    while ($row = $result->fetch_assoc()) {
+        $transacoes[] = $row;
     }
 
     $sql .= " ORDER BY t.ID_Transacao DESC";
@@ -70,24 +74,24 @@ function obterTransacoes($tipo, $status, $dataInicial, $dataFinal) {
     return $transacoes;
 }
 
-function obterSomaTipoTransacao($tipo) {
+function obterSaldoTipo($tipo): float {
     global $conn;
 
-    // uso de COALESCE e alias
-    $sql = 'SELECT COALESCE(SUM(Valor),0) AS soma_valor 
-            FROM TRANSACAO 
-            WHERE ID_Usuario = ? 
-              AND Tipo = ?';
+    $sql = "
+      SELECT COALESCE(SUM(Valor), 0) AS valor
+      FROM TRANSACAO
+      WHERE ID_Usuario = ? 
+        AND Tipo = ?
+    ";
     $stmt = $conn->prepare($sql);
-    // ajuste aqui para bater com o nome na sessão
     $stmt->bind_param('is', $_SESSION['id_usuario'], $tipo);
     $stmt->execute();
-    // vincula o resultado diretamente
-    $stmt->bind_result($soma);
-    $stmt->fetch();
-    $stmt->close();
 
-    return $soma;
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    // Aqui retorna só o número, não o array
+    return $row['valor'];
 }
 
 

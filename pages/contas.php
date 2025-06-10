@@ -156,7 +156,7 @@ $count = count($contas);
                 </button>
             </div>
         <?php else: ?>
-            <div id="contasGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+            <div id="contasGrid" class="grid grid-cols-3 sm:grid-cols-1 lg:grid-cols-1 gap-6 p-4">
                 <?php
                 $delay = 100;
                 foreach ($contas as $conta):

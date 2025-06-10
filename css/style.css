@@ -1411,7 +1411,6 @@
   
   .value-container::before {
     color: var(--color-text-muted);
-    content: 'R$';
     font-size: var(--font-size-base);
     left: var(--spacing-3);
     position: absolute;

@@ -85,7 +85,7 @@ $categorias = obterCategorias();
                 <h2 class="text-2xl font-bold mb-1">Categorias</h2>
                 <p class="text-muted">Gerencie suas categorias de receitas e despesas</p>
             </div>
-            <button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#categoriaModal">
+            <button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#categoriaModal" data-modal-open="#categoriaModal">
                 <i class="fas fa-plus me-2"></i>
                 Nova Categoria
             </button>
@@ -252,7 +252,7 @@ $categorias = obterCategorias();
                         echo "<div class='flex justify-center gap-2'>";
 
                         // Botão de editar
-                        echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarCategoriaModal'
+                        echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarCategoriaModal' data-modal-open='#editarCategoriaModal'
                                data-id='" . $categoria['ID_Categoria'] . "'
                                data-nome='" . htmlspecialchars($categoria['Nome']) . "'
                                data-tipo='" . $categoria['Tipo'] . "'
@@ -262,7 +262,7 @@ $categorias = obterCategorias();
                               </button>";
 
                         // Botão de excluir
-                        echo "<button class='btn-action delete' title='Excluir' data-toggle='modal' data-target='#excluirCategoriaModal'
+                        echo "<button class='btn-action delete' title='Excluir' data-toggle='modal' data-target='#excluirCategoriaModal' data-modal-open='#excluirCategoriaModal'
                                data-id='" . $categoria['ID_Categoria'] . "'
                                data-nome='" . htmlspecialchars($categoria['Nome']) . "'>
                               <i class='fas fa-trash-alt'></i>

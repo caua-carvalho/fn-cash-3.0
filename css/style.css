@@ -34,7 +34,7 @@
     --color-primary-200: #ceeede;
     --color-primary-300: #7cc1a0;
     --color-primary-400: #3db07e;
-    --color-primary-500: #07a362;
+    --color-primary-500: #009900;
     --color-primary-600: #068d54;
     --color-primary-700: #053f27;
     
@@ -43,7 +43,7 @@
     --color-background-alt: #f5f5f5;
     --color-surface: #ffffff;
     --color-border: #dee2e6;
-    --color-text: #0a0a0a;
+    --color-text: #0D0D0D;
     --color-text-muted: #6c757d;
     
     /* Contextual Colors */
@@ -1630,6 +1630,7 @@
     width: 100%;
     margin: 0 auto;
     padding: var(--spacing-5);
+    cursor: pointer;
     transition: all var(--transition-duration-normal) var(--transition-timing);
   }
   
@@ -1675,6 +1676,13 @@
     color: var(--color-text-muted);
     font-size: var(--font-size-sm);
     margin: 0;
+  }
+
+  .account-card__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-3);
+    margin-top: var(--spacing-4);
   }
 
   /* Grade de contas em três colunas */

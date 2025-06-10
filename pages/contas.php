@@ -138,6 +138,9 @@ $count = count($contas);
                 <button class="btn-action" title="Exportar para Excel">
                     <i class="fas fa-file-excel"></i>
                 </button>
+                <button class="btn-action" id="exportPDF" title="Exportar para PDF">
+                    <i class="fas fa-file-pdf"></i>
+                </button>
             </div>
         </div>
 
@@ -203,6 +206,17 @@ $count = count($contas);
                       <strong>Instituição:</strong> <?= htmlspecialchars($conta['Instituicao']) ?>
                     </p>
                     <div class="flex justify-end gap-2 mt-4">
+                      <button
+                        class="btn-action download"
+                        title="Baixar PDF"
+                        onclick="downloadSingleAccount(this)"
+                        data-nome="<?= htmlspecialchars($conta['Nome']) ?>"
+                        data-tipo="<?= $conta['Tipo'] ?>"
+                        data-saldo="<?= $conta['Saldo'] ?>"
+                        data-instituicao="<?= htmlspecialchars($conta['Instituicao']) ?>"
+                      >
+                        <i class="fas fa-download"></i>
+                      </button>
                       <button
                         class="btn-action edit"
                         data-modal-open="#editarContaModal"
@@ -307,6 +321,8 @@ $count = count($contas);
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Abrir modais ao clicar nos botões
@@ -346,6 +362,73 @@ $count = count($contas);
                 card.classList.toggle('expanded');
             });
         });
+
+        // PDF Export functionality
+        document.getElementById('exportPDF').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Add title
+            doc.setFontSize(18);
+            doc.text('Relatório de Contas', 14, 20);
+
+            // Prepare table data
+            const tableData = Array.from(document.querySelectorAll('.account-card')).map(card => {
+                return [
+                    card.querySelector('.account-card__title').textContent.trim(),
+                    card.getAttribute('data-tipo'),
+                    card.querySelector('.account-card__balance').textContent.trim(),
+                    card.querySelector('.account-card__info').textContent.trim()
+                ];
+            });
+
+            // Generate table
+            doc.autoTable({
+                head: [['Nome', 'Tipo', 'Saldo', 'Instituição']],
+                body: tableData,
+                startY: 30,
+                theme: 'grid',
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [41, 128, 185] }
+            });
+
+            // Save the PDF
+            doc.save('contas-relatorio.pdf');
+        });
+
+        // Download single account as PDF
+        window.downloadSingleAccount = function(button) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Get account data from button attributes
+            const nome = button.dataset.nome;
+            const tipo = button.dataset.tipo;
+            const saldo = button.dataset.saldo;
+            const instituicao = button.dataset.instituicao;
+
+            // Add title
+            doc.setFontSize(18);
+            doc.text('Detalhes da Conta', 14, 20);
+
+            // Generate table
+            doc.autoTable({
+                head: [['Campo', 'Valor']],
+                body: [
+                    ['Nome', nome],
+                    ['Tipo', tipo],
+                    ['Saldo', `R$ ${parseFloat(saldo).toFixed(2)}`],
+                    ['Instituição', instituicao]
+                ],
+                startY: 30,
+                theme: 'grid',
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [41, 128, 185] }
+            });
+
+            // Save the PDF
+            doc.save(`conta-${nome.toLowerCase().replace(/\s+/g, '-')}.pdf`);
+        }
     });
 </script>
 

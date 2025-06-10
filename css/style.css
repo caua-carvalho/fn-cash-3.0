@@ -328,7 +328,7 @@
   }
   
   .text-transfer {
-    color: var(--color-transfer);
+    color: var(--color-transfer) !important;
   }
   
   /* ==========================================================================
@@ -1696,7 +1696,7 @@
     }
   }
   
-  /* Summary Card */
+  /*  mary Card */
   .summary-card {
     background-color: var(--color-surface);
     border-left: 5px solid var(--color-primary-500);
@@ -1803,7 +1803,227 @@
     margin: 0;
   }
   
-  /* ==========================================================================
+  /* =========================
+   Filtros Minimalistas
+   =========================
+   Gerado pelo Copilot
+*/
+
+.filter-container-minimal {
+    background: var(--color-surface);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-4) var(--spacing-5);
+    margin-bottom: var(--spacing-6);
+    transition: box-shadow var(--transition-duration-normal) var(--transition-timing);
+}
+
+.filter-header-minimal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-2);
+}
+
+.filter-title-minimal {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.btn-action-minimal {
+    border: none;
+    background: none;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-2);
+    border-radius: var(--border-radius-pill);
+    transition: background var(--transition-duration-fast);
+}
+
+.btn-action-minimal:hover {
+    background: var(--color-background-alt);
+    color: var(--color-primary-500);
+}
+
+.filter-content-minimal {
+    padding-top: var(--spacing-2);
+}
+
+.filter-form-minimal {
+    gap: var(--spacing-4);
+    justify-items: center;
+    align-items: center;
+}
+
+.form-group-minimal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    background: none;
+    border: none;
+    padding: 0;
+    align-items: center;
+    text-align: center;
+}
+
+.form-label-minimal {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: 0;
+}
+
+/* Gerado pelo Copilot: Ajuste inputs do período um embaixo do outro */
+.periodo-inputs-minimal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    align-items: stretch;
+    width: 100%;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .filter-form-minimal {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: var(--spacing-4);
+    }
+    .periodo-inputs-minimal {
+        flex-direction: column;
+        gap: var(--spacing-1);
+    }
+}
+
+@media (max-width: 767px) {
+    .filter-form-minimal {
+        grid-template-columns: 1fr !important;
+        gap: var(--spacing-3);
+    }
+    .periodo-inputs-minimal {
+        flex-direction: column;
+        gap: var(--spacing-1);
+    }
+}
+
+/* Remove o separador do período, já que agora é vertical */
+.periodo-separador {
+    display: none;
+}
+
+/* Status Selector */
+.status-selector-minimal {
+    display: flex;
+    gap: var(--spacing-2);
+    background: none;
+    border-radius: var(--border-radius-pill);
+    padding: 0;
+    justify-content: center;
+}
+
+.status-option-minimal {
+    background: var(--color-background-alt);
+    color: var(--color-text-muted);
+    border: none;
+    border-radius: var(--border-radius-pill);
+    padding: var(--spacing-2) var(--spacing-4);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    transition: background var(--transition-duration-fast), color var(--transition-duration-fast);
+}
+
+.status-option-minimal.active,
+.status-option-minimal:focus {
+    background: var(--color-primary-500);
+    color: #fff;
+}
+
+.status-option-minimal.income.active { background: var(--color-income); }
+.status-option-minimal.expense.active { background: var(--color-expense); }
+.status-option-minimal.transfer.active { background: var(--color-transfer); }
+.status-option-minimal.pending.active { background: var(--color-pending); }
+.status-option-minimal.completed.active { background: var(--color-completed); }
+.status-option-minimal.canceled.active { background: var(--color-canceled); }
+
+.status-option-minimal:hover:not(.active) {
+    background: var(--color-background-alt);
+    color: var(--color-primary-500);
+}
+
+.periodo-inputs-minimal {
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.form-control-minimal {
+    background: var(--color-background-alt);
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    transition: background var(--transition-duration-fast);
+    width: 100%;
+}
+
+.form-control-minimal:focus {
+    outline: 2px solid var(--color-primary-500);
+    background: var(--color-surface);
+}
+
+.btn-minimal {
+    padding: var(--spacing-2) var(--spacing-5);
+    font-size: var(--font-size-sm);
+    border-radius: var(--border-radius-pill);
+    min-width: 80px;
+}
+
+@media (max-width: 767px) {
+    .filter-form-minimal {
+        grid-template-columns: 1fr !important;
+        gap: var(--spacing-3);
+    }
+    .filter-container-minimal {
+        padding: var(--spacing-3) var(--spacing-2);
+    }
+    .btn-minimal {
+        width: 100%;
+        min-width: unset;
+    }
+    .flex.justify-end.mt-4.gap-2 {
+        flex-direction: column;
+        gap: var(--spacing-2);
+    }
+}
+
+/* Gerado pelo Copilot: Responsividade dos grupos de filtro tipo/status */
+@media (max-width: 600px) {
+  .status-selector-minimal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-2);
+    width: 100%;
+    justify-items: stretch;
+  }
+  .status-option-minimal {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}
+
+/* Se quiser ainda mais responsivo pra telas MUITO pequenas */
+@media (max-width: 400px) {
+  .status-selector-minimal {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
      13. Utilities
      ========================================================================== */
   
@@ -2019,7 +2239,7 @@
   .invisible { visibility: hidden; }
   
   /* Overflow */
-  .overflow-auto { overflow: auto; }
+   .overflow-auto { overflow: auto; }
   .overflow-hidden { overflow: hidden; }
   .overflow-visible { overflow: visible; }
   .overflow-scroll { overflow: scroll; }

@@ -129,107 +129,48 @@ $count = count($contas);
         </div>
     </div>
 
-    <table class="table transaction-table mt-3">
-        <thead>
-            <tr>
-                <th class="text-left">Nome</th>
-                <th class="text-center">Tipo</th>
-                <th class="text-center">Saldo</th>
-                <th class="text-center">Instituição</th>
-                <th class="text-center" width="15%">Ações</th>
-            </tr>
-        </thead>
-        <tbody id="tabelaContas">
-            <?php
-            if (empty($contas)) {
-                echo '<tr><td colspan="5">';
-                echo '<div class="empty-state my-5">';
-                echo '<i class="fas fa-wallet empty-state__icon"></i>';
-                echo '<h3 class="empty-state__title">Nenhuma conta encontrada</h3>';
-                echo '<p class="empty-state__description">';
-                echo 'Comece a registrar suas contas financeiras para visualizá-las aqui.';
-                echo '</p>';
-                // Aqui foi corrigido de "#contaModal" para "#modalNovaConta"
-                echo '<button class="btn btn-primary btn-icon" data-modal-open="#modalNovaConta">';
-                echo '<i class="fas fa-plus me-2"></i> Criar Primeira Conta';
-                echo '</button>';
-                echo '</div>';
-                echo '</td></tr>';
-            } else {
-                $delay = 100;
-                foreach ($contas as $conta) {
-                    // Determina as classes para tipo de conta
-                    $tipoBadgeClass = 'badge-info';
-                    if ($conta['Tipo'] === 'Corrente') {
-                        $tipoBadgeClass = 'badge-primary';
-                    } elseif ($conta['Tipo'] === 'Poupança') {
-                        $tipoBadgeClass = 'badge-income';
-                    } elseif ($conta['Tipo'] === 'Cartão de Crédito') {
-                        $tipoBadgeClass = 'badge-expense';
-                    }
-
-                    $icone = obterIconeTipoConta($conta['Tipo']);
-
-                    echo "<tr>";
-                        // Coluna Nome (alinhado à esquerda)
-                        echo "<td class=\"text-left\">"
-                            . htmlspecialchars($conta['Nome']) .
-                             "</td>";
-
-                        // Coluna Tipo (centralizado)
-                        echo "<td class=\"text-center\">"
-                            . "<span class=\"badge {$tipoBadgeClass}\">"
-                            . "<i class=\"fas {$icone} me-1\"></i>"
-                            . htmlspecialchars($conta['Tipo'])
-                            . "</span>"
-                            . "</td>";
-
-                        // Coluna Saldo (centralizado, fonte semibold)
-                        echo "<td class=\"text-center font-semibold\">"
-                            . "R$ " . number_format($conta['Saldo'], 2, ',', '.')
-                            . "</td>";
-
-                        // Coluna Instituição (centralizado)
-                        echo "<td class=\"text-center\">"
-                            . htmlspecialchars($conta['Instituicao'])
-                            . "</td>";
-
-                        // Coluna Ações (centralizado)
-                        echo "<td class=\"text-center\">"
-                            . "<div class=\"flex justify-center gap-2\">"
-                                // Botão de editar
-                                . "<button class=\"btn-action edit\" title=\"Editar\" data-modal-open=\"#editarContaModal\" "
-                                . "data-id=\"" . $conta['ID_Conta'] . "\" "
-                                . "data-nome=\"" . htmlspecialchars($conta['Nome']) . "\" "
-                                . "data-tipo=\"" . $conta['Tipo'] . "\" "
-                                . "data-saldo=\"" . $conta['Saldo'] . "\" "
-                                . "data-instituicao=\"" . htmlspecialchars($conta['Instituicao']) . "\">"
-                                    . "<i class=\"fas fa-edit\"></i>"
-                                . "</button>"
-
-                                // Botão de excluir
-                                . "<button class=\"btn-action delete\" title=\"Excluir\" data-modal-open=\"#excluirContaModal\" "
-                                . "data-id=\"" . $conta['ID_Conta'] . "\" "
-                                . "data-nome=\"" . htmlspecialchars($conta['Nome']) . "\">"
-                                    . "<i class=\"fas fa-trash-alt\"></i>"
-                                . "</button>"
-                            . "</div>"
-                            . "</td>";
-                    echo "</tr>";
-
-                    $delay += 100;
-                }
+    <div id="contasGrid" class="contas-grid mt-3">
+        <?php
+        if (empty($contas)) {
+            echo '<div class="empty-state my-5">';
+            echo '<i class="fas fa-wallet empty-state__icon"></i>';
+            echo '<h3 class="empty-state__title">Nenhuma conta encontrada</h3>';
+            echo '<p class="empty-state__description">Comece a registrar suas contas financeiras para visualizá-las aqui.</p>';
+            echo '<button class="btn btn-primary btn-icon" data-modal-open="#modalNovaConta">';
+            echo '<i class="fas fa-plus me-2"></i> Criar Primeira Conta';
+            echo '</button>';
+            echo '</div>';
+        } else {
+            foreach ($contas as $conta) {
+                $icone = obterIconeTipoConta($conta['Tipo']);
+                echo "<div class=\"account-card\" data-tipo=\"{$conta['Tipo']}\">";
+                echo "  <div class=\"account-card__header\">";
+                echo "    <h5 class=\"account-card__title\">" . htmlspecialchars($conta['Nome']) . "</h5>";
+                echo "    <div class=\"account-card__icon\"><i class=\"fas {$icone}\"></i></div>";
+                echo "  </div>";
+                echo "  <div class=\"account-card__balance\">R$ " . number_format($conta['Saldo'], 2, ',', '.') . "</div>";
+                echo "  <div class=\"account-card__info\">" . htmlspecialchars($conta['Instituicao']) . "</div>";
+                echo "  <div class=\"flex justify-end gap-2 mt-3\">";
+                echo "    <button class=\"btn-action edit\" title=\"Editar\" data-modal-open=\"#editarContaModal\" "
+                    . "data-id=\"{$conta['ID_Conta']}\" "
+                    . "data-nome=\"" . htmlspecialchars($conta['Nome']) . "\" "
+                    . "data-tipo=\"{$conta['Tipo']}\" "
+                    . "data-saldo=\"{$conta['Saldo']}\" "
+                    . "data-instituicao=\"" . htmlspecialchars($conta['Instituicao']) . "\">";
+                echo "        <i class=\"fas fa-edit\"></i>";
+                echo "    </button>";
+                echo "    <button class=\"btn-action delete\" title=\"Excluir\" data-modal-open=\"#excluirContaModal\" "
+                    . "data-id=\"{$conta['ID_Conta']}\" "
+                    . "data-nome=\"" . htmlspecialchars($conta['Nome']) . "\">";
+                echo "        <i class=\"fas fa-trash-alt\"></i>";
+                echo "    </button>";
+                echo "  </div>";
+                echo "</div>";
             }
-            ?>
-        </tbody>
-    </table>
+        }
+        ?>
+    </div>
 </div>
-
-<script>
-    // Exemplo de JS para abrir/fechar filtros (se você usar filtros)
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggleBtn = document.getElementById('toggleFilter');
-        const filterContent = document.querySelector('.filter-content');
 
 <script src="contas.js"></script>
 

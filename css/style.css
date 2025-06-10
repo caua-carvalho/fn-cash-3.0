@@ -2977,35 +2977,4 @@ body.dark-theme * {
 .toast-notification.hiding {
     animation: slideOutRight var(--transition-duration-normal) var(--transition-timing) forwards;
 }
-/* Grid responsivo para 3 colunas */
-#contasGrid.contas-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin: 0 auto;
-}
-/* Estilização dos cards */
-.account-card {
-  background: #FFFFFF;
-  border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.1);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
-  cursor: pointer;
-}
-.account-card:hover {
-  transform: translateY(-5px);
-}
-/* Quebra de layout para tablets */
-@media (max-width: 992px) {
-  #contasGrid.contas-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-/* Quebra de layout para celulares */
-@media (max-width: 576px) {
-  #contasGrid.contas-grid {
-    grid-template-columns: 1fr;
-  }
-}
 

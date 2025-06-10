@@ -1,5 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // 1) Abre modais sem propagar o clique ao card
+  const grid  = document.getElementById('contasGrid');
+  const cards = Array.from(document.querySelectorAll('.account-card'));
+
+  // 1) Agrupa os cards em colunas por tipo de conta
+  const colCorrente = document.createElement('div');
+  const colPoupanca = document.createElement('div');
+  const colOutros   = document.createElement('div');
+  [colCorrente, colPoupanca, colOutros].forEach(c => c.className = 'contas-col');
+
+  grid.innerHTML = '';
+  grid.append(colCorrente, colPoupanca, colOutros);
+
+  cards.forEach(card => {
+    const tipo = card.getAttribute('data-tipo');
+    if (tipo === 'Corrente') {
+      colCorrente.appendChild(card);
+    } else if (tipo === 'Poupança') {
+      colPoupanca.appendChild(card);
+    } else {
+      colOutros.appendChild(card);
+    }
+  });
+
+  // 2) Abre modais sem propagar o clique ao card
   document.querySelectorAll('[data-modal-open]').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
@@ -10,10 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 2) Filtragem de cards
+  // 3) Filtragem de cards
   const searchInput  = document.getElementById('searchConta');
   const filterSelect = document.getElementById('filterTipo');
-  const cards        = document.querySelectorAll('.account-card');
 
   function filterCards() {
     const q    = searchInput.value.toLowerCase();
@@ -29,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   searchInput.addEventListener('input', filterCards);
   filterSelect.addEventListener('change', filterCards);
 
-  // 3) Accordion: expande/retrai detalhes ao clicar no card
+  // 4) Accordion: expande/retrai detalhes ao clicar no card
   cards.forEach(card => {
     card.addEventListener('click', () => {
       card.classList.toggle('expanded');

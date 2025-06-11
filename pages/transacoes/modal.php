@@ -6,29 +6,6 @@ $contas = obterContas();
 ?>
 
 <script>
-// Atualiza a função showToast para armazenar no localStorage
-function showToast(message, type = 'success', duration = 5000, callback = null) {
-    // Gerado pelo Copilot
-    const container = document.querySelector('.toast-container') || (() => {
-        const div = document.createElement('div');
-        div.className = 'toast-container';
-        document.body.appendChild(div);
-        return div;
-    })();
-
-    const toast = document.createElement('div');
-    toast.className = `toast-notification ${type}`;
-    toast.innerHTML = `
-        <div class="toast-header">
-            <h4 class="toast-title">${type === 'success' ? 'Sucesso!' : 'Erro!'}</h4>
-            <button class="toast-close">&times;</button>
-        </div>
-        <p class="toast-message">${message}</p>
-        <div class="toast-progress">
-            <div class="toast-progress-bar"></div>
-        </div>
-    `;
-
 // -------------- 1) Na carga da página, vê se tem toast salvo --------------
 document.addEventListener('DOMContentLoaded', () => {
   const raw = localStorage.getItem('__PENDENTE_TOAST');
@@ -39,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   _exibeToast(message, type, duration);
 });
 
+// Atualiza a função showToast para armazenar no localStorage
 // -------------- 2) Função pública: salva e recarrega --------------
 function showToast(message, type = 'success', duration = 5000) {
   localStorage.setItem(

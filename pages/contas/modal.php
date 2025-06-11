@@ -92,9 +92,9 @@ function modalCreateConta(): string {
   ';
 }
 ?>
-
-
-
+<head>
+  <link rel="stylesheet" href="contas/modal/modal.css">
+</head>
 
 <!-- Editar Conta Modal -->
 <div class="modal fade" id="editarContaModal" tabindex="-1" aria-labelledby="editarContaModalLabel" aria-hidden="true">

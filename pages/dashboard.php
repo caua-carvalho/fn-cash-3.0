@@ -71,7 +71,11 @@ $transacoesRecentes = obterTransacoesRecentes(10, null); // sem filtro de data, 
 // Converte os dados para JSON para uso no JavaScript
 $dadosGraficoReceitasDespesasJSON = json_encode($dadosGraficoReceitasDespesas);
 $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
+
+// moda de cadastro de contas
+echo modalCreateConta();
 ?>
+
 
 <!-- Scripts para Filtros -->
 <script src='dashboard/dashboard_filtro.js'></script>
@@ -270,7 +274,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                         <div class="text-center text-muted py-4">
                             <i class="fas fa-piggy-bank fa-3x mb-3"></i>
                             <p>Você ainda não possui contas cadastradas.</p>
-                            <button class="btn btn-secondary btn-icon mt-3">
+                            <button class="btn btn-secondary btn-icon mt-3" data-target="#modalNovaConta" data-modal-open="modalNovaConta"">
                                 <i class="fas fa-plus me-2"></i> Adicionar Conta
                             </button>
                         </div>

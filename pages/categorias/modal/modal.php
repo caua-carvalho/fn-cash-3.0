@@ -16,11 +16,11 @@ require_once 'categorias/script.php';
                 </button>
             </div>
 
-            <div class="tab-container">
-                <button type="button" class="tab-btn active" data-tab="basic">Dados Básicos</button>
-                <button type="button" class="tab-btn" data-tab="details">Detalhes</button>
-            </div>
-
+                        <!-- Nome da Categoria com floating label -->
+                        <div class="form-group form-floating mb-3">
+                            <input type="text" class="form-control" id="nomeCategoria" name="nomeCategoria"
+                                placeholder="Nome da Categoria" required>
+                            <label for="nomeCategoria">Nome da Categoria</label>
             <form action="categorias.php" method="POST" class="needs-validation" novalidate>
                 <input type="hidden" name="acao" value="cadastrarCategoria">
 

@@ -260,9 +260,11 @@ $totalBalanco = $totalReceita - $totalDespesa;
                                data-data='" . $transacao['Data'] . "'
                                data-tipo='" . htmlspecialchars($transacao['Tipo']) . "'
                                data-status='" . $transacao['Status'] . "'
-                               data-conta-remetente-id='" . htmlspecialchars($transacao['ID_ContaRemetente']) . "'
+                               data-categoria='" . $transacao['ID_Categoria'] . "'
+                               data-forma-pagamento='" . $transacao['FormaPagamento'] . "'
+                               data-conta-remetente='" . htmlspecialchars($transacao['ID_ContaRemetente']) . "'
                                data-conta-remetente-nome='" . htmlspecialchars($transacao['NomeContaRemetente']) . "'
-                               data-conta-destinataria-id='" . ($transacao['ID_ContaDestinataria'] !== null ? htmlspecialchars($transacao['ID_ContaDestinataria']) : '') . "'
+                               data-conta-destinataria='" . ($transacao['ID_ContaDestinataria'] !== null ? htmlspecialchars($transacao['ID_ContaDestinataria']) : '') . "'
                                data-conta-destinataria-nome='" . ($transacao['NomeContaDestinataria'] !== null ? htmlspecialchars($transacao['NomeContaDestinataria']) : '-') . "'>
                               <i class='fas fa-edit'></i>
                               </button>";

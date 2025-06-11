@@ -3,6 +3,7 @@ require './contas/funcoes.php';
 require './categorias/funcoes.php';
 
 $contas = obterContas();
+$categorias = obterCategorias();
 ?>
 
 <script>
@@ -519,7 +520,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="editarCategoriaTransacao" name="categoriaTransacao">
                                 <option value="" disabled selected></option>
                                 <?php
-                                $categorias = obterCategorias();
                                 if ($categorias) {
                                     foreach ($categorias as $categoria) {
                                         echo '<option value="' . $categoria['ID_Categoria'] . '">' . htmlspecialchars($categoria['Nome']) . '</option>';

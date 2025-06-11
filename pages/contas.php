@@ -112,26 +112,39 @@ $count = count($contas);
         </div>
     </div>
 
-    <!-- Barra de Pesquisa e Filtro por Tipo -->
-    <div class="flex justify-between items-center mb-6 px-4">
-        <input
-            type="search"
-            id="searchConta"
-            class="form-control w-64"
-            placeholder="🔍 Buscar conta"
-        />
-        <select id="filterTipo" class="form-control w-48">
-            <option value="">Todos os tipos</option>
-            <option value="Corrente">Corrente</option>
-            <option value="Poupança">Poupança</option>
-            <option value="Cartão de Crédito">Cartão de Crédito</option>
-            <option value="Investimento">Investimento</option>
-            <option value="Outros">Outros</option>
-        </select>
+    <!-- Filtros -->
+    <div class="filter-container slide-in-left mb-4">
+        <div class="filter-header">
+            <h3 class="filter-title">
+                <i class="fas fa-filter me-2"></i> Filtros
+            </h3>
+            <button class="btn-action" id="toggleFilter">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+
+        <div class="filter-content mt-3" style="display: none;">
+            <div class="grid grid-cols-2 gap-4">
+                <input
+                    type="search"
+                    id="searchConta"
+                    class="form-control"
+                    placeholder="🔍 Buscar conta"
+                />
+                <select id="filterTipo" class="form-control">
+                    <option value="">Todos os tipos</option>
+                    <option value="Corrente">Corrente</option>
+                    <option value="Poupança">Poupança</option>
+                    <option value="Cartão de Crédito">Cartão de Crédito</option>
+                    <option value="Investimento">Investimento</option>
+                    <option value="Outros">Outros</option>
+                </select>
+            </div>
+        </div>
     </div>
 
     <!-- Grid de Cards de Contas -->
-    <div class="fade-in-up">
+    <div class="transaction-table-container fade-in-up">
         <div class="p-4 flex justify-between items-center border-bottom">
             <h4 class="font-semibold m-0">Suas Contas</h4>
             <div class="flex gap-2">
@@ -288,6 +301,18 @@ echo modalCreateConta();
                 bsModal.show();
             });
         });
+
+        // Toggle filtro
+        const toggleBtn = document.getElementById('toggleFilter');
+        const filterContent = document.querySelector('.filter-content');
+        if (toggleBtn && filterContent) {
+            toggleBtn.addEventListener('click', function () {
+                const isVisible = filterContent.style.display !== 'none';
+                filterContent.style.display = isVisible ? 'none' : 'block';
+                toggleBtn.querySelector('i').classList.toggle('fa-chevron-down', isVisible);
+                toggleBtn.querySelector('i').classList.toggle('fa-chevron-up', !isVisible);
+            });
+        }
 
         // Filtragem por pesquisa e tipo
         const searchInput = document.getElementById('searchConta');

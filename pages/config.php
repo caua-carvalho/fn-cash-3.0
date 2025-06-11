@@ -3,7 +3,9 @@ require_once 'header.php';
 require_once 'sidebar.php';
 require_once '../conexao.php';
 
-// Função para obter usuário - Gerado pelo Copilot
+
+// Função para obter usuário
+// Gerado pelo Copilot
 function obterUsuario($idUsuario, $conn) {
     $stmt = $conn->prepare("SELECT * FROM USUARIO WHERE ID_Usuario = ?");
     $stmt->bind_param("i", $idUsuario);
@@ -12,14 +14,17 @@ function obterUsuario($idUsuario, $conn) {
     return $result->fetch_assoc();
 }
 
-// Função para atualizar usuário - Gerado pelo Copilot
+
+// Função para atualizar usuário
+// Gerado pelo Copilot
 function atualizarUsuario($idUsuario, $nome, $email, $conn) {
     $stmt = $conn->prepare("UPDATE USUARIO SET Nome = ?, Email = ? WHERE ID_Usuario = ?");
     $stmt->bind_param("ssi", $nome, $email, $idUsuario);
     return $stmt->execute();
 }
 
-// Função para atualizar senha - Gerado pelo Copilot
+// Função para atualizar senha
+// Gerado pelo Copilot
 function atualizarSenhaUsuario($idUsuario, $novaSenha, $conn) {
     $senhaHash = hash('sha256', $novaSenha);
     $stmt = $conn->prepare("UPDATE USUARIO SET Senha = ? WHERE ID_Usuario = ?");
@@ -27,14 +32,16 @@ function atualizarSenhaUsuario($idUsuario, $novaSenha, $conn) {
     return $stmt->execute();
 }
 
-// Função para excluir usuário - Gerado pelo Copilot
+// Função para excluir usuário
+// Gerado pelo Copilot
 function excluirUsuario($idUsuario, $conn) {
     $stmt = $conn->prepare("DELETE FROM USUARIO WHERE ID_Usuario = ?");
     $stmt->bind_param("i", $idUsuario);
     return $stmt->execute();
 }
 
-// Gerado pelo Copilot - Função para pegar a aba ativa do POST ou manter padrão
+// Função para pegar a aba ativa do POST ou manter padrão
+// Gerado pelo Copilot
 function getAbaAtiva() {
     if (isset($_POST['aba_ativa'])) return $_POST['aba_ativa'];
     return 'aba-dados';
@@ -109,12 +116,14 @@ $idUsuario = $_SESSION['id_usuario'];
 $usuario = obterUsuario($idUsuario, $conn);
 
 // Mensagens de feedback
+$mensagem_sucesso = null;
+$mensagem_erro = null;
 if (isset($_SESSION['mensagem_sucesso'])) {
-    echo "<div class='toast-notification success'>{$_SESSION['mensagem_sucesso']}</div>";
+    $mensagem_sucesso = $_SESSION['mensagem_sucesso'];
     unset($_SESSION['mensagem_sucesso']);
 }
 if (isset($_SESSION['mensagem_erro'])) {
-    echo "<div class='toast-notification error'>{$_SESSION['mensagem_erro']}</div>";
+    $mensagem_erro = $_SESSION['mensagem_erro'];
     unset($_SESSION['mensagem_erro']);
 }
 
@@ -123,6 +132,9 @@ $temaAtual = $_SESSION['tema'] ?? (isset($_COOKIE['theme']) ? $_COOKIE['theme'] 
 $idiomaAtual = $_SESSION['idioma'] ?? 'pt';
 $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
 ?>
+
+<!-- Inclua o CSS do toast se ainda não estiver incluido -->
+<link rel="stylesheet" href="/assets/css/toast.css">
 
 <div class="page-title mb-4">Configurações</div>
 <div class="config-tabs-bar">
@@ -152,7 +164,7 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
             <?php endif; ?>
         </div>
     </div>
-    <!-- Modal para editar informações - AGORA PADRONIZADO -->
+    <!-- Modal para editar informações -->
     <div id="modalEditarInfo" class="modal" style="display:none;">
         <div class="modal-dialog modal-dialog-centered" style="max-width:420px; width:100%;">
             <div class="modal-content">
@@ -238,13 +250,55 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
             <input type="hidden" name="acao" value="alterar_senha">
             <input type="hidden" name="aba_ativa" id="inputAbaAtivaSeguranca" value="aba-seguranca">
             <input type="hidden" name="confirmar_alteracao_senha" id="inputConfirmarAlteracaoSenha" value="0">
-            <div class="form-group">
+            <div class="form-group password-group">
                 <label for="senha_atual" class="form-label">Senha Atual</label>
-                <input type="password" class="form-control-underline" id="senha_atual" name="senha_atual" required>
+                <div class="input-password-wrapper">
+                    <input type="password" class="form-control-underline" id="senha_atual" name="senha_atual" required autocomplete="current-password">
+                    <button type="button" class="btn-eye" tabindex="-1" onclick="togglePassword('senha_atual', this)" aria-label="Mostrar senha">
+                        <!-- Olho fechado SVG -->
+                        <span class="eye-icon eye-closed">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.06 10.06 0 0 1 12 20c-5 0-9.27-3.11-11-8 1.21-3.06 3.62-5.5 6.58-6.71"/>
+                                <path d="M1 1l22 22"/>
+                                <path d="M9.53 9.53A3.5 3.5 0 0 0 12 16a3.5 3.5 0 0 0 2.47-6.47"/>
+                            </svg>
+                        </span>
+                        <!-- Olho aberto SVG -->
+                        <span class="eye-icon eye-open" style="display:none;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
             </div>
-            <div class="form-group">
+            <div class="form-group password-group">
                 <label for="nova_senha" class="form-label">Nova Senha</label>
-                <input type="password" class="form-control-underline" id="nova_senha" name="nova_senha" required>
+                <div class="input-password-wrapper">
+                    <input type="password" class="form-control-underline" id="nova_senha" name="nova_senha" required autocomplete="new-password">
+                    <button type="button" class="btn-eye" tabindex="-1" onclick="togglePassword('nova_senha', this)" aria-label="Mostrar senha">
+                        <!-- Olho fechado SVG -->
+                        <span class="eye-icon eye-closed">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.06 10.06 0 0 1 12 20c-5 0-9.27-3.11-11-8 1.21-3.06 3.62-5.5 6.58-6.71"/>
+                                <path d="M1 1l22 22"/>
+                                <path d="M9.53 9.53A3.5 3.5 0 0 0 12 16a3.5 3.5 0 0 0 2.47-6.47"/>
+                            </svg>
+                        </span>
+                        <!-- Olho aberto SVG -->
+                        <span class="eye-icon eye-open" style="display:none;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
             </div>
             <div class="flex justify-end gap-2 mt-2">
                 <button type="submit" class="btn btn-primary btn-sm">Alterar Senha</button>
@@ -284,6 +338,45 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
 
 <style>
 /* Gerado pelo Copilot */
+/* ...seu CSS já existente... */
+
+/* Ajuste só para os selects do perfil, não vai zoar o resto do sistema */
+#aba-preferencias select.form-control-underline,
+#aba-notificacoes select.form-control-underline {
+    background-color: var(--color-surface, #222) !important;
+    color: var(--color-text, #fff) !important;
+    border: none;
+    border-bottom: 2px solid var(--color-border, #444);
+    border-radius: 0;
+    transition: background 0.2s, color 0.2s;
+    box-shadow: none;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 2.2rem;
+    font-size: 1.07rem;
+}
+#aba-preferencias select.form-control-underline:focus,
+#aba-notificacoes select.form-control-underline:focus {
+    background-color: var(--color-background-alt, #181818) !important;
+    color: var(--color-text, #fff) !important;
+    border-bottom: 2px solid var(--color-primary, #07a362);
+}
+#aba-preferencias .form-group,
+#aba-notificacoes .form-group {
+    position: relative;
+}
+#aba-preferencias select.form-control-underline,
+#aba-notificacoes select.form-control-underline {
+    background-image: url("data:image/svg+xml,%3Csvg fill='none' stroke='%23aaa' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1.1em;
+    cursor: pointer;
+}
+
+/* ...restante do seu CSS já existente... */
 .page-title {
     font-size: 2rem;
     font-weight: bold;
@@ -465,6 +558,43 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
     .modal-dialog { max-width: 98vw; }
     .modal-body, .modal-header, .modal-footer { padding-left: 1rem; padding-right: 1rem; }
 }
+
+/* Olho dentro do input de senha */
+.input-password-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+.input-password-wrapper input[type="password"],
+.input-password-wrapper input[type="text"] {
+    padding-right: 2.5rem;
+}
+.btn-eye {
+    position: absolute;
+    right: 0.3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    color: var(--color-text, #222);
+    transition: color 0.2s;
+}
+.dark-theme .btn-eye {
+    color: #fff;
+}
+.eye-icon {
+    display: inline-flex;
+    vertical-align: middle;
+}
+.btn-eye:focus {
+    outline: none;
+}
 </style>
 
 <script>
@@ -512,6 +642,51 @@ function salvarTema() {
     document.cookie = 'theme=' + tema + ';path=/;max-age=31536000';
     select.form.submit();
 }
+
+// Função showToast (igual ao modal de transações)
+function showToast(message, type = 'success', duration = 3000, callback = null) {
+    const container = document.querySelector('.toast-container') || (() => {
+        const div = document.createElement('div');
+        div.className = 'toast-container';
+        document.body.appendChild(div);
+        return div;
+    })();
+
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    toast.innerHTML = `
+        <div class="toast-header">
+            <h4 class="toast-title">${type === 'success' ? 'Sucesso!' : 'Erro!'}</h4>
+            <button class="toast-close">&times;</button>
+        </div>
+        <p class="toast-message">${message}</p>
+        <div class="toast-progress">
+            <div class="toast-progress-bar"></div>
+        </div>
+    `;
+
+    container.appendChild(toast);
+
+    // Barra de progresso
+    const progressBar = toast.querySelector('.toast-progress-bar');
+    progressBar.style.transition = `width ${duration}ms linear`;
+    setTimeout(() => progressBar.style.width = '0%', 100);
+
+    // Botão fechar
+    toast.querySelector('.toast-close').onclick = () => {
+        toast.style.animation = 'slideOut 0.3s forwards';
+        setTimeout(() => toast.remove(), 300);
+    };
+
+    // Remover automaticamente
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s forwards';
+        setTimeout(() => toast.remove(), 300);
+        if (typeof callback === 'function') callback();
+    }, duration);
+}
+
+// Exibe toast se houver mensagem de sessão
 document.addEventListener('DOMContentLoaded', function () {
     setTimeout(function () {
         document.querySelectorAll('.toast-notification').forEach(function (el) {
@@ -524,7 +699,30 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.classList.add(tema);
     let abaAtiva = localStorage.getItem('abaAtivaPerfil') || '<?php echo $abaAtiva; ?>';
     abrirAba(abaAtiva);
+    <?php if ($mensagem_sucesso): ?>
+        showToast(<?php echo json_encode($mensagem_sucesso); ?>, 'success');
+    <?php endif; ?>
+    <?php if ($mensagem_erro): ?>
+        showToast(<?php echo json_encode($mensagem_erro); ?>, 'danger');
+    <?php endif; ?>
 });
+
+// Função para mostrar/ocultar senha
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const eyeOpen = btn.querySelector('.eye-open');
+    const eyeClosed = btn.querySelector('.eye-closed');
+    if (input.type === 'password') {
+        input.type = 'text';
+        if (eyeOpen) eyeOpen.style.display = '';
+        if (eyeClosed) eyeClosed.style.display = 'none';
+    } else {
+        input.type = 'password';
+        if (eyeOpen) eyeOpen.style.display = 'none';
+        if (eyeClosed) eyeClosed.style.display = '';
+    }
+}
 </script>
 
 <?php require_once 'footer.php'; ?>

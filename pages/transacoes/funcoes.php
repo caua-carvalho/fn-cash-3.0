@@ -62,7 +62,7 @@ function obterTransacoes($dataInicio = null, $dataFim = null): array {
 }
 
 
-function obterSaldoTipo($tipo): float {
+function obterSaldoTipo($tipo, $dataInicio, $dataFim): float {
     global $conn;
 
     $sql = "
@@ -71,16 +71,39 @@ function obterSaldoTipo($tipo): float {
       WHERE ID_Usuario = ? 
         AND Tipo = ?
     ";
+
+    $types  = "is";  // Expecting integer for user id, and string for transaction type
+    $params = [$_SESSION['id_usuario'], $tipo]; // Adding the $tipo parameter for the query
+
+    // Filtros de data opcionais
+    if ($dataInicio !== null) {
+        $sql    .= " AND Data >= ?";
+        $types  .= "s";
+        $params[] = $dataInicio;
+    }
+    if ($dataFim !== null) {
+        $sql    .= " AND Data <= ?";
+        $types  .= "s";
+        $params[] = $dataFim;
+    }
+
+    // Prepara e executa
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('is', $_SESSION['id_usuario'], $tipo);
+    if (!$stmt) {
+        logErroConsole("Erro ao preparar consulta de transações: " . $conn->error);
+        return 0.0;  // Returning 0 if there's an error
+    }
+    $stmt->bind_param($types, ...$params);
     $stmt->execute();
 
+    // Coleta resultados
     $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    $row = $result->fetch_assoc();  // Only one row with the SUM, so use fetch_assoc() to get it.
 
-    // Aqui retorna só o número, não o array
-    return $row['valor'];
+    $stmt->close();
+    return (float)$row['valor'];  // Return the sum value
 }
+
 
 
 function obterTransacoesPorId($id_transacao){

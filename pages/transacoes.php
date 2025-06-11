@@ -143,8 +143,8 @@ $intervaloDatas = ['inicio' => $dataInicio, 'fim' => $dataFim];
 // 2) Busca transações já filtradas
 $transacoes = obterTransacoes($dataInicio, $dataFim);
 
-$totalReceita = obterSaldoTipo(tipo: 'Receita');
-$totalDespesa = obterSaldoTipo(tipo: 'Despesa');
+$totalReceita = obterSaldoTipo(tipo: 'Receita', dataInicio: $dataInicio, dataFim: $dataFim);
+$totalDespesa = obterSaldoTipo(tipo: 'Despesa', dataInicio: $dataInicio, dataFim: $dataFim);
 $totalBalanco = $totalReceita - $totalDespesa;
 ?>
 

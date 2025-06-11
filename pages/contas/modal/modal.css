@@ -57,8 +57,8 @@
 
 /* 5) MODAL-CONTENT */
 .modal-content {
-  background-color: var(--base-clr);             /* fundo escuro opaco */
-  border: 1px solid var(--line-clr);
+  background-color: black;             /* fundo escuro opaco */
+  border: 1px solid 1px solid rgb(71, 71, 71);
   border-radius: 10px;
   box-shadow: 0 15px 30px var(--box-shadow-clr);
   min-height: 600px;
@@ -71,7 +71,6 @@
 
 /* 6) HEADER DO MODAL */
 .modal-header {
-  background: linear-gradient(135deg, var(--accent-clr), var(--hover-clr));
   color: var(--color-on-primary);
   padding: var(--spacing-3) var(--spacing-4);
   border-bottom: none;
@@ -113,7 +112,9 @@
 
 /* 7.1) LISTA FLEXÍVEL PARA OS CARDS DE SELEÇÃO DE TIPO */
 .type-selector {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column: 2;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--spacing-3);
@@ -127,8 +128,8 @@
   justify-content: center;
   padding: var(--spacing-3);
   background-color: var(--base-clr);             /* mesmo fundo do modal */
-  border: 1px solid var(--line-clr);              /* borda verde */
-  border-radius: var(--border-radius-sm);
+  border: 1px solid 1px solid rgb(71, 71, 71);             /* borda verde */
+  border-radius: 10px;
   color: var(--text-clr);
   cursor: pointer;
   transition: all var(--transition-duration-fast) var(--transition-timing);
@@ -143,7 +144,7 @@
 
 .type-option.active {
   background-color: var(--accent-clr);            /* verde do header */
-  border-color: var(--accent-clr);
+  border: 1px solid var(--color-primary-500);
   color: var(--color-on-primary);                  /* texto branco */
 }
 
@@ -167,14 +168,15 @@
 .modal-body .form-group {
   position: relative;
   margin-bottom: var(--spacing-3);
+  z-index: 1000000000;
 }
 
 .modal-body .form-group .form-control {
   width: 100%;
-  padding: calc(var(--spacing-4) / 2 + var(--font-size-base)) var(--spacing-3) var(--spacing-2) var(--spacing-3);
+  padding: 16px 12px;
   /* ↑ Espaço extra acima para a label iniciar dentro da caixa */
-  background-color: var(--base-clr);
-  border: 1px solid var(--line-clr);
+  background-color: black;
+  border: 1px solid var(--color-primary-500);
   border-radius: var(--border-radius-sm);
   color: var(--text-clr);
   font-size: var(--font-size-base);
@@ -190,6 +192,7 @@
   background-color: var(--base-clr);
   color: var(--text-clr);
   box-shadow: 0 0 0 0.2rem rgba(7, 163, 98, 0.25);
+  z-index: 1000;
 }
 
 .modal-body .form-group label {
@@ -199,14 +202,13 @@
   font-size: var(--font-size-base);
   color: var(--secondary-text-clr, #777);
   background-color: var(--base-clr);
-  padding: 0 var(--spacing-1);
   pointer-events: none;
   transition: all var(--transition-duration-fast) var(--transition-timing);
 }
 
 .modal-body .form-group .form-control:placeholder-shown + label {
-  top: var(--spacing-2);
-  left: var(--spacing-3);
+  top: 15px;
+  left: 35px;
   font-size: var(--font-size-base);
   color: var(--secondary-text-clr, #777);
 }
@@ -218,7 +220,7 @@
   left: var(--spacing-3);
   font-size: var(--font-size-sm);
   color: var(--text-clr);
-  background-color: var(--base-clr);
+  background-color: black;
   transform: none;
 }
 
@@ -235,16 +237,10 @@
 
 .value-container .form-control {
   padding-left: calc(var(--spacing-3) * 2 + var(--font-size-base));
+  padding-top: 12px;
+  padding-bottom: 21px
 }
 
-.value-container::before {
-  content: 'R$';
-  position: absolute;
-  top: var(--spacing-3);
-  left: var(--spacing-3);
-  font-size: var(--font-size-base);
-  color: var(--text-clr);
-}
 
 /* 8.2) Campos específicos para transferências */
 .transfer-only {
@@ -268,11 +264,12 @@
 /* 9) FOOTER DO MODAL */
 .modal-footer {
   padding: var(--spacing-3) var(--spacing-4);
-  border-top: 1px solid var(--line-clr);
+  border-top: 1px solid rgb(71, 71, 71);
   background-color: var(--base-clr);
   display: flex;
   justify-content: center; /* centraliza os botões */
   gap: var(--spacing-3);
+  padding: 30px
 }
 
 /* Botões com borda bem arredondada e animação */
@@ -288,21 +285,20 @@
 /* Botão “Cancelar” (fundo transparente, borda verde, texto claro) */
 .modal-footer .btn-secondary {
   background-color: transparent;
-  border: 1px solid var(--line-clr);
+  border: 1px solid rgb(71, 71, 71);
   color: var(--text-clr);
+  border-radius: 50px;
 }
 
 .modal-footer .btn-secondary:hover {
-  background-color: var(--hover-clr);
-  color: var(--color-on-primary);
-  transform: scale(1.05);
+  background-color: rgb(41, 41, 41);
 }
 
 /* Botão “Salvar Conta” (fundo verde, texto branco) */
 .modal-footer .btn-success {
-  background-color: var(--accent-clr);
   border: none;
-  color: var(--color-on-primary);
+  background-color: var(--color-primary-500);
+  border-radius: 50px;
 }
 
 .modal-footer .btn-success:hover {

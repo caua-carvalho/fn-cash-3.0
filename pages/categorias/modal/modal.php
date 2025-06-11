@@ -10,7 +10,7 @@ require_once 'categorias/script.php';
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="categoriaModalLabel">Nova Categoria</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" data-modal-close='#categoriaModal' aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -70,7 +70,7 @@ require_once 'categorias/script.php';
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-modal-close="#categoriaModal">Cancelar</button>
                     <button type="submit" class="btn btn-success">Salvar</button>
                 </div>
             </form>
@@ -84,7 +84,7 @@ require_once 'categorias/script.php';
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editarCategoriaModalLabel">Editar Categoria</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" data-modal-close="#editarCategoriaModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -145,7 +145,7 @@ require_once 'categorias/script.php';
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-modal-close="#editarCategoriaModal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Atualizar</button>
                 </div>
             </form>
@@ -159,7 +159,7 @@ require_once 'categorias/script.php';
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="excluirCategoriaModalLabel">Excluir Categoria</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" data-modal-close="#excluirCategoriaModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -176,7 +176,7 @@ require_once 'categorias/script.php';
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-modal-close="#excluirCategoriaModal">Cancelar</button>
                     <button type="submit" class="btn btn-danger">Excluir</button>
                 </div>
             </form>
@@ -334,6 +334,7 @@ require_once 'categorias/script.php';
             });
         });
     }
+
 </script>
 
 <style>

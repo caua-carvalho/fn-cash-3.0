@@ -1,0 +1,357 @@
+/* modal.css
+   ------------------------------------------------------------
+   Estilos para os modais de “Categorias” (Cadastrar, Editar, Excluir).
+   Este arquivo DEVE ser carregado APÓS o CSS de Transações, que define as variáveis:
+     --base-clr          (fundo escuro do modal)
+     --accent-clr        (verde usado no header)
+     --hover-clr         (verde de hover)
+     --line-clr          (linha/borda verde)
+     --text-clr          (texto claro sobre fundo escuro)
+     --color-on-primary  (texto branco sobre fundo verde)
+     --box-shadow-clr    (sombra usada no modal)
+     --border-radius-sm  (pequeno raio de borda)
+     --border-radius-md  (médio raio de borda)
+     --border-radius-round (raio de borda bem arredondado)
+     --font-size-sm      (tamanho de fonte pequeno)
+     --font-size-base    (tamanho de fonte padrão)
+     --font-size-lg      (tamanho de fonte grande)
+     --font-size-xl      (tamanho de fonte extra)
+     --spacing-1, --spacing-2, --spacing-3, --spacing-4, --spacing-6 (espacamentos)
+     --transition-duration-fast
+     --transition-timing
+     --font-family-base
+   ------------------------------------------------------------
+*/
+
+/* 1) IMPORTAÇÃO DE FONTE */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* 2) ANIMAÇÃO GERAL (fade-in) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal.fade .modal-dialog {
+  animation: fadeIn 0.4s var(--transition-timing);
+}
+
+/* 3) CONTAINER DO MODAL */
+.modal {
+  font-family: var(--font-family-base, 'Montserrat', sans-serif);
+}
+
+/* 4) TAMANHO DO MODAL */
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 450px;                /* estreitado para 450px */
+    margin: var(--spacing-6) auto;
+  }
+}
+
+/* 5) MODAL-CONTENT */
+.modal-content {
+  background-color: var(--base-clr);             /* fundo escuro opaco */
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 2px 10px var(--box-shadow-clr);
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--text-clr);
+}
+
+/* 6) HEADER DO MODAL */
+.modal-header {
+  background: linear-gradient(135deg, var(--accent-clr), var(--hover-clr));
+  color: var(--color-on-primary);
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: none;
+  position: relative;
+}
+
+.modal-header .modal-title {
+  margin: 0 auto;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-on-primary);
+}
+
+.modal-header .btn-close {
+  position: absolute;
+  top: var(--spacing-3);
+  right: var(--spacing-4);
+  color: var(--color-on-primary);
+  opacity: 0.8;
+  font-size: var(--font-size-xl);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform var(--transition-duration-fast) var(--transition-timing);
+}
+
+.modal-header .btn-close:hover {
+  transform: rotate(90deg);
+}
+
+/* 7) BODY DO MODAL */
+.modal-body {
+  padding: var(--spacing-4);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+/* 7.1) GRID 2×2 PARA OS CARDS DE SELEÇÃO DE TIPO */
+.type-selector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+}
+
+.type-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3);
+  background-color: var(--base-clr);             /* mesmo fundo do modal */
+  border: 1px solid var(--line-clr);              /* borda verde */
+  border-radius: var(--border-radius-sm);
+  color: var(--text-clr);
+  cursor: pointer;
+  transition: all var(--transition-duration-fast) var(--transition-timing);
+  width: 100%;
+  height: 100px;
+}
+
+.type-option:hover {
+  border-color: var(--hover-clr);
+}
+
+.type-option.active {
+  background-color: var(--accent-clr);            /* verde do header */
+  border-color: var(--accent-clr);
+  color: var(--color-on-primary);                  /* texto branco */
+}
+
+.type-option .type-icon {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-1);
+  transition: color var(--transition-duration-fast) var(--transition-timing);
+}
+
+.type-option .type-name {
+  font-size: var(--font-size-base);
+  transition: color var(--transition-duration-fast) var(--transition-timing);
+}
+
+.type-option.active .type-icon,
+.type-option.active .type-name {
+  color: var(--color-on-primary);
+}
+.type-option.active.expense {
+    background-color: rgba(231, 76, 60, 0.1);
+    border-color: var(--color-expense);
+}
+
+.type-option.active.income {
+    background-color: rgba(7, 163, 98, 0.1);
+    border-color: var(--color-income);
+}
+
+.dark-theme .type-option.active.expense {
+    background-color: rgba(231, 76, 60, 0.2);
+}
+
+.dark-theme .type-option.active.income {
+    background-color: rgba(7, 163, 98, 0.2);
+}
+
+
+/* 8) CAMPOS DE FORMULÁRIO E FLOATING LABELS */
+.modal-body .form-group {
+  position: relative;
+  margin-bottom: var(--spacing-3);
+}
+
+.modal-body .form-group .form-control {
+  width: 100%;
+  padding: calc(var(--spacing-4) / 2 + var(--font-size-base)) var(--spacing-3) var(--spacing-2) var(--spacing-3);
+  /* ↑ Espaço extra acima para a label iniciar dentro da caixa */
+  background-color: var(--base-clr);
+  border: 1px solid var(--line-clr);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-clr);
+  font-size: var(--font-size-base);
+  transition:
+    border-color var(--transition-duration-fast) var(--transition-timing),
+    background-color var(--transition-duration-fast) var(--transition-timing),
+    color var(--transition-duration-fast) var(--transition-timing);
+}
+
+.modal-body .form-group .form-control:focus {
+  outline: none;
+  border-color: var(--hover-clr);
+  background-color: var(--base-clr);
+  color: var(--text-clr);
+  box-shadow: 0 0 0 0.2rem rgba(7, 163, 98, 0.25);
+}
+
+.modal-body .form-group label {
+  position: absolute;
+  top: var(--spacing-2);
+  left: var(--spacing-3);
+  font-size: var(--font-size-base);
+  color: var(--secondary-text-clr, #777);
+  background-color: var(--base-clr);
+  padding: 0 var(--spacing-1);
+  pointer-events: none;
+  transition: all var(--transition-duration-fast) var(--transition-timing);
+}
+
+.modal-body .form-group .form-control:placeholder-shown + label {
+  top: var(--spacing-2);
+  left: var(--spacing-3);
+  font-size: var(--font-size-base);
+  color: var(--secondary-text-clr, #777);
+}
+
+.modal-body .form-group .form-control:focus + label,
+.modal-body .form-group .form-control:not(:placeholder-shown) + label,
+.modal-body .form-group .form-control.has-value + label {
+  top: calc(-1 * var(--spacing-2));
+  left: var(--spacing-3);
+  font-size: var(--font-size-sm);
+  color: var(--text-clr);
+  background-color: var(--base-clr);
+  transform: none;
+}
+
+.modal-body .form-group .form-control.has-value {
+  background-color: var(--base-clr);
+  color: var(--text-clr);
+}
+
+/* 8.1) Para inputs numéricos com prefixo “R$” */
+.value-container {
+  position: relative;
+  width: 100%;
+}
+
+.value-container .form-control {
+  padding-left: calc(var(--spacing-3) * 2 + var(--font-size-base));
+}
+
+.value-container::before {
+  content: 'R$';
+  position: absolute;
+  top: var(--spacing-3);
+  left: var(--spacing-3);
+  font-size: var(--font-size-base);
+  color: var(--text-clr);
+}
+
+/* 8.2) Campos específicos para transferências */
+.transfer-only {
+  display: none;
+}
+
+.expense-income-only {
+  display: block;
+}
+
+/* Quando o form ou um wrapper tiver .transfer, exibe esses campos */
+.modal-body .transfer .transfer-only {
+  display: block;
+  animation: fadeIn 0.5s var(--transition-timing);
+}
+
+.modal-body .transfer .expense-income-only {
+  display: none;
+}
+
+/* 9) FOOTER DO MODAL */
+.modal-footer {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-top: 1px solid var(--line-clr);
+  background-color: var(--base-clr);
+  display: flex;
+  justify-content: center; /* centraliza os botões */
+  gap: var(--spacing-3);
+}
+
+/* Botões com borda bem arredondada e animação */
+.modal-footer .btn {
+  min-width: 120px;
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--border-radius-round); /* bordas bem arredondadas */
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  transition: all var(--transition-duration-fast) var(--transition-timing);
+}
+
+/* Botão “Cancelar” (fundo transparente, borda verde, texto claro) */
+.modal-footer .btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--line-clr);
+  color: var(--text-clr);
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: var(--hover-clr);
+  color: var(--color-on-primary);
+  transform: scale(1.05);
+}
+
+/* Botão “Salvar Conta” (fundo verde, texto branco) */
+.modal-footer .btn-success {
+  background-color: var(--accent-clr);
+  border: none;
+  color: var(--color-on-primary);
+}
+
+.modal-footer .btn-success:hover {
+  background-color: var(--hover-clr);
+  transform: scale(1.05);
+}
+
+/* Botão “Atualizar” (no modal de editar) */
+.modal-footer .btn-primary {
+  background-color: var(--accent-clr);
+  border: none;
+  color: var(--color-on-primary);
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: var(--hover-clr);
+  transform: scale(1.05);
+}
+
+/* Botão “Excluir” (no modal de excluir) */
+.modal-footer .btn-danger {
+  background-color: #e63946; /* vermelho padrão, ajuste se necessário */
+  border: none;
+  color: #ffffff;
+}
+
+.modal-footer .btn-danger:hover {
+  background-color: #c0323b;
+  transform: scale(1.05);
+}
+
+/* 10) MEDIA QUERY PARA TELAS MUITO BAIXAS */
+@media (max-height: 600px) {
+  .modal-content {
+    min-height: auto;
+    max-height: 90vh;
+  }
+}

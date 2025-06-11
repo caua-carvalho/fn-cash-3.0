@@ -188,25 +188,30 @@ require_once 'categorias/script.php';
 <script src="categorias/modal/modal.js"></script>
 
 <style>
-    /* Estilos para type-option consistent com Design System */
-    .type-option.active.expense {
-        background-color: rgba(231, 76, 60, 0.1);
-        border-color: var(--color-expense);
+    :root {
+        --base-clr: #0a0a0a;
+        --line-clr: #42434a;
+        --hover-clr: #053F27;
+        --text-clr: #e6e6ef;
+        --accent-clr: #07A362;
+        --secondary-text-clr: #b0b3c1;
+        --background-clr: #f5f5f5;
+        --input-bg-clr: #f5f5f5;
+        --box-shadow-clr: rgba(10, 10, 10, 0.5);
+        --hover-overlay-clr: rgba(10, 10, 10, 0.2);
     }
 
-    .type-option.active.income {
-        background-color: rgba(7, 163, 98, 0.1);
-        border-color: var(--color-income);
+    /* Adicionar classe para animação de shake em campos com erro */
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
     }
 
-    .dark-theme .type-option.active.expense {
-        background-color: rgba(231, 76, 60, 0.2);
-    }
-
-    .dark-theme .type-option.active.income {
-        background-color: rgba(7, 163, 98, 0.2);
+    .shake {
+        animation: shake 0.6s ease-in-out;
     }
 </style>
 
-<link rel="stylesheet" href="contas/modal/modal.css">
+<link rel="stylesheet" href="categorias/modal/modal.css">
 

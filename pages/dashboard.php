@@ -331,67 +331,111 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($transacoesRecentes)): ?>
-                            <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
-                                    <p class="text-muted">Nenhuma transação encontrada no período selecionado.</p>
-                                </td>
-                            </tr>
-                        <?php else: ?>
-                            <?php foreach ($transacoesRecentes as $transacao): ?>
-                                <tr>
-                                    <td>
-                                        <div class="flex items-center gap-2">
-                                            <span class="badge badge-<?php echo $transacao['Tipo'] === 'Receita' ? 'income' : ($transacao['Tipo'] === 'Despesa' ? 'expense' : 'transfer'); ?>">
-                                                <i class="fas fa-arrow-<?php echo $transacao['Tipo'] === 'Receita' ? 'up' : ($transacao['Tipo'] === 'Despesa' ? 'down' : 'right'); ?>"></i>
-                                            </span>
-                                            <span><?php echo htmlspecialchars($transacao['Titulo']); ?></span>
-                                        </div>
-                                    </td>
-                                    <td><?php echo !empty($transacao['NomeCategoria']) ? htmlspecialchars($transacao['NomeCategoria']) : '-'; ?></td>
-                                    <td><?php echo $transacao['TempoRelativo']; ?></td>
-                                    <td class="text-<?php echo $transacao['Tipo'] === 'Receita' ? 'income' : ($transacao['Tipo'] === 'Despesa' ? 'expense' : ''); ?>">
-                                        <?php echo ($transacao['Tipo'] === 'Despesa' ? '-' : '') . 'R$ ' . number_format($transacao['Valor'], 2, ',', '.'); ?>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-<?php
-                                            echo $transacao['Status'] === 'Efetivada' ? 'completed' : 
-                                                ($transacao['Status'] === 'Pendente' ? 'pending' : 'canceled'); 
-                                        ?>">
-                                            <?php echo $transacao['Status']; ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="flex gap-2">
-                                            <button class="btn-action edit" title="Editar" data-modal-open="#editarTransacaoModal"
-                                                data-id="<?php echo $transacao['ID_Transacao']; ?>"
-                                                data-titulo="<?php echo htmlspecialchars($transacao['Titulo']); ?>">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-
-                                            <?php
-                                            echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarTransacaoModal' data-modal-open='#editarTransacaoModal''
-                                                    data-id='" . $transacao['ID_Transacao'] . "'
-                                                    data-titulo='" . htmlspecialchars($transacao['Titulo']) . "'
-                                                    data-descricao='" . htmlspecialchars($transacao['Descricao']) . "'
-                                                    data-valor='" . $transacao['Valor'] . "'
-                                                    data-data='" . $transacao['Data'] . "'
-                                                    data-tipo='" . htmlspecialchars($transacao['Tipo']) . "'
-                                                    data-status='" . $transacao['Status'] . "'
-                                                    data-conta-remetente-id='" . htmlspecialchars($transacao['ID_ContaRemetente']) . "'
-                                                    data-conta-remetente-nome='" . htmlspecialchars($transacao['NomeContaRemetente']) . "'
-                                                    data-conta-destinataria-id='" . ($transacao['ID_ContaDestinataria'] !== null ? htmlspecialchars($transacao['ID_ContaDestinataria']) : '') . "'
-                                                    data-conta-destinataria-nome='" . ($transacao['NomeContaDestinataria'] !== null ? htmlspecialchars($transacao['NomeContaDestinataria']) : '-') . "'>
-
-                                                <i class='fas fa-edit'></i>
-                                                </button>";
-                                            ?>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                <?php
+                if (empty($transacoesRecentes)) {
+                    echo '<tr><td colspan="8">';
+                    echo '<div class="empty-state my-5">';
+                    echo '<i class="fas fa-receipt empty-state__icon"></i>';
+                    echo '<h3 class="empty-state__title">Nenhuma transação encontrada</h3>';
+                    echo '<p class="empty-state__description">Comece a registrar suas transações financeiras para visualizá-las aqui.</p>';
+                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal" data-modal-open="#transacaoModal">';
+                    echo '<i class="fas fa-plus me-2"></i> Criar Primeira Transação';
+                    echo '</button>';
+                    echo '</div>';
+                    echo '</td></tr>';
+                } else {
+                    $delay = 100;
+                    foreach ($transacoesRecentes as $transacao) {
+                        // Determina as classes para tipo de transação
+                        $tipoBadgeClass = 'badge-transfer';
+                        $valorClass = '';
+                        
+                        if ($transacao['Tipo'] === 'Receita') {
+                            $tipoBadgeClass = 'badge-income';
+                            $valorClass = 'text-income';
+                        } elseif ($transacao['Tipo'] === 'Despesa') {
+                            $tipoBadgeClass = 'badge-expense';
+                            $valorClass = 'text-expense';
+                        }
+                        
+                        // Determina as classes para status
+                        $statusBadgeClass = 'badge-pending';
+                        if ($transacao['Status'] === 'Efetivada') {
+                            $statusBadgeClass = 'badge-completed';
+                        } elseif ($transacao['Status'] === 'Cancelada') {
+                            $statusBadgeClass = 'badge-canceled';
+                        }
+                        
+                        echo "<tr class='fade-in-up' style='animation-delay: {$delay}ms'>";
+                        echo "<td class='font-medium'>" . htmlspecialchars($transacao['Titulo']) . "</td>";
+                        
+                        // Formata valor com coloração positiva/negativa
+                        echo "<td class='font-semibold {$valorClass}'>" . 
+                             (($transacao['Tipo'] === 'Despesa') ? '- ' : '') . 
+                             "R$ " . number_format($transacao['Valor'], 2, ',', '.') . 
+                             "</td>";
+                        
+                        // Formata data
+                        $data = new DateTime($transacao['Data']);
+                        echo "<td>" . $data->format('d/m/Y') . "</td>";
+                        
+                        // Badges para tipo e status
+                        echo "<td><span class='badge {$tipoBadgeClass}'>" . 
+                             "<i class='fas fa-" . 
+                             ($transacao['Tipo'] === 'Receita' ? 'arrow-up' : 
+                             ($transacao['Tipo'] === 'Despesa' ? 'arrow-down' : 'exchange-alt')) . 
+                             " me-1'></i>" . 
+                             htmlspecialchars($transacao['Tipo']) . "</span></td>";
+                             
+                        echo "<td><span class='badge {$statusBadgeClass}'>" . htmlspecialchars($transacao['Status']) . "</span></td>";
+                        
+                        // Contas
+                        echo "<td>" . htmlspecialchars($transacao['NomeContaRemetente']) . "</td>";
+                        echo "<td>" . ($transacao['NomeContaDestinataria'] !== null ? htmlspecialchars($transacao['NomeContaDestinataria']) : '-') . "</td>";
+                        
+                        // Botões de ação
+                        echo "<td>";
+                        echo "<div class='flex justify-center gap-2'>";
+                        
+                        // Botão de visualizar
+                        echo "<button class='btn-action view' title='Visualizar' data-toggle='modal' data-target='#visualizarTransacaoModal' 
+                               data-id='" . $transacao['ID_Transacao'] . "'>
+                              <i class='fas fa-eye'></i>
+                              </button>";
+                        
+                        // Botão de editar
+                        echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarTransacaoModal' data-modal-open='#editarTransacaoModal''
+                               data-id='" . $transacao['ID_Transacao'] . "'
+                               data-titulo='" . htmlspecialchars($transacao['Titulo']) . "'
+                               data-descricao='" . htmlspecialchars($transacao['Descricao']) . "'
+                               data-valor='" . $transacao['Valor'] . "'
+                               data-data='" . $transacao['Data'] . "'
+                               data-tipo='" . htmlspecialchars($transacao['Tipo']) . "'
+                               data-status='" . $transacao['Status'] . "'
+                               data-categoria='" . $transacao['ID_Categoria'] . "'
+                               data-forma-pagamento='" . $transacao['FormaPagamento'] . "'
+                               data-conta-remetente='" . htmlspecialchars($transacao['ID_ContaRemetente']) . "'
+                               data-conta-remetente-nome='" . htmlspecialchars($transacao['NomeContaRemetente']) . "'
+                               data-conta-destinataria='" . ($transacao['ID_ContaDestinataria'] !== null ? htmlspecialchars($transacao['ID_ContaDestinataria']) : '') . "'
+                               data-conta-destinataria-nome='" . ($transacao['NomeContaDestinataria'] !== null ? htmlspecialchars($transacao['NomeContaDestinataria']) : '-') . "'>
+                              <i class='fas fa-edit'></i>
+                              </button>";
+                        
+                        // Botão de excluir
+                        echo "<button class='btn-action delete' title='Excluir' data-toggle='modal' data-target='#excluirTransacaoModal' data-modal-open='#excluirTransacaoModal'
+                               data-id='" . $transacao['ID_Transacao'] . "'
+                               data-titulo='" . htmlspecialchars($transacao['Titulo']) . "'>
+                              <i class='fas fa-trash-alt'></i>
+                              </button>";
+                              
+                        echo "</div>";
+                        echo "</td>";
+                        echo "</tr>";
+                        
+                        $delay += 50; // Incrementa o delay para o próximo item
+                    }
+                }
+                ?>
                     </tbody>
                 </table>
             </div>

@@ -1,11 +1,49 @@
 <?php
+ini_set('display_errors',1);
+ini_set('display_startup_erros',1);
+error_reporting(E_ALL);
+
+
 require_once 'transacoes/funcoes.php';
 require_once 'header.php';
 require_once 'sidebar.php';
 require_once 'transacoes/modal.php';
 require_once 'dialog.php';
 require_once '../conexao.php';
+
+// 1) Lê o “periodo” e define intervalo de datas no formato YYYY-MM-DD
+$periodoSelecionado = $_GET['periodo'] ?? 'mes-atual';
+switch ($periodoSelecionado) {
+    case 'mes-anterior':
+        $dataInicio = date('Y-m-01', strtotime('first day of last month'));
+        $dataFim    = date('Y-m-t', strtotime('last day of last month'));
+        break;
+    case 'ano-atual':
+        $dataInicio = date('Y-01-01');
+        $dataFim    = date('Y-12-31');
+        break;
+    case 'customizado':
+        // Espera formato ISO (YYYY-MM-DD) vindo do <input type="date">
+        $dataInicio = $_GET['dataInicio'] ?? date('Y-m-01');
+        $dataFim    = $_GET['dataFim']    ?? date('Y-m-d');
+        break;
+    case 'mes-atual':
+    default:
+        $dataInicio = date('Y-m-01');
+        $dataFim    = date('Y-m-d');
+        break;
+}
+$intervaloDatas = ['inicio' => $dataInicio, 'fim' => $dataFim];
+
+// 2) Busca transações já filtradas
+$transacoes = obterTransacoes($dataInicio, $dataFim);
+
+$totalReceita = obterSaldoTipo(tipo: 'Receita');
+$totalDespesa = obterSaldoTipo(tipo: 'Despesa');
+$totalBalanco = $totalReceita - $totalDespesa;
 ?>
+
+<script src='dashboard/dashboard_filtro.js'></script>
 
 <div class="content">
     <!-- Cabeçalho da Página com Estatísticas -->
@@ -26,7 +64,9 @@ require_once '../conexao.php';
             <div class="summary-card income fade-in animation-delay-100 w-full">
                 <span class="summary-label">Receitas</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value income">R$ 6.235,80</h3>
+                    <h3 class="summary-value income">
+                        <?php echo 'R$ ' . number_format($totalReceita, 2, ',', '.'); ?>
+                    </h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-income"><i class="fas fa-arrow-up me-1"></i> 12%</span>
                     </div>
@@ -36,7 +76,9 @@ require_once '../conexao.php';
             <div class="summary-card expense fade-in animation-delay-200 w-full">
                 <span class="summary-label">Despesas</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value expense">R$ 3.842,50</h3>
+                    <h3 class="summary-value expense">
+                        <?php echo 'R$ ' . number_format($totalDespesa, 2, ',', '.'); ?>
+                    </h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-expense"><i class="fas fa-arrow-down me-1"></i> 5%</span>
                     </div>
@@ -46,7 +88,9 @@ require_once '../conexao.php';
             <div class="summary-card balance fade-in animation-delay-300 w-full">
                 <span class="summary-label">Balanço</span>
                 <div class="flex justify-between items-center">
-                    <h3 class="summary-value">R$ 2.393,30</h3>
+                    <h3 class="summary-value">
+                        <?php echo 'R$ ' . number_format($totalBalanco, 2, ',', '.'); ?>
+                    </h3>
                     <div class="flex items-center gap-2">
                         <span class="badge badge-info"><i class="fas fa-chart-line me-1"></i> 7%</span>
                     </div>
@@ -54,55 +98,52 @@ require_once '../conexao.php';
             </div>
         </div>
     </div>
-    
-    <!-- Filtros Avançados - Gerado pelo Copilot -->
-    <div class="filter-container-minimal slide-in-left mb-5">
-        <div class="filter-header-minimal">
-            <h3 class="filter-title-minimal">
-                <i class="fas fa-filter me-2"></i> Filtros
-            </h3>
-            <button class="btn-action btn-action-minimal" id="toggleFilter">
-                <i class="fas fa-chevron-down"></i>
-            </button>
+
+    <!-- Filtro de Período - Design Refinado sem Opções Avançadas -->
+    <div class="card mb-6 fade-in animation-delay-100">
+        <div class="card__header">
+            <div class="flex justify-between items-center">
+                <h4 class="card__title">
+                    <i class="fas fa-calendar-alt me-2 text-primary"></i> Período de Análise
+                </h4>
+                <button class="btn-action" id="togglePeriodFilter">
+                    <i class="fas fa-chevron-down transition-fast"></i>
+                </button>
+            </div>
         </div>
-        <div class="filter-content-minimal mt-4" style="display: none;">
-            <form class="filter-form-minimal grid grid-cols-1 md:grid-cols-3 gap-4" id="formFiltros" method="get">
-                <!-- Tipo -->
-                <div class="form-group-minimal">
-                    <label class="form-label-minimal">Tipo</label>
-                    <div class="status-selector-minimal" id="filtroTipo">
-                        <button type="button" class="status-option-minimal<?php echo ($_GET['tipo'] ?? 'all') === 'all' ? ' active' : ''; ?>" data-filter="all">Todos</button>
-                        <button type="button" class="status-option-minimal income<?php echo ($_GET['tipo'] ?? '') === 'Receita' ? ' active' : ''; ?>" data-filter="Receita">Receitas</button>
-                        <button type="button" class="status-option-minimal expense<?php echo ($_GET['tipo'] ?? '') === 'Despesa' ? ' active' : ''; ?>" data-filter="Despesa">Despesas</button>
-                        <button type="button" class="status-option-minimal transfer<?php echo ($_GET['tipo'] ?? '') === 'Transferência' ? ' active' : ''; ?>" data-filter="Transferência">Transferências</button>
+        
+        <div class="card__body" id="periodFilterContent" style="display: none;">
+            <!-- Seletor de Tipo (Pills) para rápida seleção -->
+            <div class="status-selector mb-5">
+                <button type="button" class="status-option <?php echo $periodoSelecionado === 'mes-atual' ? 'active' : ''; ?>" data-period="mes-atual">Mês Atual</button>
+                <button type="button" class="status-option <?php echo $periodoSelecionado === 'mes-anterior' ? 'active' : ''; ?>" data-period="mes-anterior">Mês Anterior</button>
+                <button type="button" class="status-option <?php echo $periodoSelecionado === 'ano-atual' ? 'active' : ''; ?>" data-period="ano-atual">Ano Atual</button>
+                <button type="button" class="status-option <?php echo $periodoSelecionado === 'customizado' ? 'active' : ''; ?>" data-period="customizado">Personalizado</button>
+            </div>
+            <input type="hidden" name="periodSelection" id="periodSelection" value="<?php echo $periodoSelecionado; ?>">
+            
+            <!-- Intervalo de datas personalizado (inicialmente oculto) -->
+            <div id="customPeriodSection" class="fade-in-up" style="display: <?php echo $periodoSelecionado === 'customizado' ? 'block' : 'none'; ?>;">
+                <div class="grid grid-cols-1 grid-md-cols-2 gap-4 mb-4">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="startDate" placeholder=" " value="<?php echo $dataInicio ?? $intervaloDatas['inicio']; ?>">
+                        <label for="startDate">Data Inicial</label>
                     </div>
-                    <input type="hidden" name="tipo" id="inputTipo" value="<?php echo htmlspecialchars($_GET['tipo'] ?? 'all'); ?>">
-                </div>
-                <!-- Status -->
-                <div class="form-group-minimal">
-                    <label class="form-label-minimal">Status</label>
-                    <div class="status-selector-minimal" id="filtroStatus">
-                        <button type="button" class="status-option-minimal<?php echo ($_GET['status'] ?? 'all') === 'all' ? ' active' : ''; ?>" data-filter="all">Todos</button>
-                        <button type="button" class="status-option-minimal pending<?php echo ($_GET['status'] ?? '') === 'Pendente' ? ' active' : ''; ?>" data-filter="Pendente">Pendentes</button>
-                        <button type="button" class="status-option-minimal completed<?php echo ($_GET['status'] ?? '') === 'Efetivada' ? ' active' : ''; ?>" data-filter="Efetivada">Efetivadas</button>
-                        <button type="button" class="status-option-minimal canceled<?php echo ($_GET['status'] ?? '') === 'Cancelada' ? ' active' : ''; ?>" data-filter="Cancelada">Canceladas</button>
-                    </div>
-                    <input type="hidden" name="status" id="inputStatus" value="<?php echo htmlspecialchars($_GET['status'] ?? 'all'); ?>">
-                </div>
-                <!-- Período -->
-                <div class="form-group-minimal">
-                    <label class="form-label-minimal">Período</label>
-                    <div class="periodo-inputs-minimal flex-col flex gap-1">
-                        <input type="date" class="form-control-minimal" name="data_inicio" id="inputDataInicio" placeholder="Data inicial"
-                            value="<?php echo htmlspecialchars($_GET['data_inicio'] ?? ''); ?>">
-                        <input type="date" class="form-control-minimal" name="data_fim" id="inputDataFim" placeholder="Data final"
-                            value="<?php echo htmlspecialchars($_GET['data_fim'] ?? ''); ?>">
+                    
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="endDate" placeholder=" " value="<?php echo $dataFim ?? $intervaloDatas['fim']; ?>">
+                        <label for="endDate">Data Final</label>
                     </div>
                 </div>
-            </form>
-            <div class="flex justify-end mt-4 gap-2">
-                <button class="btn btn-secondary btn-minimal me-2" id="btnLimparFiltros" type="button">Limpar</button>
-                <button class="btn btn-primary btn-minimal" id="btnFiltrar" type="submit" form="formFiltros">Filtrar</button>
+            </div>
+            
+            <div class="card__footer flex justify-end gap-3 pt-4 mt-4 border-top">
+                <button class="btn btn-secondary" id="clearPeriodFilter">
+                    <i class="fas fa-undo me-2"></i> Limpar Filtros
+                </button>
+                <button class="btn btn-primary btn-icon" id="applyPeriodFilter">
+                    <i class="fas fa-filter me-2"></i> Aplicar Filtros
+                </button>
             </div>
         </div>
     </div>
@@ -139,30 +180,13 @@ require_once '../conexao.php';
             </thead>
             <tbody>
                 <?php
-                // Gerado pelo Copilot
-
-                $tipoFiltro = $_GET['tipo'] ?? 'all';
-                $statusFiltro = $_GET['status'] ?? 'all';
-
-                // Corrigido: só aplica filtro de data se o parâmetro EXISTIR E NÃO FOR VAZIO E NÃO FOR IGUAL À DATA DE HOJE
-                function dataFiltroValida($param) {
-                    if (!isset($_GET[$param]) || $_GET[$param] === '') return null;
-                    $hoje = date('Y-m-d');
-                    return ($_GET[$param] === $hoje) ? null : $_GET[$param];
-                }
-
-                $dataInicioFiltro = dataFiltroValida('data_inicio');
-                $dataFimFiltro = dataFiltroValida('data_fim');
-
-                $transacoes = obterTransacoes($tipoFiltro, $statusFiltro, $dataInicioFiltro, $dataFimFiltro);
-                
                 if (empty($transacoes)) {
                     echo '<tr><td colspan="8">';
                     echo '<div class="empty-state my-5">';
                     echo '<i class="fas fa-receipt empty-state__icon"></i>';
                     echo '<h3 class="empty-state__title">Nenhuma transação encontrada</h3>';
                     echo '<p class="empty-state__description">Comece a registrar suas transações financeiras para visualizá-las aqui.</p>';
-                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal">';
+                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal" data-modal-open="#transacaoModal">';
                     echo '<i class="fas fa-plus me-2"></i> Criar Primeira Transação';
                     echo '</button>';
                     echo '</div>';

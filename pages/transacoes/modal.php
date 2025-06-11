@@ -1,11 +1,12 @@
 <?php
 require './contas/funcoes.php';
 require './categorias/funcoes.php';
+
+$contas = obterContas();
 ?>
 
-<script src="transacoes/script.js"></script>
 <script>
-// Função para criar e mostrar toast
+// Atualiza a função showToast para armazenar no localStorage
 function showToast(message, type = 'success', duration = 5000, callback = null) {
     // Gerado pelo Copilot
     const container = document.querySelector('.toast-container') || (() => {
@@ -28,33 +29,66 @@ function showToast(message, type = 'success', duration = 5000, callback = null) 
         </div>
     `;
 
-    container.appendChild(toast);
+// -------------- 1) Na carga da página, vê se tem toast salvo --------------
+document.addEventListener('DOMContentLoaded', () => {
+  const raw = localStorage.getItem('__PENDENTE_TOAST');
+  if (!raw) return;
 
-    // Configura a barra de progresso
-    const progressBar = toast.querySelector('.toast-progress-bar');
-    progressBar.style.transition = `width ${duration}ms linear`;
-    
-    // Inicia a animação da barra
-    setTimeout(() => progressBar.style.width = '0%', 100);
+  const { message, type, duration } = JSON.parse(raw);
+  localStorage.removeItem('__PENDENTE_TOAST');
+  _exibeToast(message, type, duration);
+});
 
-    // Configura o botão de fechar
-    toast.querySelector('.toast-close').onclick = () => {
-        toast.style.animation = 'slideOut 0.3s forwards';
-        setTimeout(() => toast.remove(), 300);
-    };
+// -------------- 2) Função pública: salva e recarrega --------------
+function showToast(message, type = 'success', duration = 5000) {
+  localStorage.setItem(
+    '__PENDENTE_TOAST',
+    JSON.stringify({ message, type, duration })
+  );
+  // daqui já manda um reload imediatamente
+  window.location.reload();
+}
 
-    // Remove o toast automaticamente
-    setTimeout(() => {
-        toast.style.animation = 'slideOut 0.3s forwards';
-        setTimeout(() => toast.remove(), 300);
-        // Removido o reload da página aqui! UX agradece.
-        if (typeof callback === 'function') callback(); // Gerado pelo Copilot
-    }, duration);
+// -------------- 3) Função interna: pega seu código original --------------
+function _exibeToast(message, type = 'success', duration = 5000) {
+  // sem mexer no seu container…
+  const container = document.querySelector('.toast-container') || (() => {
+    const div = document.createElement('div');
+    div.className = 'toast-container';
+    document.body.appendChild(div);
+    return div;
+  })();
 
-    // Gerado pelo Copilot
-    if (typeof callback !== 'function') {
-        callback = () => window.location.reload();
-    }
+  const toast = document.createElement('div');
+  toast.className = `toast-notification ${type}`;
+  toast.innerHTML = `
+    <div class="toast-header">
+      <h4 class="toast-title">${
+        type === 'success' ? 'Sucesso!' : 'Erro!'
+      }</h4>
+      <button class="toast-close">&times;</button>
+    </div>
+    <p class="toast-message">${message}</p>
+    <div class="toast-progress"><div class="toast-progress-bar"></div></div>
+  `;
+  container.appendChild(toast);
+
+  // animação da barra
+  const progressBar = toast.querySelector('.toast-progress-bar');
+  progressBar.style.transition = `width ${duration}ms linear`;
+  setTimeout(() => (progressBar.style.width = '0%'), 100);
+
+  // fechar manual
+  toast.querySelector('.toast-close').onclick = () => {
+    toast.style.animation = 'slideOut 0.3s forwards';
+    setTimeout(() => toast.remove(), 300);
+  };
+
+  // auto‐remover
+  setTimeout(() => {
+    toast.style.animation = 'slideOut 0.3s forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
 }
 
 /**
@@ -220,9 +254,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Sucesso: fecha modal, adiciona na tabela e mostra toast
                     if (respHtml.includes('Operação realizada com sucesso')) {
                         fecharModal(form.closest('.modal')); // Fecha modal de forma confiável
-                        adicionarTransacaoNaTabela(dados, form);
                         showToast('Transação cadastrada com sucesso!', 'success', 2500);
                         form.reset();
+                        // Agora o reload da página exibe a nova linha
+                        window.location.reload();
                     } else {
                         showToast('Erro ao cadastrar transação. Verifique os dados.', 'danger');
                     }
@@ -328,7 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="contaRemetente" name="contaRemetente" required>
                                 <option value="" disabled selected></option>
                                 <?php
-                                $contas = obterContas();
                                 if ($contas) {
                                     foreach ($contas as $conta) {
                                         $saldo = number_format($conta['Saldo'], 2, ',', '.');
@@ -361,7 +395,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="categoriaTransacao" name="categoriaTransacao">
                                 <option value="" disabled selected></option>
                                 <?php
-                                $categorias = obterCategorias();
                                 if ($categorias) {
                                     foreach ($categorias as $categoria) {
                                         echo '<option value="' . $categoria['ID_Categoria'] . '">' . htmlspecialchars($categoria['Nome']) . '</option>';
@@ -476,7 +509,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="editarContaRemetente" name="contaRemetente" required>
                                 <option value="" disabled selected></option>
                                 <?php
-                                $contas = obterContas();
                                 if ($contas) {
                                     foreach ($contas as $conta) {
                                         $saldo = number_format($conta['Saldo'], 2, ',', '.');
@@ -560,7 +592,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </form>
         </div>
     </div>
-</div>
+</div>  
 
 <!-- Root CSS Variables (Adicionar no Head da página) -->
 <style>

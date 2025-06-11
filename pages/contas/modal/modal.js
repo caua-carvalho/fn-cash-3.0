@@ -59,25 +59,25 @@ document.addEventListener('DOMContentLoaded', function() {
   // Create floating labels effect
   const setupFloatingLabels = () => {
     const formControls = document.querySelectorAll('.form-control');
-    
+
     formControls.forEach(input => {
-        // Verificar inicialmente se o campo tem valor
+      const updateLabelState = () => {
         if (input.value) {
-            input.setAttribute('placeholder', ' ');
+          input.classList.add('has-value');
+        } else {
+          input.classList.remove('has-value');
         }
-        
-        // Event listeners
-        input.addEventListener('focus', () => {
-            input.setAttribute('placeholder', ' ');
-        });
-        
-        input.addEventListener('blur', () => {
-            if (!input.value) {
-                input.setAttribute('placeholder', '');
-            }
-        });
+      };
+
+      // Initial state
+      updateLabelState();
+
+      // Event listeners
+      input.addEventListener('focus', updateLabelState);
+      input.addEventListener('blur', updateLabelState);
+      input.addEventListener('change', updateLabelState);
     });
-};
+  };
 
   // Add fade in animation
   const animateFields = () => {

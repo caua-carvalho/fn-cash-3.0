@@ -1,12 +1,13 @@
 <?php
-// Gerado pelo Copilot
 
 require_once 'header.php';
 require_once 'sidebar.php';
-require_once 'contas/funcoes.php';
 require_once 'contas/modal.php';
 require_once 'dialog.php';
 require_once 'dashboard/funcoes.php';
+require_once 'transacoes/modal.php';
+require_once 'contas/modal.php';
+require_once 'transacoes/funcoes.php';
 
 // Interpreta corretamente o período customizado vindo da URL
 $periodoSelecionado = $_GET['periodo'] ?? 'mes-atual';
@@ -65,7 +66,7 @@ $variacaoSaldoMensal = calcularVariacaoPercentual('saldo_mensal', $intervaloData
 
 // Contas e transações recentes
 $contasUsuario = obterContasUsuario(2);
-$transacoesRecentes = obterTransacoesRecentes(20, null); // sem filtro de data, pega 20 últimas
+$transacoesRecentes = obterTransacoesRecentes(10, null); // sem filtro de data, pega 20 últimas
 
 // Converte os dados para JSON para uso no JavaScript
 $dadosGraficoReceitasDespesasJSON = json_encode($dadosGraficoReceitasDespesas);
@@ -91,12 +92,12 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                 <h2><?php echo 'Olá, ' . $_SESSION['usuario'] . '!' ?></h2>
                 <p class="text-muted">Aqui está um resumo da sua situação financeira atual.</p>
             </div>
-            <button class="btn btn-primary btn-icon">
+            <button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#transacaoModal" data-modal-open="#transacaoModal">
                 <i class="fas fa-plus me-2"></i> Nova Transação
             </button>
         </div>
 
-        <!-- Filtro de Período - Design Refinado sem Opções Avançadas -->
+        <!-- Filtro de Período - Design Ajustado -->
         <div class="card mb-6 fade-in animation-delay-100">
             <div class="card__header">
                 <div class="flex justify-between items-center">
@@ -108,32 +109,33 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                     </button>
                 </div>
             </div>
-            
+
             <div class="card__body" id="periodFilterContent" style="display: none;">
                 <!-- Seletor de Tipo (Pills) para rápida seleção -->
-                <div class="status-selector mb-5">
+                <div class="status-selector mb-4">
                     <button type="button" class="status-option <?php echo $periodoSelecionado === 'mes-atual' ? 'active' : ''; ?>" data-period="mes-atual">Mês Atual</button>
                     <button type="button" class="status-option <?php echo $periodoSelecionado === 'mes-anterior' ? 'active' : ''; ?>" data-period="mes-anterior">Mês Anterior</button>
                     <button type="button" class="status-option <?php echo $periodoSelecionado === 'ano-atual' ? 'active' : ''; ?>" data-period="ano-atual">Ano Atual</button>
                     <button type="button" class="status-option <?php echo $periodoSelecionado === 'customizado' ? 'active' : ''; ?>" data-period="customizado">Personalizado</button>
                 </div>
+
                 <input type="hidden" name="periodSelection" id="periodSelection" value="<?php echo $periodoSelecionado; ?>">
-                
-                <!-- Intervalo de datas personalizado (inicialmente oculto) -->
+
+                <!-- Intervalo de datas personalizado -->
                 <div id="customPeriodSection" class="fade-in-up" style="display: <?php echo $periodoSelecionado === 'customizado' ? 'block' : 'none'; ?>;">
-                    <div class="grid grid-cols-1 grid-md-cols-2 gap-4 mb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div class="form-floating">
                             <input type="date" class="form-control" id="startDate" placeholder=" " value="<?php echo $dataInicio ?? $intervaloDatas['inicio']; ?>">
                             <label for="startDate">Data Inicial</label>
                         </div>
-                        
+
                         <div class="form-floating">
                             <input type="date" class="form-control" id="endDate" placeholder=" " value="<?php echo $dataFim ?? $intervaloDatas['fim']; ?>">
                             <label for="endDate">Data Final</label>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="card__footer flex justify-end gap-3 pt-4 mt-4 border-top">
                     <button class="btn btn-secondary" id="clearPeriodFilter">
                         <i class="fas fa-undo me-2"></i> Limpar Filtros
@@ -148,13 +150,13 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
         <!-- Stats Row -->
         <div class="grid grid-cols-4 gap-4 mb-6">
             <!-- Saldo Total -->
-            <div class="summary-card balance animation-delay-100 fade-in w-50 h-min">
+            <div class="summary-card balance animation-delay-100 fade-in">
                 <span class="summary-label">Saldo Total</span>
                 <div class="flex justify-between flex-col">
-                    <h3 class="summary-value balance"><?php echo 'R$ ' . number_format($saldoTotal, 2, ',', '.'); ?></h3>
+                    <h3 class="summary-value balance">R$ <?php echo number_format($saldoTotal, 2, ',', '.'); ?></h3>
                     <div class="flex items-center gap-2 mt-2">
                         <span class="badge badge-<?php echo $variacaoSaldo >= 0 ? 'transfer' : 'expense'; ?>">
-                            <i class="fas fa-arrow-<?php echo $variacaoSaldo >= 0 ? 'up' : 'down'; ?> me-1"></i> 
+                            <i class="fas fa-arrow-<?php echo $variacaoSaldo >= 0 ? 'up' : 'down'; ?> me-1"></i>
                             <?php echo abs($variacaoSaldo); ?>%
                         </span>
                     </div>
@@ -162,13 +164,13 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
             </div>
 
             <!-- Receitas -->
-            <div class="summary-card income animation-delay-200 fade-in w-50 h-min">
+            <div class="summary-card income animation-delay-200 fade-in">
                 <span class="summary-label">Receitas do Período</span>
                 <div class="flex justify-between flex-col">
-                    <h3 class="summary-value income"><?php echo 'R$ ' . number_format($receitasPeriodo, 2, ',', '.'); ?></h3>
+                    <h3 class="summary-value income">R$ <?php echo number_format($receitasPeriodo, 2, ',', '.'); ?></h3>
                     <div class="flex items-center gap-2 mt-2">
                         <span class="badge badge-<?php echo $variacaoReceita >= 0 ? 'income' : 'expense'; ?>">
-                            <i class="fas fa-arrow-<?php echo $variacaoReceita >= 0 ? 'up' : 'down'; ?> me-1"></i> 
+                            <i class="fas fa-arrow-<?php echo $variacaoReceita >= 0 ? 'up' : 'down'; ?> me-1"></i>
                             <?php echo abs($variacaoReceita); ?>%
                         </span>
                     </div>
@@ -176,13 +178,13 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
             </div>
 
             <!-- Despesas -->
-            <div class="summary-card expense animation-delay-300 fade-in w-50 h-min">
+            <div class="summary-card expense animation-delay-300 fade-in">
                 <span class="summary-label">Despesas do Período</span>
                 <div class="flex justify-between flex-col">
-                    <h3 class="summary-value expense"><?php echo 'R$ ' . number_format($despesasPeriodo, 2, ',', '.'); ?></h3>
+                    <h3 class="summary-value expense">R$ <?php echo number_format($despesasPeriodo, 2, ',', '.'); ?></h3>
                     <div class="flex items-center gap-2 mt-2">
                         <span class="badge badge-<?php echo $variacaoDespesa <= 0 ? 'income' : 'expense'; ?>">
-                            <i class="fas fa-arrow-<?php echo $variacaoDespesa <= 0 ? 'down' : 'up'; ?> me-1"></i> 
+                            <i class="fas fa-arrow-<?php echo $variacaoDespesa <= 0 ? 'down' : 'up'; ?> me-1"></i>
                             <?php echo abs($variacaoDespesa); ?>%
                         </span>
                     </div>
@@ -190,13 +192,13 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
             </div>
 
             <!-- Saldo Mensal -->
-            <div class="summary-card balance animation-delay-400 fade-in w-50 h-min">
+            <div class="summary-card balance animation-delay-400 fade-in">
                 <span class="summary-label">Saldo do Período</span>
                 <div class="flex justify-between flex-col">
-                    <h3 class="summary-value balance"><?php echo 'R$ ' . number_format($saldoMensal, 2, ',', '.'); ?></h3>
+                    <h3 class="summary-value balance">R$ <?php echo number_format($saldoMensal, 2, ',', '.'); ?></h3>
                     <div class="flex items-center gap-2 mt-2">
                         <span class="badge badge-<?php echo $variacaoSaldoMensal >= 0 ? 'transfer' : 'expense'; ?>">
-                            <i class="fas fa-arrow-<?php echo $variacaoSaldoMensal >= 0 ? 'up' : 'down'; ?> me-1"></i> 
+                            <i class="fas fa-arrow-<?php echo $variacaoSaldoMensal >= 0 ? 'up' : 'down'; ?> me-1"></i>
                             <?php echo abs($variacaoSaldoMensal); ?>%
                         </span>
                     </div>
@@ -241,19 +243,19 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
         <div class="grid grid-cols-1 grid-md-cols-2 gap-4 mb-6">
             <!-- Gráfico de Categorias -->
             <div class="card fade-in-up animation-delay-200">
-                <div class="card__header">
-                    <h4 class="card__title">Despesas por Categoria</h4>
-                    <p class="card__subtitle"><?php echo $periodoSelecionado === 'mes-atual' ? 'Mês atual' : ($periodoSelecionado === 'mes-anterior' ? 'Mês anterior' : ($periodoSelecionado === 'ano-atual' ? 'Ano atual' : 'Período personalizado')); ?></p>
+                <div class="card__header flex justify-between items-center">
+                    <h4 class="card__title">Categorias</h4>
+                    <button class="btn btn-secondary btn-sm" id="toggleCategoryMode">
+                        Alternar para Receitas
+                    </button>
                 </div>
-                <div class="card__body">
-                    <div class="chart-area" style="height: 250px;">
+                <div class="card__body p-0 d-flex justify-center" style="align-items: center;">
+                    <div class="chart-area" style="height:300px;">
                         <canvas id="categoryChart"></canvas>
                     </div>
                 </div>
-                <div class="card__footer">
-                    <div class="text-muted text-sm">
-                        <i class="fas fa-chart-pie"></i> Distribuição de despesas
-                    </div>
+                <div class="card__footer text-muted text-sm">
+                    <i class="fas fa-info-circle me-2"></i> Clique no botão para alternar entre receitas e despesas.
                 </div>
             </div>
 
@@ -297,7 +299,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                         <?php endforeach; ?>
 
                         <div class="flex justify-center mt-4">
-                            <button class="btn btn-secondary btn-icon" data-toggle="modal" data-target="#contaModal">
+                            <button class="btn btn-secondary btn-icon" data-toggle="modal" data-target="#contaModal" data-modal-open="#modalNovaConta">
                                 <i class="fas fa-plus me-2"></i> Adicionar Conta
                             </button>
                         </div>
@@ -311,9 +313,9 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
             <div class="flex justify-between items-center p-4 border-bottom">
                 <h4 class="m-0">Transações Recentes</h4>
                 <div class="flex gap-2">
-                    <button class="btn btn-sm btn-secondary active">Todas</button>
-                    <button class="btn btn-sm btn-secondary">Receitas</button>
-                    <button class="btn btn-sm btn-secondary">Despesas</button>
+                    <button id="filter-all" class="btn btn-sm btn-secondary active">Todas</button>
+                    <button id="filter-income" class="btn btn-sm btn-secondary">Receitas</button>
+                    <button id="filter-expense" class="btn btn-sm btn-secondary">Despesas</button>
                 </div>
             </div>
             <div class="table-responsive">
@@ -362,9 +364,29 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
                                     </td>
                                     <td>
                                         <div class="flex gap-2">
-                                            <button class="btn-action view" title="Visualizar"><i class="fas fa-eye"></i></button>
-                                            <button class="btn-action edit" title="Editar"><i class="fas fa-edit"></i></button>
-                                            <button class="btn-action delete" title="Excluir"><i class="fas fa-trash"></i></button>
+                                            <button class="btn-action edit" title="Editar" data-modal-open="#editarTransacaoModal"
+                                                data-id="<?php echo $transacao['ID_Transacao']; ?>"
+                                                data-titulo="<?php echo htmlspecialchars($transacao['Titulo']); ?>">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+
+                                            <?php
+                                            echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarTransacaoModal' data-modal-open='#editarTransacaoModal''
+                                                    data-id='" . $transacao['ID_Transacao'] . "'
+                                                    data-titulo='" . htmlspecialchars($transacao['Titulo']) . "'
+                                                    data-descricao='" . htmlspecialchars($transacao['Descricao']) . "'
+                                                    data-valor='" . $transacao['Valor'] . "'
+                                                    data-data='" . $transacao['Data'] . "'
+                                                    data-tipo='" . htmlspecialchars($transacao['Tipo']) . "'
+                                                    data-status='" . $transacao['Status'] . "'
+                                                    data-conta-remetente-id='" . htmlspecialchars($transacao['ID_ContaRemetente']) . "'
+                                                    data-conta-remetente-nome='" . htmlspecialchars($transacao['NomeContaRemetente']) . "'
+                                                    data-conta-destinataria-id='" . ($transacao['ID_ContaDestinataria'] !== null ? htmlspecialchars($transacao['ID_ContaDestinataria']) : '') . "'
+                                                    data-conta-destinataria-nome='" . ($transacao['NomeContaDestinataria'] !== null ? htmlspecialchars($transacao['NomeContaDestinataria']) : '-') . "'>
+
+                                                <i class='fas fa-edit'></i>
+                                                </button>";
+                                            ?>
                                         </div>
                                     </td>
                                 </tr>
@@ -452,24 +474,57 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Configuração do gráfico de Categorias
-    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-    const categoryChart = new Chart(categoryCtx, {
+    let modoCategoria = 'despesas'; // Modo inicial
+    const dadosCategorias = <?php echo $dadosGraficoCategoriasJSON; ?>;
+
+    const atualizarGraficoCategorias = () => {
+        const chartData = modoCategoria === 'despesas' ? dadosCategorias.despesas : dadosCategorias.receitas;
+        const chartLabel = modoCategoria === 'despesas' ? 'Despesas' : 'Receitas';
+        categoryChart.data.datasets[0].data = chartData;
+        categoryChart.data.datasets[0].label = chartLabel;
+        categoryChart.update();
+    };
+
+    document.getElementById('toggleCategoryMode').addEventListener('click', () => {
+        modoCategoria = modoCategoria === 'despesas' ? 'receitas' : 'despesas';
+        document.getElementById('toggleCategoryMode').textContent = modoCategoria === 'despesas' ? 'Alternar para Receitas' : 'Alternar para Despesas';
+        atualizarGraficoCategorias();
+    });
+
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    const categoryChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: dadosCategorias.labels,
             datasets: [{
-                data: dadosCategorias.data,
+                label: 'Despesas',
+                data: dadosCategorias.despesas,
                 backgroundColor: dadosCategorias.backgroundColor,
-                borderWidth: 0,
-                cutout: '70%'
+                hoverOffset: 10,
+                borderWidth: 0
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'bottom'
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 25,
+                        font: {
+                            size: 20,
+                            family: 'Arial, sans-serif'
+                        },
+                        color: '#fff'
+                    },
+                maxWidth: 200
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': R$ ' + tooltipItem.raw.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                        }
+                    }
                 }
             }
         }

@@ -328,7 +328,7 @@
   }
   
   .text-transfer {
-    color: var(--color-transfer);
+    color: var(--color-transfer) !important;
   }
   
   /* ==========================================================================
@@ -1674,7 +1674,7 @@
     margin: 0;
   }
   
-  /* Summary Card */
+  /*  mary Card */
   .summary-card {
     background-color: var(--color-surface);
     border-left: 5px solid var(--color-primary-500);

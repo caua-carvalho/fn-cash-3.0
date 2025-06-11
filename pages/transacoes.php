@@ -7,6 +7,14 @@ error_reporting(E_ALL);
 require_once 'transacoes/funcoes.php';
 require_once 'header.php';
 require_once 'sidebar.php';
+// Exibe toast após redirecionamento
+if (isset($_SESSION['toast_message'])) {
+    $msg  = addslashes($_SESSION['toast_message']);
+    $type = addslashes($_SESSION['toast_type'] ?? 'success');
+    echo "<script>localStorage.setItem('toast_message','{$msg}');".
+         "localStorage.setItem('toast_type','{$type}');</script>";
+    unset($_SESSION['toast_message'], $_SESSION['toast_type']);
+}
 require_once 'transacoes/modal.php';
 require_once 'dialog.php';
 require_once '../conexao.php';
@@ -411,9 +419,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        deletarTransacao($_POST['transacaoId'])
-            ? confirmar("Transação excluída com sucesso!", "transacoes.php")
-            : erro("Erro ao excluir transação. Verifique os dados e tente novamente.");
+        if (deletarTransacao($_POST['transacaoId'])) {
+            $_SESSION['toast_message'] = 'Transação excluída com sucesso!';
+            $_SESSION['toast_type'] = 'success';
+        } else {
+            $_SESSION['toast_message'] = 'Erro ao excluir transação. Verifique os dados e tente novamente.';
+            $_SESSION['toast_type'] = 'danger';
+        }
+        header('Location: transacoes.php');
         exit;
     }
 
@@ -474,8 +487,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
     }
 
-    $success
-        ? confirmar("Operação realizada com sucesso!", "transacoes.php")
-        : erro("Erro ao processar a operação. Verifique os dados e tente novamente.");
+    if ($success) {
+        $_SESSION['toast_message'] = 'Operação realizada com sucesso!';
+        $_SESSION['toast_type'] = 'success';
+    } else {
+        $_SESSION['toast_message'] = 'Erro ao processar a operação. Verifique os dados e tente novamente.';
+        $_SESSION['toast_type'] = 'danger';
+    }
+    header('Location: transacoes.php');
+    exit;
 }
 ?>

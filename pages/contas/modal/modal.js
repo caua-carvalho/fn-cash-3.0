@@ -105,7 +105,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Fill form fields
         document.getElementById('editarContaId').value = id;
         document.getElementById('editarNomeConta').value = nome;
-        document.getElementById('editarTipoConta').value = tipo;
+        // Preenche o campo oculto que armazena o tipo da conta
+        document.getElementById('editarTipoContaHidden').value = tipo;
         document.getElementById('editarSaldoConta').value = saldo;
         document.getElementById('editarInstituicaoConta').value = instituicao;
         

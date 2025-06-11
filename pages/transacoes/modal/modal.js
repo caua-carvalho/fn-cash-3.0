@@ -224,47 +224,49 @@ document.addEventListener('DOMContentLoaded', function() {
           const contaDestinataria = this.getAttribute('data-conta-destinataria');
           const categoria = this.getAttribute('data-categoria');
           const formaPagamento = this.getAttribute('data-forma-pagamento');
-          
-          // Fill form fields
+
+          // Basic fields
           document.getElementById('editarTransacaoId').value = id;
           document.getElementById('editarTituloTransacao').value = titulo;
           document.getElementById('editarDescricaoTransacao').value = descricao;
           document.getElementById('editarValorTransacao').value = valor;
           document.getElementById('editarDataTransacao').value = data;
-          document.getElementById('editarTipoTransacao').value = tipo;
-          document.getElementById('editarStatusTransacao').value = status;
-          
-          if (document.getElementById('editarContaRemetente')) {
-            document.getElementById('editarContaRemetente').value = contaRemetente;
-          }
-          
-          if (document.getElementById('editarContaDestinataria')) {
-            document.getElementById('editarContaDestinataria').value = contaDestinataria;
-          }
-          
-          if (document.getElementById('editarCategoriaTransacao')) {
-            document.getElementById('editarCategoriaTransacao').value = categoria;
-          }
-          
-          if (document.getElementById('editarFormaPagamento')) {
-            document.getElementById('editarFormaPagamento').value = formaPagamento;
-          }
-          
-          // Trigger UI updates
+
+          // Trigger UI updates first so default handlers don't overwrite values
           const typeOption = document.querySelector(`#editarTransacaoModal .type-option[data-type="${tipo}"]`);
           if (typeOption) {
             typeOption.click();
           }
-          
+
           const statusOption = document.querySelector(`#editarTransacaoModal .status-option[data-status="${status}"]`);
           if (statusOption) {
             statusOption.click();
           }
-          
-          // Update all input states for floating labels
+
+          // Now set values that may be reset by the click handlers
+          document.getElementById('editarTipoTransacao').value = tipo;
+          document.getElementById('editarStatusTransacao').value = status;
+
+          if (document.getElementById('editarContaRemetente')) {
+            document.getElementById('editarContaRemetente').value = contaRemetente;
+          }
+
+          if (document.getElementById('editarContaDestinataria')) {
+            document.getElementById('editarContaDestinataria').value = contaDestinataria;
+          }
+
+          if (document.getElementById('editarCategoriaTransacao')) {
+            document.getElementById('editarCategoriaTransacao').value = categoria;
+          }
+
+          if (document.getElementById('editarFormaPagamento')) {
+            document.getElementById('editarFormaPagamento').value = formaPagamento;
+          }
+
+          // Update floating labels after setting values
           setupFloatingLabels();
-          
-          // Add entrance animation
+
+          // Entrance animation
           animateFields();
         });
       });

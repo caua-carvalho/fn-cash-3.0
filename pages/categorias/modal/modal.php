@@ -10,7 +10,7 @@ require_once 'categorias/script.php';
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="categoriaModalLabel">Nova Categoria</h5>
-                <button type="button" class="close" data-dismiss="modal" data-modal-close='#categoriaModal' aria-label="Close">
+                <button type="button" class="close btn-close" data-dismiss="modal" data-modal-close='#categoriaModal' aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -84,7 +84,7 @@ require_once 'categorias/script.php';
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editarCategoriaModalLabel">Editar Categoria</h5>
-                <button type="button" class="close" data-dismiss="modal" data-modal-close="#editarCategoriaModal" aria-label="Close">
+                <button type="button" class="close btn-close" data-dismiss="modal" data-modal-close="#editarCategoriaModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -159,7 +159,7 @@ require_once 'categorias/script.php';
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="excluirCategoriaModalLabel">Excluir Categoria</h5>
-                <button type="button" class="close" data-dismiss="modal" data-modal-close="#excluirCategoriaModal" aria-label="Close">
+                <button type="button" class="close btn-close" data-dismiss="modal" data-modal-close="#excluirCategoriaModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -357,3 +357,6 @@ require_once 'categorias/script.php';
         background-color: rgba(7, 163, 98, 0.2);
     }
 </style>
+
+<link rel="stylesheet" href="contas/modal/modal.css">
+

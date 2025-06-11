@@ -1,5 +1,5 @@
 <?php
-function modalCreateConta() {
+function modalCreateConta(): string {
   return '
           <!-- Novo Conta Modal -->
           <div class="modal fade" id="modalNovaConta" tabindex="-1" aria-labelledby="modalNovaContaLabel" aria-hidden="true">

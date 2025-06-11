@@ -77,7 +77,7 @@ $count = count($contas);
                 <h2 class="text-2xl font-bold mb-1">Contas</h2>
                 <p class="text-muted">Gerencie suas contas e saldos</p>
             </div>
-            <button class="btn btn-primary btn-icon" data-modal-open="#contaModal">
+            <button class="btn btn-primary btn-icon" data-modal-open="#modalNovaConta">
                 <i class="fas fa-plus me-2"></i>
                 Nova Conta
             </button>
@@ -272,54 +272,9 @@ $count = count($contas);
     </div>
 </div>
 
-<!-- Modal de Nova Conta -->
-<div class="modal fade" id="contaModal" tabindex="-1" aria-labelledby="contaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Nova Conta</h5>
-                <button type="button" class="close" data-modal-close aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="contas.php" method="POST" autocomplete="off">
-                <input type="hidden" name="acao" value="cadastrarConta">
-                <div class="modal-body">
-                    <!-- Tipo de Conta -->
-                    <div class="form-group">
-                        <label class="form-label" for="tipoConta">Tipo de Conta</label>
-                        <select class="form-control" id="tipoConta" name="tipoConta" required>
-                            <option value="Corrente">Corrente</option>
-                            <option value="Poupança">Poupança</option>
-                            <option value="Cartão de Crédito">Cartão de Crédito</option>
-                            <option value="Investimento">Investimento</option>
-                            <option value="Outros">Outros</option>
-                        </select>
-                    </div>
-                    <!-- Nome da Conta -->
-                    <div class="form-group">
-                        <label class="form-label" for="nomeConta">Nome da Conta</label>
-                        <input type="text" class="form-control" id="nomeConta" name="nomeConta" required placeholder="Digite o nome da conta">
-                    </div>
-                    <!-- Saldo Inicial -->
-                    <div class="form-group">
-                        <label class="form-label" for="saldoConta">Saldo Inicial</label>
-                        <input type="number" class="form-control" id="saldoConta" name="saldoConta" step="0.01" required placeholder="0,00">
-                    </div>
-                    <!-- Instituição Financeira -->
-                    <div class="form-group">
-                        <label class="form-label" for="instituicaoConta">Instituição Financeira</label>
-                        <input type="text" class="form-control" id="instituicaoConta" name="instituicaoConta" required placeholder="Ex: Nubank, Itaú...">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-modal-close>Cancelar</button>
-                    <button type="submit" class="btn btn-success">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+<?php
+echo modalCreateConta();
+?>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>

@@ -48,17 +48,19 @@ $documento = pathinfo(basename($_SERVER['REQUEST_URI']), PATHINFO_FILENAME);
         <li class="sidebar-nav-item sidebar-profile-parent" style="position: relative;">
           <a href="javascript:void(0);" id="sidebar-profile-btn" class="sidebar-nav-link" title="Perfil" style="display: flex; align-items: center; justify-content: space-between;">
             <span style="display: flex; align-items: center;">
-              <i class="sidebar-nav-icon fas fa-user-circle"></i>
+              <i class="sidebar-nav-icon fas fa-user-circle" style="margin-right: 8px;"></i>
               <span class="nav-text">Perfil</span>
             </span>
             <i class="fas fa-chevron-up" id="profile-dropdown-arrow" style="transition: transform 0.2s;"></i>
           </a>
-          <div id="sidebar-profile-dropdown" class="sidebar-profile-dropdown" style="display: none; background: var(--color-surface); box-shadow: var(--shadow-md); border-radius: var(--border-radius-md); position: fixed; z-index: 1100; min-width: 180px;">
-            <a href="config.php#dados-pessoais" class="sidebar-profile-link" style="display: flex; align-items: center; padding: 12px 20px; text-decoration: none; color: var(--color-text); transition: background 0.2s;">
-              <i class="fas fa-user" style="margin-right: 8px;"></i> Meu Perfil
+          <div id="sidebar-profile-dropdown" class="sidebar-profile-dropdown" style="display: none; position: fixed; z-index: 1100; min-width: 180px;">
+            <a href="config.php#dados-pessoais" class="sidebar-nav-link sidebar-profile-link" title="Meu Perfil">
+              <i class="sidebar-nav-icon fas fa-user"></i>
+              <span class="nav-text">Meu Perfil</span>
             </a>
-            <a href="#" id="sidebar-logout-link" class="sidebar-profile-link" style="display: flex; align-items: center; padding: 12px 20px; text-decoration: none; color: var(--color-text); transition: background 0.2s;">
-              <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Logout
+            <a href="#" id="sidebar-logout-link" class="sidebar-nav-link sidebar-profile-link" title="Logout">
+              <i class="sidebar-nav-icon fas fa-sign-out-alt"></i>
+              <span class="nav-text">Logout</span>
             </a>
           </div>
         </li>
@@ -212,3 +214,31 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<style>
+/* Unifica visual sidebar e dropdown */
+.sidebar-profile-dropdown {
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--border-radius-md);
+  padding: 0;
+  border: none;
+}
+.sidebar-profile-link {
+  /* Herdando tudo do .sidebar-nav-link */
+}
+.sidebar-profile-link.active,
+.sidebar-profile-link:hover,
+.sidebar-profile-link:focus {
+  background: #292929;
+  color: var(--color-primary-500);
+  outline: none;
+}
+.sidebar-profile-link .sidebar-nav-icon {
+  color: inherit !important;
+}
+.sidebar-profile-link.active .sidebar-nav-icon,
+.sidebar-profile-link:hover .sidebar-nav-icon,
+.sidebar-profile-link:focus .sidebar-nav-icon {
+  color: var(--color-primary-500) !important;
+}
+</style>

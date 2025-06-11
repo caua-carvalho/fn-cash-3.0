@@ -343,7 +343,6 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
 /* Ajuste só para os selects do perfil, não vai zoar o resto do sistema */
 #aba-preferencias select.form-control-underline,
 #aba-notificacoes select.form-control-underline {
-    background-color: var(--color-surface, #222) !important;
     color: var(--color-text, #fff) !important;
     border: none;
     border-bottom: 2px solid var(--color-border, #444);

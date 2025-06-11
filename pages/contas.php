@@ -1,25 +1,26 @@
 <?php
-// Processamento dos formulários – DEVE vir antes de qualquer saída HTML
+// Processamento dos formulários - DEVE vir antes de qualquer saída HTML
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Carrega as funções de conta (já existia require_once dentro do bloco)
-    require_once __DIR__ . '/contas/funcoes.php';
-    session_start(); // caso ainda não tenha sido iniciado
+    require_once dirname(__FILE__, 1) . '/contas/funcoes.php';
+    session_start();
 
-    // Verifica se a ação foi enviada
+    // Verifica se a ação foi definida
     $acao = $_POST['acao'] ?? null;
+
     if (!$acao) {
         $_SESSION['mensagem_erro'] = "Ação não definida.";
         header("Location: contas.php");
         exit;
     }
 
-    // Obtém os dados do POST
-    $id          = isset($_POST['contaId'])       ? (int) $_POST['contaId']       : null;
-    $nome        = trim($_POST['nomeConta'] ?? '');
-    $tipo        = trim($_POST['tipoConta'] ?? '');
-    $saldo       = floatval($_POST['saldoConta'] ?? 0.00);
+    // Obtém os dados enviados
+    $id = isset($_POST['contaId']) ? (int)$_POST['contaId'] : null;
+    $nome = trim($_POST['nomeConta'] ?? '');
+    $tipo = trim($_POST['tipoConta'] ?? '');
+    $saldo = floatval($_POST['saldoConta'] ?? 0.00);
     $instituicao = trim($_POST['instituicaoConta'] ?? '');
 
+    // Processa a ação solicitada
     switch ($acao) {
         case 'editarConta':
             if (editarConta($id, $nome, $tipo, $saldo, $instituicao)) {
@@ -55,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// A partir daqui, nenhum header() será chamado sem gerar conflito.
+// Inclui os arquivos necessários
 require_once 'header.php';
 require_once 'sidebar.php';
 require_once 'contas/modal.php';
@@ -67,6 +68,7 @@ $totalSaldo = array_sum(array_column($contas, 'Saldo'));
 $count = count($contas);
 ?>
 
+<!-- Aqui começa o conteúdo principal -->
 <div class="content">
     <!-- Cabeçalho da Página com Estatísticas -->
     <div class="mb-6">
@@ -80,11 +82,6 @@ $count = count($contas);
                 Nova Conta
             </button>
         </div>
-        <button class="btn btn-primary btn-icon" data-modal-open="#modalNovaConta">
-            <i class="fas fa-plus me-2"></i>
-            Nova Conta
-        </button>
-    </div>
 
         <!-- Cards de Resumo -->
         <div class="d-flex justify-between gap-4 mt-5">
@@ -96,8 +93,6 @@ $count = count($contas);
                     </h3>
                 </div>
             </div>
-        </div>
-
 
             <div class="summary-card expense fade-in animation-delay-200 w-full">
                 <span class="summary-label">Total de Contas</span>
@@ -105,7 +100,6 @@ $count = count($contas);
                     <h3 class="summary-value"><?php echo $count; ?></h3>
                 </div>
             </div>
-        </div>
 
             <div class="summary-card balance fade-in animation-delay-300 w-full">
                 <span class="summary-label">Saldo Médio</span>
@@ -117,7 +111,6 @@ $count = count($contas);
             </div>
         </div>
     </div>
-</div>
 
     <!-- Barra de Pesquisa e Filtro por Tipo -->
     <div class="flex justify-between items-center mb-6 px-4">
@@ -150,8 +143,6 @@ $count = count($contas);
                 </button>
             </div>
         </div>
-    </div>
-
 
         <?php if (empty($contas)): ?>
             <div class="empty-state my-5 text-center">
@@ -288,7 +279,6 @@ echo modalCreateConta();
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 <script>
-    // Exemplo de JS para abrir/fechar filtros (se você usar filtros)
     document.addEventListener('DOMContentLoaded', function () {
         // Abrir modais ao clicar nos botões
         document.querySelectorAll('[data-modal-open]').forEach(btn => {

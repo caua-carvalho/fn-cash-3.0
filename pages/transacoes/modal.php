@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button type="button" class="tab-btn" data-tab="details">Detalhes</button>
             </div>
 
-            <form action="transacoes.php" method="POST" class="needs-validation" novalidate>
+            <form id="transacaoForm" action="transacoes.php" method="POST" class="needs-validation" novalidate>
                 <input type="hidden" name="acao" value="cadastrarTransacao">
                 
                 <div class="modal-body">
@@ -432,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button type="button" class="tab-btn" data-tab="details">Detalhes</button>
             </div>
 
-            <form action="transacoes.php" method="POST" class="needs-validation" novalidate>
+            <form id="editarTransacaoForm" action="transacoes.php" method="POST" class="needs-validation" novalidate>
                 <input type="hidden" name="acao" value="editarTransacao">
                 <input type="hidden" id="editarTransacaoId" name="idTransacao">
                 

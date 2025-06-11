@@ -2,6 +2,7 @@
 // Processamento dos formulários - DEVE vir antes de qualquer saída HTML
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once dirname(__FILE__, 1) . '/categorias/funcoes.php';
+    session_start(); // garante que a sessão esteja ativa para utilizar $_SESSION
     
     // Verifica se a ação foi definida
     $acao = $_POST['acao'] ?? null;

@@ -10,7 +10,8 @@ require_once 'categorias/script.php';
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="categoriaModalLabel">Nova Categoria</h5>
-                <button type="button" class="close btn-close" data-dismiss="modal" data-modal-close='#categoriaModal' aria-label="Close">
+                <button type="button" class="close btn-close" data-dismiss="modal" data-modal-close='#categoriaModal'
+                    aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -42,13 +43,15 @@ require_once 'categorias/script.php';
                         <!-- Nome da Categoria -->
                         <label for="nomeCategoria">Nome da Categoria</label>
                         <div class="form-group">
-                            <input type="text" class="form-control" id="nomeCategoria" name="nomeCategoria" 
-                                placeholder=" " required>
+                            <input type="text" class="form-control" id="nomeCategoria" name="nomeCategoria"
+                            autocomplete="off"
+                                placeholder=" "
+                                required>
                             <div class="invalid-feedback">
                                 Por favor, informe um nome para a categoria.
                             </div>
                         </div>
-                        
+
                         <!-- Status -->
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="statusCategoria" name="statusCategoria"
@@ -63,14 +66,15 @@ require_once 'categorias/script.php';
                         <!-- Apenas a Descrição -->
                         <label for="descricaoCategoria">Descrição (opcional)</label>
                         <div class="form-group">
-                            <textarea class="form-control" id="descricaoCategoria" name="descricaoCategoria" 
+                            <textarea class="form-control" id="descricaoCategoria" name="descricaoCategoria"
                                 placeholder=" " rows="5"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-modal-close="#categoriaModal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        data-modal-close="#categoriaModal">Cancelar</button>
                     <button type="submit" class="btn btn-success">Salvar</button>
                 </div>
             </form>
@@ -79,12 +83,14 @@ require_once 'categorias/script.php';
 </div>
 
 <!-- Modal de Editar Categoria -->
-<div class="modal fade" id="editarCategoriaModal" tabindex="-1" aria-labelledby="editarCategoriaModalLabel" aria-hidden="true">
+<div class="modal fade" id="editarCategoriaModal" tabindex="-1" aria-labelledby="editarCategoriaModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editarCategoriaModalLabel">Editar Categoria</h5>
-                <button type="button" class="close btn-close" data-dismiss="modal" data-modal-close="#editarCategoriaModal" aria-label="Close">
+                <button type="button" class="close btn-close" data-dismiss="modal"
+                    data-modal-close="#editarCategoriaModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -117,16 +123,16 @@ require_once 'categorias/script.php';
                         <!-- Nome da Categoria -->
                         <label for="editarNomeCategoria">Nome da Categoria</label>
                         <div class="form-group">
-                            <input type="text" class="form-control" id="editarNomeCategoria" name="nomeCategoria" 
+                            <input type="text" class="form-control" id="editarNomeCategoria" name="nomeCategoria"
                                 placeholder=" " required>
                             <div class="invalid-feedback">
                                 Por favor, informe um nome para a categoria.
                             </div>
                         </div>
-                        
+
                         <!-- Status -->
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="editarStatusCategoria" 
+                            <input class="form-check-input" type="checkbox" id="editarStatusCategoria"
                                 name="statusCategoria" value="true">
                             <label class="form-check-label" for="editarStatusCategoria">
                                 Categoria Ativa
@@ -138,14 +144,15 @@ require_once 'categorias/script.php';
                         <!-- Apenas a Descrição -->
                         <label for="editarDescricaoCategoria">Descrição (opcional)</label>
                         <div class="form-group">
-                            <textarea class="form-control" id="editarDescricaoCategoria" name="descricaoCategoria" 
+                            <textarea class="form-control" id="editarDescricaoCategoria" name="descricaoCategoria"
                                 placeholder=" " rows="5"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-modal-close="#editarCategoriaModal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        data-modal-close="#editarCategoriaModal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Atualizar</button>
                 </div>
             </form>
@@ -154,12 +161,14 @@ require_once 'categorias/script.php';
 </div>
 
 <!-- Excluir Categoria Modal -->
-<div class="modal fade" id="excluirCategoriaModal" tabindex="-1" aria-labelledby="excluirCategoriaModalLabel" aria-hidden="true">
+<div class="modal fade" id="excluirCategoriaModal" tabindex="-1" aria-labelledby="excluirCategoriaModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="excluirCategoriaModalLabel">Excluir Categoria</h5>
-                <button type="button" class="close btn-close" data-dismiss="modal" data-modal-close="#excluirCategoriaModal" aria-label="Close">
+                <button type="button" class="close btn-close" data-dismiss="modal"
+                    data-modal-close="#excluirCategoriaModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -176,7 +185,8 @@ require_once 'categorias/script.php';
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-modal-close="#excluirCategoriaModal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        data-modal-close="#excluirCategoriaModal">Cancelar</button>
                     <button type="submit" class="btn btn-danger">Excluir</button>
                 </div>
             </form>
@@ -203,9 +213,21 @@ require_once 'categorias/script.php';
 
     /* Adicionar classe para animação de shake em campos com erro */
     @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        20%, 60% { transform: translateX(-5px); }
-        40%, 80% { transform: translateX(5px); }
+
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+
+        20%,
+        60% {
+            transform: translateX(-5px);
+        }
+
+        40%,
+        80% {
+            transform: translateX(5px);
+        }
     }
 
     .shake {
@@ -214,4 +236,3 @@ require_once 'categorias/script.php';
 </style>
 
 <link rel="stylesheet" href="categorias/modal/modal.css">
-

@@ -1,6 +1,6 @@
 /* modal.css
    ------------------------------------------------------------
-   Estilos para os modais de “Contas” (Cadastrar, Editar, Excluir).
+   Estilos para os modais de “Categorias” (Cadastrar, Editar, Excluir).
    Este arquivo DEVE ser carregado APÓS o CSS de Transações, que define as variáveis:
      --base-clr          (fundo escuro do modal)
      --accent-clr        (verde usado no header)
@@ -60,7 +60,6 @@
   background-color: var(--base-clr);             /* fundo escuro opaco */
   border-radius: var(--border-radius-md);
   box-shadow: 0 2px 10px var(--box-shadow-clr);
-  min-height: 600px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -158,6 +157,24 @@
 .type-option.active .type-name {
   color: var(--color-on-primary);
 }
+.type-option.active.expense {
+    background-color: rgba(231, 76, 60, 0.1);
+    border-color: var(--color-expense);
+}
+
+.type-option.active.income {
+    background-color: rgba(7, 163, 98, 0.1);
+    border-color: var(--color-income);
+}
+
+.dark-theme .type-option.active.expense {
+    background-color: rgba(231, 76, 60, 0.2);
+}
+
+.dark-theme .type-option.active.income {
+    background-color: rgba(7, 163, 98, 0.2);
+}
+
 
 /* 8) CAMPOS DE FORMULÁRIO E FLOATING LABELS */
 .modal-body .form-group {

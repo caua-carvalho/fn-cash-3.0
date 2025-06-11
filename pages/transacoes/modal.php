@@ -1,12 +1,14 @@
 <?php
 require './contas/funcoes.php';
 require './categorias/funcoes.php';
+
+$contas = obterContas();
 ?>
 
-<script src="transacoes/script.js"></script>
 <script>
-// Função para criar e mostrar toast
-function showToast(message, type = 'success', duration = 5000) {
+// Atualiza a função showToast para armazenar no localStorage
+function showToast(message, type = 'success', duration = 5000, callback = null) {
+    // Gerado pelo Copilot
     const container = document.querySelector('.toast-container') || (() => {
         const div = document.createElement('div');
         div.className = 'toast-container';
@@ -27,29 +29,164 @@ function showToast(message, type = 'success', duration = 5000) {
         </div>
     `;
 
-    container.appendChild(toast);
+// -------------- 1) Na carga da página, vê se tem toast salvo --------------
+document.addEventListener('DOMContentLoaded', () => {
+  const raw = localStorage.getItem('__PENDENTE_TOAST');
+  if (!raw) return;
 
-    // Configura a barra de progresso
-    const progressBar = toast.querySelector('.toast-progress-bar');
-    progressBar.style.transition = `width ${duration}ms linear`;
-    
-    // Inicia a animação da barra
-    setTimeout(() => progressBar.style.width = '0%', 100);
+  const { message, type, duration } = JSON.parse(raw);
+  localStorage.removeItem('__PENDENTE_TOAST');
+  _exibeToast(message, type, duration);
+});
 
-    // Configura o botão de fechar
-    toast.querySelector('.toast-close').onclick = () => {
-        toast.style.animation = 'slideOut 0.3s forwards';
-        setTimeout(() => toast.remove(), 300);
-    };
-
-    // Remove o toast automaticamente
-    setTimeout(() => {
-        toast.style.animation = 'slideOut 0.3s forwards';
-        setTimeout(() => toast.remove(), 300);
-    }, duration);
+// -------------- 2) Função pública: salva e recarrega --------------
+function showToast(message, type = 'success', duration = 5000) {
+  localStorage.setItem(
+    '__PENDENTE_TOAST',
+    JSON.stringify({ message, type, duration })
+  );
+  // daqui já manda um reload imediatamente
+  window.location.reload();
 }
 
-// Modifica o código do submit para usar o toast
+// -------------- 3) Função interna: pega seu código original --------------
+function _exibeToast(message, type = 'success', duration = 5000) {
+  // sem mexer no seu container…
+  const container = document.querySelector('.toast-container') || (() => {
+    const div = document.createElement('div');
+    div.className = 'toast-container';
+    document.body.appendChild(div);
+    return div;
+  })();
+
+  const toast = document.createElement('div');
+  toast.className = `toast-notification ${type}`;
+  toast.innerHTML = `
+    <div class="toast-header">
+      <h4 class="toast-title">${
+        type === 'success' ? 'Sucesso!' : 'Erro!'
+      }</h4>
+      <button class="toast-close">&times;</button>
+    </div>
+    <p class="toast-message">${message}</p>
+    <div class="toast-progress"><div class="toast-progress-bar"></div></div>
+  `;
+  container.appendChild(toast);
+
+  // animação da barra
+  const progressBar = toast.querySelector('.toast-progress-bar');
+  progressBar.style.transition = `width ${duration}ms linear`;
+  setTimeout(() => (progressBar.style.width = '0%'), 100);
+
+  // fechar manual
+  toast.querySelector('.toast-close').onclick = () => {
+    toast.style.animation = 'slideOut 0.3s forwards';
+    setTimeout(() => toast.remove(), 300);
+  };
+
+  // auto‐remover
+  setTimeout(() => {
+    toast.style.animation = 'slideOut 0.3s forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+/**
+ * Adiciona uma nova transação na tabela sem reload.
+ * Fecha o modal antes de montar a linha e exibir o toast.
+ * Gerado pelo Copilot
+ */
+function adicionarTransacaoNaTabela(dados, form) {
+    // Fecha o modal antes de tudo
+    const modal = form ? form.closest('.modal') : null;
+    if (modal) {
+        if (typeof $ !== 'undefined' && $.fn.modal) {
+            $(modal).modal('hide');
+        } else {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Monta a linha da tabela
+    const tbody = document.querySelector('.transaction-table tbody');
+    if (!tbody) return;
+
+    // Define classes de tipo e status
+    let tipoBadgeClass = 'badge-transfer', valorClass = '';
+    if (dados.tipoTransacao === 'Receita') {
+        tipoBadgeClass = 'badge-income';
+        valorClass = 'text-income';
+    } else if (dados.tipoTransacao === 'Despesa') {
+        tipoBadgeClass = 'badge-expense';
+        valorClass = 'text-expense';
+    }
+    let statusBadgeClass = 'badge-pending';
+    if (dados.statusTransacao === 'Efetivada') statusBadgeClass = 'badge-completed';
+    else if (dados.statusTransacao === 'Cancelada') statusBadgeClass = 'badge-canceled';
+
+    // Formata valor e data
+    const valorFormatado = (dados.tipoTransacao === 'Despesa' ? '- ' : '') + 'R$ ' + Number(dados.valorTransacao).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    const dataFormatada = new Date(dados.dataTransacao).toLocaleDateString('pt-BR');
+
+    // Monta a linha
+    const tr = document.createElement('tr');
+    tr.className = 'fade-in-up';
+    tr.innerHTML = `
+        <td class="font-medium">${dados.tituloTransacao}</td>
+        <td class="font-semibold ${valorClass}">${valorFormatado}</td>
+        <td>${dataFormatada}</td>
+        <td><span class="badge ${tipoBadgeClass}">
+            <i class="fas fa-${dados.tipoTransacao === 'Receita' ? 'arrow-up' : (dados.tipoTransacao === 'Despesa' ? 'arrow-down' : 'exchange-alt')} me-1"></i>
+            ${dados.tipoTransacao}
+        </span></td>
+        <td><span class="badge ${statusBadgeClass}">${dados.statusTransacao}</span></td>
+        <td>${dados.nomeContaRemetente || '-'}</td>
+        <td>${dados.nomeContaDestinataria || '-'}</td>
+        <td>
+            <div class="flex justify-center gap-2">
+                <!-- Aqui você pode adicionar os botões de ação se quiser -->
+            </div>
+        </td>
+    `;
+    // Adiciona no topo da tabela
+    tbody.prepend(tr);
+}
+
+/**
+ * Busca o nome da conta pelo ID no select (front-end only).
+ * Gerado pelo Copilot
+ */
+function getNomeContaById(selectId, contaId) {
+    const select = document.getElementById(selectId);
+    if (!select) return '';
+    const opt = select.querySelector(`option[value="${contaId}"]`);
+    return opt ? opt.textContent : '';
+}
+
+/**
+ * Fecha o modal de forma confiável, seja pelo X, cancelar ou via JS.
+ * Agora com checagem extra para evitar erro de null.
+ * Gerado pelo Copilot
+ */
+function fecharModal(modal) {
+    if (!modal) {
+        // Só loga o erro, não tenta acessar classList de null
+        console.warn('fecharModal: modal não encontrado para fechar.'); // Gerado pelo Copilot
+        return;
+    }
+    if (typeof $ !== 'undefined' && $.fn.modal) {
+        $(modal).modal('hide');
+    } else {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        // Remove backdrop se existir
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) backdrop.remove();
+    }
+}
+
+// Modifica o código do submit para usar o toast e atualizar a tabela
 document.addEventListener('DOMContentLoaded', function() {
     // Verifica se tem mensagem pendente no localStorage
     const mensagemPendente = localStorage.getItem('toast_message');
@@ -60,6 +197,16 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.removeItem('toast_message');
         localStorage.removeItem('toast_type');
     }
+
+    // Fecha modal ao clicar no X ou em qualquer botão com data-modal-close
+    document.querySelectorAll('[data-modal-close]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modalSelector = this.getAttribute('data-modal-close');
+            const modal = document.querySelector(modalSelector);
+            fecharModal(modal); // Gerado pelo Copilot
+        });
+    });
 
     document.querySelectorAll('form[action="transacoes.php"]').forEach(function(form) {
         form.addEventListener('submit', function(e) {
@@ -82,18 +229,42 @@ document.addEventListener('DOMContentLoaded', function() {
                     primeiroInvalido.focus();
                 }
             } else {
-                // Salva mensagem no localStorage antes de enviar
-                const acao = form.querySelector('input[name="acao"]').value;
-                let mensagem = 'Transação cadastrada com sucesso!';
-                
-                if (acao === 'editarTransacao') {
-                    mensagem = 'Transação atualizada com sucesso!';
-                } else if (acao === 'excluirTransacao') {
-                    mensagem = 'Transação excluída com sucesso!';
-                }
+                // Impede submit padrão
+                e.preventDefault();
 
-                localStorage.setItem('toast_message', mensagem);
-                localStorage.setItem('toast_type', 'success');
+                // Pega os dados do form
+                const formData = new FormData(form);
+                const dados = {};
+                formData.forEach((v, k) => dados[k] = v);
+
+                // DEBUG: Mostra os dados enviados no console
+                console.warn('DEBUG - Dados enviados no cadastro:', JSON.stringify(dados, null, 2)); // Gerado pelo Copilot
+
+                // Busca nomes das contas (remetente/destinataria)
+                dados.nomeContaRemetente = getNomeContaById(form.id === 'editarTransacaoForm' ? 'editarContaRemetente' : 'contaRemetente', dados.contaRemetente);
+                dados.nomeContaDestinataria = dados.contaDestinataria ? getNomeContaById(form.id === 'editarTransacaoForm' ? 'editarContaDestinataria' : 'contaDestinataria', dados.contaDestinataria) : '';
+
+                // Envia via AJAX
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(resp => resp.text())
+                .then(respHtml => {
+                    // Sucesso: fecha modal, adiciona na tabela e mostra toast
+                    if (respHtml.includes('Operação realizada com sucesso')) {
+                        fecharModal(form.closest('.modal')); // Fecha modal de forma confiável
+                        showToast('Transação cadastrada com sucesso!', 'success', 2500);
+                        form.reset();
+                        // Agora o reload da página exibe a nova linha
+                        window.location.reload();
+                    } else {
+                        showToast('Erro ao cadastrar transação. Verifique os dados.', 'danger');
+                    }
+                })
+                .catch(() => {
+                    showToast('Erro ao cadastrar transação. Verifique sua conexão.', 'danger');
+                });
             }
             // Se válido, deixa o form ser enviado naturalmente
         });
@@ -192,7 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="contaRemetente" name="contaRemetente" required>
                                 <option value="" disabled selected></option>
                                 <?php
-                                $contas = obterContas();
                                 if ($contas) {
                                     foreach ($contas as $conta) {
                                         $saldo = number_format($conta['Saldo'], 2, ',', '.');
@@ -225,7 +395,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="categoriaTransacao" name="categoriaTransacao">
                                 <option value="" disabled selected></option>
                                 <?php
-                                $categorias = obterCategorias();
                                 if ($categorias) {
                                     foreach ($categorias as $categoria) {
                                         echo '<option value="' . $categoria['ID_Categoria'] . '">' . htmlspecialchars($categoria['Nome']) . '</option>';
@@ -340,7 +509,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <select class="form-control" id="editarContaRemetente" name="contaRemetente" required>
                                 <option value="" disabled selected></option>
                                 <?php
-                                $contas = obterContas();
                                 if ($contas) {
                                     foreach ($contas as $conta) {
                                         $saldo = number_format($conta['Saldo'], 2, ',', '.');
@@ -424,7 +592,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </form>
         </div>
     </div>
-</div>
+</div>  
 
 <!-- Root CSS Variables (Adicionar no Head da página) -->
 <style>

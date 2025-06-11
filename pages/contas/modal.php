@@ -89,10 +89,73 @@ function modalCreateConta(): string {
               </div>
             </div>
           </div>
-  ';
-}
-?>
 
+          <!-- Nome da Conta -->
+          <div class="form-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="novaNomeConta"
+              name="nomeConta"
+              autocomplete="off"
+              placeholder=" "
+              required
+            >
+            <label for="novaNomeConta">Nome da Conta</label>
+          </div>
+
+          <!-- Saldo Inicial -->
+          <div class="form-group mb-3 value-container">
+            <input
+              type="number"
+              class="form-control"
+              id="novaSaldoConta"
+              name="saldoConta"
+              placeholder=" "
+              autocomplete="off"
+              step="0.01"
+              required
+            >
+            <label for="novaSaldoConta">Saldo Inicial</label>
+          </div>
+
+          <!-- Instituição -->
+          <div class="form-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="novaInstituicaoConta"
+              name="instituicaoConta"
+              autocomplete="off"
+              placeholder=" "
+              required
+            >
+            <label for="novaInstituicaoConta">Instituição</label>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close="#modalNovaConta">Cancelar</button>
+          <button type="submit" class="btn btn-success">Salvar Conta</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- JS para ativar seleção de tipo -->
+<script>
+  document.querySelectorAll('#modalNovaConta .type-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document
+        .querySelectorAll('#modalNovaConta .type-option')
+        .forEach(x => x.classList.remove('active'));
+      opt.classList.add('active');
+      document.getElementById('tipoContaHidden').value = opt.dataset.type;
+    });
+  });
+</script>
 
 
 
@@ -218,6 +281,32 @@ function modalCreateConta(): string {
     </div>
   </div>
 </div>
+
+<style>
+:root {
+  --base-clr: #0a0a0a;
+  --line-clr: #42434a;
+  --hover-clr: #053F27;
+  --text-clr: #e6e6ef;
+  --accent-clr: #07A362;
+  --secondary-text-clr: #b0b3c1;
+  --background-clr: #f5f5f5;
+  --input-bg-clr: #f5f5f5;
+  --box-shadow-clr: rgba(10, 10, 10, 0.5);
+  --hover-overlay-clr: rgba(10, 10, 10, 0.2);
+}
+
+/* Adicionar classe para animação de shake em campos com erro */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.6s ease-in-out;
+}
+</style>
 
 <link rel="stylesheet" href="contas/modal/modal.css">
 <script src="contas/modal/modal.js"></script>

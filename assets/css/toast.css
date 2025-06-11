@@ -3,6 +3,7 @@
     bottom: 20px;
     right: 20px;
     z-index: 9999;
+    background: black;
 }
 
 .toast-notification {
@@ -18,11 +19,15 @@
 }
 
 .toast-notification.success {
-    border-left: 4px solid #07A362;
+    border-left: 4px solid #07A362; 
+    background-color: #000;  
+    color: #fff;  
 }
 
 .toast-notification.error {
-    border-left: 4px solid #dc3545;
+    border-left: 4px solid #dc3545; 
+    background-color: #000;  
+    color: #fff;  
 }
 
 .toast-header {

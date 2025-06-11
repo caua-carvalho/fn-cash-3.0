@@ -2,6 +2,7 @@
 // Processamento dos formulários - DEVE vir antes de qualquer saída HTML
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once dirname(__FILE__, 1) . '/categorias/funcoes.php';
+    session_start(); // garante que a sessão esteja ativa para utilizar $_SESSION
     
     // Verifica se a ação foi definida
     $acao = $_POST['acao'] ?? null;
@@ -85,7 +86,7 @@ $categorias = obterCategorias();
                 <h2 class="text-2xl font-bold mb-1">Categorias</h2>
                 <p class="text-muted">Gerencie suas categorias de receitas e despesas</p>
             </div>
-            <button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#categoriaModal">
+            <button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#categoriaModal" data-modal-open="#categoriaModal">
                 <i class="fas fa-plus me-2"></i>
                 Nova Categoria
             </button>
@@ -210,7 +211,7 @@ $categorias = obterCategorias();
                     echo '<i class="fas fa-tags empty-state__icon"></i>';
                     echo '<h3 class="empty-state__title">Nenhuma categoria encontrada</h3>';
                     echo '<p class="empty-state__description">Comece a criar categorias para organizar suas receitas e despesas.</p>';
-                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#categoriaModal">';
+                    echo '<button class="btn btn-primary btn-icon" data-toggle="modal" data-target="#categoriaModal" data-modal-open="#categoriaModal">';
                     echo '<i class="fas fa-plus me-2"></i> Criar Primeira Categoria';
                     echo '</button>';
                     echo '</div>';
@@ -252,7 +253,7 @@ $categorias = obterCategorias();
                         echo "<div class='flex justify-center gap-2'>";
 
                         // Botão de editar
-                        echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarCategoriaModal'
+                        echo "<button class='btn-action edit' title='Editar' data-toggle='modal' data-target='#editarCategoriaModal' data-modal-open='#editarCategoriaModal'
                                data-id='" . $categoria['ID_Categoria'] . "'
                                data-nome='" . htmlspecialchars($categoria['Nome']) . "'
                                data-tipo='" . $categoria['Tipo'] . "'
@@ -262,7 +263,7 @@ $categorias = obterCategorias();
                               </button>";
 
                         // Botão de excluir
-                        echo "<button class='btn-action delete' title='Excluir' data-toggle='modal' data-target='#excluirCategoriaModal'
+                        echo "<button class='btn-action delete' title='Excluir' data-toggle='modal' data-target='#excluirCategoriaModal' data-modal-open='#excluirCategoriaModal'
                                data-id='" . $categoria['ID_Categoria'] . "'
                                data-nome='" . htmlspecialchars($categoria['Nome']) . "'>
                               <i class='fas fa-trash-alt'></i>

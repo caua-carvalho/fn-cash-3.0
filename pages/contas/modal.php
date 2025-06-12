@@ -90,73 +90,18 @@ function modalCreateConta(): string {
             </div>
           </div>
 
-          <!-- Nome da Conta -->
-          <div class="form-group mb-3">
-            <input
-              type="text"
-              class="form-control"
-              id="novaNomeConta"
-              name="nomeConta"
-              autocomplete="off"
-              placeholder=" "
-              required
-            >
-            <label for="novaNomeConta">Nome da Conta</label>
-          </div>
-
-          <!-- Saldo Inicial -->
-          <div class="form-group mb-3 value-container">
-            <input
-              type="number"
-              class="form-control"
-              id="novaSaldoConta"
-              name="saldoConta"
-              placeholder=" "
-              autocomplete="off"
-              step="0.01"
-              required
-            >
-            <label for="novaSaldoConta">Saldo Inicial</label>
-          </div>
-
-          <!-- Instituição -->
-          <div class="form-group mb-3">
-            <input
-              type="text"
-              class="form-control"
-              id="novaInstituicaoConta"
-              name="instituicaoConta"
-              autocomplete="off"
-              placeholder=" "
-              required
-            >
-            <label for="novaInstituicaoConta">Instituição</label>
-          </div>
-        </div>
-        
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-modal-close="#modalNovaConta">Cancelar</button>
-          <button type="submit" class="btn btn-success">Salvar Conta</button>
-        </div>
-      </form>
-
-    </div>
-  </div>
-</div>
-
-<!-- JS para ativar seleção de tipo -->
-<script>
-  document.querySelectorAll('#modalNovaConta .type-option').forEach(opt => {
-    opt.addEventListener('click', () => {
-      document
-        .querySelectorAll('#modalNovaConta .type-option')
-        .forEach(x => x.classList.remove('active'));
-      opt.classList.add('active');
-      document.getElementById('tipoContaHidden').value = opt.dataset.type;
-    });
-  });
-</script>
-
+          <!-- JS para ativar seleção de tipo -->
+          <script>
+            document.querySelectorAll('#modalNovaConta .type-option').forEach(opt => {
+              opt.addEventListener('click', () => {
+                document
+                  .querySelectorAll('#modalNovaConta .type-option')
+                  .forEach(x => x.classList.remove('active'));
+                opt.classList.add('active');
+                document.getElementById('tipoContaHidden').value = opt.dataset.type;
+              });
+            });
+          </script>
 
 
 <!-- Editar Conta Modal -->
@@ -309,4 +254,6 @@ function modalCreateConta(): string {
 </style>
 
 <link rel="stylesheet" href="contas/modal/modal.css">
-<script src="contas/modal/modal.js"></script>
+<script src="contas/modal/modal.js"></script>';
+}
+

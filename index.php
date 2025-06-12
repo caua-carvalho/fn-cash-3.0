@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <head>
     <link rel="stylesheet" href="login/login.css">  <!-- Link para o CSS geral -->
-    <link rel="stylesheet" href="assets\css/toast.css">  <!-- Link para o CSS do Toast -->
+    <link rel="stylesheet" href="assets/css/toast.css">  <!-- Link para o CSS do Toast -->
 </head>
 
 <body>
@@ -149,104 +149,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <div class="container">
-        <div class="cardLogin flipped">
-            <!-- Front Side (Cadastro) -->
-            <div class="card-side front">
-                <div class="left-side">
-                    <h1>Bem-vindo de volta!</h1>
-                    <p>Faça login com suas informações pessoais para continuar</p>
-                    <button class="btn" id="signInBtn">ENTRAR</button>
-                </div>
-                <div class="right-side">
-                    <h2>Criar uma conta</h2>
-                    <div class="social-icons">
-                        <div class="social-icon"><i class="bi bi-facebook"></i></div>
-                        <div class="social-icon"><i class="bi bi-google"></i></div>
-                        <div class="social-icon"><i class="bi bi-linkedin"></i></div>
-                    </div>
+        <div class="container__buttons">
+            <div class="container__btn-highlight"></div>
 
-                    <!-- Exibição de mensagens de erro -->
-                    <?php if (isset($_SESSION['error_message'])): ?>
-                        <div class="alert" role="alert">
-                            <?php 
-                                echo htmlspecialchars($_SESSION['error_message']);
-                                unset($_SESSION['error_message']);
-                            ?>
-                        </div>
-                    <?php endif; ?>
+            <button type="button" class="container__toggle-btn container__toggle-btn--login">log in</button>
+            <button type="button" class="container__toggle-btn container__toggle-btn--register">register</button>
+        </div>
 
-                    <form action="index.php" method="post" class="login">
-                        <input type="hidden" name="acao" value="register">
+        <div class="container__social-icons center">
+            <!-- Social media icons -->
+            
+        </div>
 
-                        <div class="input-container">
-                            <input type="text" id="cad-usuario" name="usuario" placeholder=" " required>
-                            <label for="cad-usuario">Usuário</label>
-                        </div>
-
-                        <div class="input-container">
-                            <input type="email" id="cad-email" name="email" placeholder=" " required>
-                            <label for="cad-email">E-mail</label>
-                        </div>
-
-                        <div class="input-container">
-                            <input type="password" id="cad-senha" name="senha" placeholder=" " required>
-                            <label for="cad-senha">Senha</label>
-                        </div>
-
-                        <button class="signup-btn">REGISTRAR-SE</button>
-                    </form>
-                </div>
+        <!-- Login -->
+        <form id="login" class="form" action="index.php" method="POST">
+            <input type="hidden" name="acao" value="login">
+            <input type="text" class="form__input" name="usuario" placeholder="Username" required>
+            <div class="form__input-container">
+                <input type="password" class="form__input" name="senha" id="senhaLogin" placeholder="Password" required>
+                <span class="toggle-password" onclick="togglePassword('senhaLogin', this)">🔒</span>
             </div>
+            <button type="submit" class="form__submit-btn" style="margin-top: 20px">log in</button>
+        </form>
 
-            <!-- Back Side (Login) -->
-            <div class="card-side back">
-                <div class="right-side">
-                    <h2>Faça login na sua conta</h2>
-
-                    <div class="social-icons">
-                        <div class="social-icon"><i class="bi bi-facebook"></i></div>
-                        <div class="social-icon"><i class="bi bi-google"></i></div>
-                        <div class="social-icon"><i class="bi bi-linkedin"></i></div>
-                    </div>
-
-                    <!-- Exibição de mensagens de erro -->
-                    <?php if (isset($_SESSION['error_message'])): ?>
-                        <div class="alert" role="alert">
-                            <?php 
-                                echo htmlspecialchars($_SESSION['error_message']);
-                                unset($_SESSION['error_message']);
-                            ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <form action="index.php" method="post" class="login">
-                        <input type="hidden" name="acao" value="login">
-
-                        <div class="input-container">
-                            <input type="text" id="usuario_login" name="usuario" placeholder=" " required>
-                            <label for="usuario_login">Usuário</label>
-                        </div>
-
-                        <div class="input-container">
-                            <input type="password" id="senha_login" name="senha" placeholder=" " required>
-                            <label for="senha_login">Senha</label>
-                        </div>
-
-                        <div class="container-btn">
-                            <button type="submit" class="signup-btn">ENTRAR</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="left-side">
-                    <h1>Olá, amigo!</h1>
-                    <p>Digite seus dados pessoais e comece sua jornada financeira</p>
-                    <button class="btn" id="signUpBtn">REGISTRAR-SE</button>
-                </div>
+        <!-- Register -->
+        <form id="register" class="form" action="index.php" method="POST">
+            <input type="hidden" name="acao" value="register">
+            <input type="text" class="form__input" name="usuario" placeholder="Username" required>
+            <input type="email" class="form__input" name="email" placeholder="Email" required>
+            <div class="form__input-container">
+                <input type="password" class="form__input" name="senha" id="senhaRegister" placeholder="Password" required>
+                <span class="toggle-password" onclick="togglePassword('senhaRegister', this)">🔒</span>
             </div>
+            <button type="submit" class="form__submit-btn" style="margin-top: 20px;">register</button>
+        </form>
 
+
+        <!-- Logo -->
+        <div class="logo-container">
+            <img src="logo/logo_escrita.svg" alt="Logo FN Cash" class="logo-img">
         </div>
     </div>
 
-    <script src="login/login.js"></script>
+    <script src="login/login.js"></script> <!-- Link para o JS -->
 </body>

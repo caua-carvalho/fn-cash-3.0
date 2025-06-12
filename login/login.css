@@ -1,287 +1,277 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-
 :root {
-  --base-clr: #0a0a0a;
-  --line-clr: #42434a;
-  --hover-clr: #053F27;
-  --text-clr: #e6e6ef;
-  --accent-clr: #07A362;
-  --secondary-text-clr: #b0b3c1;
-  --background-clr: #f5f5f5;
-  --input-bg-clr: #f5f5f5;
-  --box-shadow-clr: rgba(10, 10, 10, 0.5);
-  --hover-overlay-clr: rgba(10, 10, 10, 0.2);
+  /* Essential color tokens so login works without the global stylesheet */
+  --color-primary-300: #7cc1a0;
+  --color-primary-500: #07a362;
+  --color-primary-600: #068d54;
+  --color-text: #e6e6ef;
+  --color-text-muted: #b0b3c1;
+
+  --clr-container-bg: rgba(255, 255, 255, 0.105);
+  --clr-container-border: rgba(255, 255, 255, 0.196);
+  --clr-buttons-bg: rgba(255, 255, 255, 0.209);
+  --clr-highlight: var(--color-primary-500);
+  --clr-btn-text: var(--color-text);
+  --clr-btn-shadow: #444;
+  --clr-social-icon: var(--color-text);
+  --clr-input: var(--color-text);
+  --clr-input-border: var(--color-primary-500);
+  --clr-input-placeholder: var(--color-text-muted);
+  --clr-submit-bg: var(--color-primary-500);
+  --clr-submit-text: #fff;
+  --clr-submit-border-hover: var(--color-primary-500);
+  --clr-span: #777;
+  --clr-terms: #fff;
+  --clr-terms-link: #aad8d3;
+  --box-shadow-buttons: 0 4px 10px 6px rgba(255, 255, 255, 0.15);
+  --box-shadow-submit: 0 4px 55px rgba(255, 255, 255, 0.2);
+  --bg-body-gradient: linear-gradient(to right, var(--color-primary-600), var(--color-primary-300));
+  --backdrop-form: blur(19px);
+  --hover-clr: var(--color-primary-500);
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
 
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: var(--base-clr);
-  font-family: "Montserrat", sans-serif;
-  overflow: hidden;
+@layer base {
+  * {
+    font-family: "Inter", sans-serif;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #000000; /* Fundo preto */
+    font-family: "Montserrat", sans-serif;
+    overflow: hidden;
+
+    /* Overlay */
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      backdrop-filter: brightness(0.9);
+      z-index: -1;
+    }
+  }
 }
 
-/* Container 3D */
-.container {
-  position: relative;
-  width: 800px;
-  height: 500px;
-  margin: 20px;
-  perspective: 1000px;
-}
-
-.cardLogin {
-  position: absolute;
-  width: 100%;
-  height: 90%;
-  transform-style: preserve-3d;
-  transition: transform 1s ease-in-out;
-}
-
-.cardLogin.flipped {
-  transform: rotateY(180deg);
-}
-
-.card-side {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  display: flex;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 15px 30px var(--box-shadow-clr);
-}
-
-.card-side.back {
-  transform: rotateY(180deg);
-}
-
-/* Lados: front e back */
-.left-side {
-  width: 40%;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: var(--text-clr);
-  background: linear-gradient(135deg, var(--accent-clr), var(--hover-clr));
-}
-
-.right-side {
-  width: 60%;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px 0 0 10px;
-  background-color: var(--base-clr);
-  border: 1px solid var(--line-clr);
-}
-
-/* Tipografia */
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 15px;
-  font-weight: 600;
-}
-
-h2 {
-  font-size: 2rem;
-  margin-bottom: 30px;
-  color: var(--accent-clr);
-  font-weight: 600;
-}
-
-p {
-  margin-bottom: 30px;
-  line-height: 1.5;
-  font-size: 1rem;
-}
-
-/* Botões */
-
-.btn {
-  padding: 12px 40px;
-  background-color: transparent;
-  color: var(--text-clr);
-  border: 2px solid var(--text-clr);
-  border-radius: 50px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-.btn:hover {
-  background-color: var(--line-clr);
-}
-
-.container-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.signup-btn {
-  padding: 12px 40px;
-  background-color: var(--accent-clr);
-  color: var(--text-clr);
-  border: none;
-  border-radius: 50px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  margin-top: 10px;
-}
-
-.signup-btn:hover {
-  background-color: var(--hover-clr);
-}
-
-/* Social Icons */
-.social-icons {
-  display: flex;
-  margin-bottom: 20px;
-}
-
-/* Alerta */
-
-.alert {
-  animation: scaleOnLoad 0.5s ease-out;
-  color: var(--accent-clr);
-  margin-bottom: 1.5rem;
-}
-
-.social-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--base-clr);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 10px;
-  color: var(--background-clr);
-  font-size: 1rem;
-  border: 1px solid var(--background-clr);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.social-icon:hover {
-  color: var(--accent-clr);
-  border-color: var(--accent-clr);
-}
-
-/* Divisores */
-.divider {
-  margin: 20px 0;
-  font-size: 0.9rem;
-  color: var(--secondary-text-clr);
-}
-
-/* === Efeito de Label Flutuante === */
-.input-container {
-  position: relative;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.input-container input {
-  width: 100%;
-  padding: 1rem 0.75rem;
-  border: 1px solid var(--accent-clr);
-  border-radius: 5px;
-  background-color: var(--base-clr);
-  font-size: 1rem;
-  color: var(--text-clr);
-  transition: all 0.3s ease-in-out;
-}
-
-.input-container label {
-  position: absolute;
-  top: 1rem;
-  left: 0.75rem;
-  background-color: var(--base-clr);
-  padding: 0 0.25rem;
-  color: var(--secondary-text-clr);
-  font-size: 1rem;
-  pointer-events: none;
-  transition: 0.2s ease all;
-}
-
-/* Quando o input estiver focado ou preenchido */
-.input-container input:focus + label,
-.input-container input:not(:placeholder-shown) + label {
-  top: -0.5rem;
-  left: 0.5rem;
-  font-size: 0.75rem;
-  color: var(--text-clr);
-}
-
-/* Inputs padrão (para browsers sem placeholder-shown) */
-.input-container input:-ms-input-placeholder { /* IE 10+ */
-  color: transparent;
-}
-.input-container input::-ms-input-placeholder { /* Microsoft Edge */
-  color: transparent;
-}
-.input-container input::-moz-placeholder { /* Firefox 19+ */
-  color: transparent;
-}
-.input-container input::-webkit-input-placeholder { /* Chrome, Safari, Opera */
-  color: transparent;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
+@layer form {
   .container {
+    background-color: var(--clr-container-bg);
+    border: 1px solid var(--clr-container-border);
+    backdrop-filter: var(--backdrop-form);
+    position: relative;
+    width: min(380px, 95vw);
+    height: 490px;
+    padding: 5px;
+    border-radius: 2rem;
+    overflow: clip;
+    animation: slideDown 0.6s ease forwards;
+  }
+
+  .container__buttons {
+    background-color: var(--clr-buttons-bg);
+    box-shadow: var(--box-shadow-buttons);
+    position: relative;
+    display: flex;
+    width: 220px;
+    margin: 35px auto;
+    border-radius: 30px;
+  }
+
+  .container__btn-highlight {
+    background: var(--hover-clr);
+    position: absolute;
+    inset: 0;
+    width: 110px;
+    height: 100%;
+    border-radius: 30px;
+    transition: left 0.5s ease;
+  }
+
+  .toast-container {
+    animation: fadeOut 3s forwards;
+  }
+
+  .container__toggle-btn {
+    background: transparent;
+    color: var(--clr-btn-text);
+    padding: 10px 20px;
     width: 100%;
-    max-width: 500px;
-    height: auto;
+    cursor: pointer;
+    border: 0;
+    outline: none;
+    font-size: 14px;
+    text-transform: capitalize;
+    z-index: 99;
+    transition: 0.3s ease; /* Esse ainda mantém, mas pode ser removido se não precisar de animação no hover */
   }
 
-  .card-side {
-    flex-direction: column;
-    height: auto;
+  /* Hover Efeito de Botões (login e register) */
+  .container__toggle-btn:hover {
+    color: var(--hover-clr); /* Cor do texto em verde */
+    border-radius: 30px;
   }
 
-  .left-side,
-  .right-side {
+  .container__social-icons {
+    gap: 0.7rem;
+
+    a {
+      display: block;
+      cursor: pointer;
+      transition: 0.2s ease;
+
+      &:hover {
+        scale: 1.2;
+      }
+
+      svg {
+        color: var(--clr-social-icon);
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+
+  .form {
+    padding-inline: clamp(1rem, 5vw, 2.5rem);
+    position: absolute;
+    left: 0;
     width: 100%;
-    padding: 40px 20px;
+    transform: translateX(0%);
+    transition: transform 0.5s ease;
   }
 
-  .left-side {
-    padding-bottom: 60px;
+  .form__input {
+    width: 100%;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border: 0;
+    border-bottom: 1px solid var(--clr-input-border);
+    outline: none;
+    background: transparent;
+    font-size: 1rem;
+    color: var(--clr-input);
+    caret-color: var(--clr-input-border);
+  }
+
+  .form__input-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .form__submit-btn {
+    box-shadow: var(--box-shadow-submit);
+    width: 80%;
+    padding: 10px 30px;
+    font-size: 14px;
+    cursor: pointer;
+    display: block;
+    margin: auto;
+    color: var(--clr-submit-text);
+    background: var(--clr-submit-bg);
+    border: 0;
+    outline: none;
+    border-radius: 30px;
+    border: 2px solid transparent;
+    transition: 0.3s ease;
+    text-transform: capitalize;
+  }
+
+  /* Hover Efeito de Botão de Submit */
+  .form__submit-btn:hover {
+    background-color: transparent;
+    color: var(--hover-clr);
+    border: 2px solid var(--hover-clr); /* Borda verde no hover */
+  }
+
+  .form__options {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 20px 0;
+  }
+
+  .form__terms {
+    color: var(--hover-clr);
+    font-size: 14px;
+    display: inline-block;
+  }
+
+  #login {
+    transform: translateX(0%);
+    top: 190px;
+  }
+
+  #register {
+    transform: translateX(100%);
+    top: 165px;
+  }
+
+  .form__terms-link {
+    color: var(--clr-terms-link);
+    font-size: 14px;
+  }
+
+  /* Botão de visualizar a senha */
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 30%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--hover-clr);
+  }
+
+  .logo-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .logo-img {
+    width: 100px;
+    opacity: 0.8;
   }
 }
 
-@keyframes scaleOnLoad {
-  0% {
-    transform: scale(0.95);
+@layer utilities {
+  .center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}
+
+@keyframes slideDown {
+  from {
     opacity: 0;
+    transform: translateY(-20px);
   }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1);
+  to {
     opacity: 1;
+    transform: translateY(0);
   }
 }

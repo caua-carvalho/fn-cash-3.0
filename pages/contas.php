@@ -67,8 +67,6 @@ $contas = obterContas();
 $totalSaldo = array_sum(array_column($contas, 'Saldo'));
 $count = count($contas);
 ?>
-
-<!-- Aqui começa o conteúdo principal -->
 <div class="content">
     <!-- Cabeçalho da Página com Estatísticas -->
     <div class="mb-6">
@@ -305,6 +303,102 @@ echo modalCreateConta();
                 const passaTipo = (!tipoSelecionado || tipoConta === tipoSelecionado);
                 card.style.display = (passaTexto && passaTipo) ? '' : 'none';
             });
+        });
+
+        // Filtragem por pesquisa e tipo
+        const searchInput = document.getElementById('searchConta');
+        const filterSelect = document.getElementById('filterTipo');
+        const cards = document.querySelectorAll('.account-card');
+
+        function filtrarContas() {
+            const termo = searchInput.value.toLowerCase();
+            const tipoSelecionado = filterSelect.value;
+            cards.forEach(card => {
+                const nome = card.querySelector('.account-card__title').textContent.toLowerCase();
+                const instituicao = card.querySelector('.account-card__info')?.textContent.toLowerCase() ?? '';
+                const tipoConta = card.getAttribute('data-tipo');
+                const passaTexto = nome.includes(termo) || instituicao.includes(termo);
+                const passaTipo = (!tipoSelecionado || tipoConta === tipoSelecionado);
+                card.style.display = (passaTexto && passaTipo) ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filtrarContas);
+        filterSelect.addEventListener('change', filtrarContas);
+
+        // Accordion: expande/retrai detalhes ao clicar no card
+        cards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('[data-modal-open]')) return;
+                card.classList.toggle('expanded');
+            });
+        });
+
+        // PDF Export functionality
+        document.getElementById('exportPDF').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Add title
+            doc.setFontSize(18);
+            doc.text('Relatório de Contas', 14, 20);
+
+            // Prepare table data
+            const tableData = Array.from(document.querySelectorAll('.account-card')).map(card => {
+                return [
+                    card.querySelector('.account-card__title').textContent.trim(),
+                    card.getAttribute('data-tipo'),
+                    card.querySelector('.account-card__balance').textContent.trim(),
+                    card.querySelector('.account-card__info').textContent.trim()
+                ];
+            });
+
+            // Generate table
+            doc.autoTable({
+                head: [['Nome', 'Tipo', 'Saldo', 'Instituição']],
+                body: tableData,
+                startY: 30,
+                theme: 'grid',
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [41, 128, 185] }
+            });
+
+            // Save the PDF
+            doc.save('contas-relatorio.pdf');
+        });
+
+        // Download single account as PDF
+        window.downloadSingleAccount = function(button) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Get account data from button attributes
+            const nome = button.dataset.nome;
+            const tipo = button.dataset.tipo;
+            const saldo = button.dataset.saldo;
+            const instituicao = button.dataset.instituicao;
+
+            // Add title
+            doc.setFontSize(18);
+            doc.text('Detalhes da Conta', 14, 20);
+
+            // Generate table
+            doc.autoTable({
+                head: [['Campo', 'Valor']],
+                body: [
+                    ['Nome', nome],
+                    ['Tipo', tipo],
+                    ['Saldo', `R$ ${parseFloat(saldo).toFixed(2)}`],
+                    ['Instituição', instituicao]
+                ],
+                startY: 30,
+                theme: 'grid',
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [41, 128, 185] }
+            });
+
+            // Save the PDF
+            doc.save(`conta-${nome.toLowerCase().replace(/\s+/g, '-')}.pdf`);
         }
 
         searchInput.addEventListener('input', filtrarContas);

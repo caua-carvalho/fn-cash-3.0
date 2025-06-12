@@ -101,13 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['tema'] = ($_POST['tema'] === 'dark') ? 'dark-theme' : 'light-theme';
             $_SESSION['mensagem_sucesso'] = "Tema alterado!";
         }
-        if ($_POST['acao'] === 'alterar_idioma') {
-            $_SESSION['idioma'] = $_POST['idioma'];
-            $_SESSION['mensagem_sucesso'] = "Idioma alterado!";
-        }
-        if ($_POST['acao'] === 'notificacoes') {
-            $_SESSION['mensagem_sucesso'] = "Preferências de notificação salvas!";
-        }
+    
     }
 }
 
@@ -127,9 +121,8 @@ if (isset($_SESSION['mensagem_erro'])) {
     unset($_SESSION['mensagem_erro']);
 }
 
-// Tema e idioma atuais
+// Tema atual
 $temaAtual = $_SESSION['tema'] ?? (isset($_COOKIE['theme']) ? $_COOKIE['theme'] : 'dark-theme');
-$idiomaAtual = $_SESSION['idioma'] ?? 'pt';
 $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
 ?>
 
@@ -140,7 +133,6 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
 <div class="config-tabs-bar">
     <button class="config-tab-btn" id="btn-aba-dados" onclick="abrirAba('aba-dados')">Dados Pessoais</button>
     <button class="config-tab-btn" id="btn-aba-preferencias" onclick="abrirAba('aba-preferencias')">Preferências</button>
-    <button class="config-tab-btn" id="btn-aba-notificacoes" onclick="abrirAba('aba-notificacoes')">Notificações</button>
     <button class="config-tab-btn" id="btn-aba-seguranca" onclick="abrirAba('aba-seguranca')">Segurança</button>
 </div>
 <div class="config-tabs-content">
@@ -208,41 +200,7 @@ $abaAtiva = $_POST['aba_ativa'] ?? 'aba-dados';
                 </select>
             </div>
         </form>
-        <form method="POST" class="config-form">
-            <input type="hidden" name="acao" value="alterar_idioma">
-            <input type="hidden" name="aba_ativa" id="inputAbaAtivaIdioma" value="aba-preferencias">
-            <div class="form-group">
-                <label class="form-label">Idioma</label>
-                <select name="idioma" class="form-control-underline" onchange="this.form.submit()">
-                    <option value="pt" <?php echo $idiomaAtual === 'pt' ? 'selected' : ''; ?>>Português</option>
-                    <option value="en" <?php echo $idiomaAtual === 'en' ? 'selected' : ''; ?>>Inglês</option>
-                </select>
-            </div>
-        </form>
-    </div>
-    <!-- Notificações -->
-    <div id="aba-notificacoes" class="config-tab-content">
-        <form method="POST" class="config-form">
-            <input type="hidden" name="acao" value="notificacoes">
-            <input type="hidden" name="aba_ativa" id="inputAbaAtivaNotificacoes" value="aba-notificacoes">
-            <div class="form-group">
-                <label class="form-label">Receber notificações por e-mail?</label>
-                <select name="notifica_email" class="form-control-underline">
-                    <option value="1">Sim</option>
-                    <option value="0">Não</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Receber resumo mensal?</label>
-                <select name="notifica_resumo" class="form-control-underline">
-                    <option value="1">Sim</option>
-                    <option value="0">Não</option>
-                </select>
-            </div>
-            <div class="flex justify-end gap-2 mt-2">
-                <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
-            </div>
-        </form>
+       
     </div>
     <!-- Segurança -->
     <div id="aba-seguranca" class="config-tab-content">

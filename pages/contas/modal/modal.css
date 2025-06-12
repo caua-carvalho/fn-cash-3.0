@@ -208,7 +208,7 @@
 
 .modal-body .form-group .form-control:placeholder-shown + label {
   top: 15px;
-  left: 35px;
+  left: 11px;
   font-size: var(--font-size-base);
   color: var(--secondary-text-clr, #777);
 }

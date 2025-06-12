@@ -2,24 +2,24 @@
   --clr-container-bg: rgba(255, 255, 255, 0.105);
   --clr-container-border: rgba(255, 255, 255, 0.196);
   --clr-buttons-bg: rgba(255, 255, 255, 0.209);
-  --clr-highlight: #fff;
-  --clr-btn-text: #111;
+  --clr-highlight: var(--color-primary-500);
+  --clr-btn-text: var(--color-text);
   --clr-btn-shadow: #444;
-  --clr-social-icon: #fff;
-  --clr-input: #fff;
-  --clr-input-border: #fff;
-  --clr-input-placeholder: #fff;
-  --clr-submit-bg: #fff;
-  --clr-submit-text: #111;
-  --clr-submit-border-hover: #fff;
+  --clr-social-icon: var(--color-text);
+  --clr-input: var(--color-text);
+  --clr-input-border: var(--color-primary-500);
+  --clr-input-placeholder: var(--color-text-muted);
+  --clr-submit-bg: var(--color-primary-500);
+  --clr-submit-text: #fff;
+  --clr-submit-border-hover: var(--color-primary-500);
   --clr-span: #777;
   --clr-terms: #fff;
   --clr-terms-link: #aad8d3;
   --box-shadow-buttons: 0 4px 10px 6px rgba(255, 255, 255, 0.15);
   --box-shadow-submit: 0 4px 55px rgba(255, 255, 255, 0.2);
-  --bg-body-gradient: linear-gradient(to right, #155799, #159957);
+  --bg-body-gradient: linear-gradient(to right, var(--color-primary-600), var(--color-primary-300));
   --backdrop-form: blur(19px);
-  --hover-clr: #07A362; /* Cor verde */
+  --hover-clr: var(--color-primary-500);
 }
 
 @layer reset {
@@ -68,7 +68,7 @@
     padding: 5px;
     border-radius: 2rem;
     overflow: clip;
-    /* Remover a transição de cor */
+    animation: slideDown 0.6s ease forwards;
   }
 
   .container__buttons {
@@ -88,7 +88,7 @@
     width: 110px;
     height: 100%;
     border-radius: 30px;
-    /* Remover a transição */
+    transition: left 0.5s ease;
   }
 
   .toast-container {
@@ -141,8 +141,8 @@
     position: absolute;
     left: 0;
     width: 100%;
-    transform: translateX(0%); /* Remover animação */
-    /* Remover a transição de transformação */
+    transform: translateX(0%);
+    transition: transform 0.5s ease;
   }
 
   .form__input {
@@ -257,4 +257,15 @@
         opacity: 0;
         display: none;
     }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

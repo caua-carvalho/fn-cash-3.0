@@ -208,6 +208,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     primeiroInvalido.focus();
                 }
             } else {
+                // Verifica contas iguais quando for transferência
+                const tipo = form.querySelector('input[name="tipoTransacao"]').value;
+                const contaRem = form.querySelector('[name="contaRemetente"]');
+                const contaDest = form.querySelector('[name="contaDestinataria"]');
+                if (tipo === 'Transferência' && contaRem && contaDest && contaRem.value === contaDest.value) {
+                    e.preventDefault();
+                    const msg = 'Conta de origem e destino devem ser diferentes.';
+                    contaRem.setCustomValidity(msg);
+                    contaDest.setCustomValidity(msg);
+                    contaRem.classList.add('shake');
+                    contaDest.classList.add('shake');
+                    setTimeout(() => {
+                        contaRem.classList.remove('shake');
+                        contaDest.classList.remove('shake');
+                    }, 600);
+                    trocarAba(form, 'details');
+                    contaDest.reportValidity();
+                    return;
+                } else {
+                    if (contaRem) contaRem.setCustomValidity('');
+                    if (contaDest) contaDest.setCustomValidity('');
+                }
+
                 // Impede submit padrão
                 e.preventDefault();
 

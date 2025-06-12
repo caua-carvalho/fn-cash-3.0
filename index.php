@@ -122,7 +122,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <head>
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="login/login.css">  <!-- Link para o CSS geral -->
     <link rel="stylesheet" href="assets/css/toast.css">  <!-- Link para o CSS do Toast -->
 </head>

@@ -1,4 +1,11 @@
 :root {
+  /* Essential color tokens so login works without the global stylesheet */
+  --color-primary-300: #7cc1a0;
+  --color-primary-500: #07a362;
+  --color-primary-600: #068d54;
+  --color-text: #e6e6ef;
+  --color-text-muted: #b0b3c1;
+
   --clr-container-bg: rgba(255, 255, 255, 0.105);
   --clr-container-border: rgba(255, 255, 255, 0.196);
   --clr-buttons-bg: rgba(255, 255, 255, 0.209);

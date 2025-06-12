@@ -168,6 +168,9 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPaga
         return false;
     }
 
+    // Converte o valor para float e garante que seja positivo
+    $valor = abs(floatval($valor));
+
     // Converte os valores para inteiros
     $idContaRemetente = intval($idContaRemetente);
     $idContaDestinataria = !empty($idContaDestinataria) ? intval($idContaDestinataria) : null;
@@ -269,7 +272,10 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPaga
 
 function editarTransacao($ID_Usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $ID_ContaRemetente, $ID_ContaDestinataria, $ID_Transacao) {
     global $conn;
-    $sql = "UPDATE TRANSACAO SET Titulo = ?, Descricao = ?, Valor = ?, Data = ?, Tipo = ?, Status = ?, ID_Categoria = ?, ID_ContaDestinataria = ?, ID_ContaRemetente = ?, ID_Usuario = ? 
+
+    // Garante que o valor seja tratado como positivo
+    $valor = abs(floatval($valor));
+    $sql = "UPDATE TRANSACAO SET Titulo = ?, Descricao = ?, Valor = ?, Data = ?, Tipo = ?, Status = ?, ID_Categoria = ?, ID_ContaDestinataria = ?, ID_ContaRemetente = ?, ID_Usuario = ?
             WHERE ID_Transacao = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssdsssiiiii", $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $ID_ContaDestinataria, $ID_ContaRemetente, $ID_Usuario, $ID_Transacao);

@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         <!-- Valor da Transação -->
                         <div class="form-group value-container">
-                            <input type="number" class="form-control" id="valorTransacao" name="valorTransacao" step="0.01" placeholder=" " required>
+                            <input type="number" class="form-control" id="valorTransacao" name="valorTransacao" step="0.01" min="0.01" placeholder=" " required>
                             <label for="valorTransacao">Valor</label>
                         </div>
 
@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         <!-- Valor da Transação -->
                         <div class="form-group value-container">
-                            <input type="number" class="form-control" id="editarValorTransacao" name="valorTransacao" step="0.01" placeholder=" " required>
+                            <input type="number" class="form-control" id="editarValorTransacao" name="valorTransacao" step="0.01" min="0.01" placeholder=" " required>
                             <label for="editarValorTransacao">Valor</label>
                         </div>
 

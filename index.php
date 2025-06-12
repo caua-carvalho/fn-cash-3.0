@@ -169,7 +169,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="password" class="form__input" name="senha" id="senhaLogin" placeholder="Password" required>
                 <span class="toggle-password" onclick="togglePassword('senhaLogin', this)">🔒</span>
             </div>
-            <button type="submit" class="form__submit-btn" style="margin-top: 20px">log in</button>
+            <div class="form__options">
+                <input type="checkbox" class="form__check-box" id="login">
+                <label for="login" class="form__terms">Remember me</label>
+            </div>
+            <button type="submit" class="form__submit-btn">log in</button>
         </form>
 
         <!-- Register -->
@@ -181,7 +185,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="password" class="form__input" name="senha" id="senhaRegister" placeholder="Password" required>
                 <span class="toggle-password" onclick="togglePassword('senhaRegister', this)">🔒</span>
             </div>
-            <button type="submit" class="form__submit-btn" style="margin-top: 20px;">register</button>
+            <div class="form__options">
+                <input type="checkbox" class="form__check-box" id="register">
+                <label for="register" class="form__terms">
+                    I agree to the <a href="#" class="form__terms-link">Terms and Services</a>
+                </label>
+            </div>
+            <button type="submit" class="form__submit-btn">register</button>
         </form>
 
 

@@ -5,7 +5,6 @@ const registerBtn = $(".container__toggle-btn--register");
 const btnHighlightEl = $(".container__btn-highlight");
 const loginForm = $("#login");
 const registerForm = $("#register");
-btnHighlightEl.style.transition = "left 0.5s ease";
 
 logInBtn.onclick = () => {
   loginForm.style.transform = "translateX(0%)";
@@ -45,4 +44,3 @@ window.onload = function() {
         }, 3000); // 3 segundos
     }
 };
-

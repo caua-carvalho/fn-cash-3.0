@@ -321,6 +321,77 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     };
+
+    // Validate required fields before leaving the "Dados Básicos" tab
+    const setupTabValidation = () => {
+      const tabButtons = document.querySelectorAll('.tab-btn');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+          const currentTabType = document.querySelector('.tab-btn.active').getAttribute('data-tab');
+          const targetTabType = this.getAttribute('data-tab');
+          const modal = this.closest('.modal');
+          const form = modal.querySelector('form');
+
+          if (currentTabType === 'basic' && targetTabType === 'details') {
+            const basicFields = form.querySelectorAll('.tab-content[data-tab="basic"] [required]');
+            let hasInvalid = false;
+
+            basicFields.forEach(field => {
+              if (!field.checkValidity()) {
+                field.closest('.form-group').classList.add('shake');
+                hasInvalid = true;
+                setTimeout(() => {
+                  field.closest('.form-group').classList.remove('shake');
+                }, 600);
+              }
+            });
+
+            if (hasInvalid) {
+              event.preventDefault();
+              event.stopPropagation();
+              const firstInvalidField = form.querySelector('.tab-content[data-tab="basic"] :invalid');
+              if (firstInvalidField) {
+                setTimeout(() => {
+                  firstInvalidField.focus();
+                }, 100);
+              }
+              return false;
+            }
+          }
+        });
+      });
+    };
+
+    // Warn if transfer uses same source and destination accounts
+    const setupTransferAccountCheck = () => {
+      document.querySelectorAll('form').forEach(form => {
+        const tipoInput = form.querySelector('input[name="tipoTransacao"]');
+        const contaRem = form.querySelector('[name="contaRemetente"]');
+        const contaDest = form.querySelector('[name="contaDestinataria"]');
+
+        if (!contaRem || !contaDest) return;
+
+        const validateAccounts = () => {
+          const tipo = tipoInput ? tipoInput.value : '';
+          if (tipo === 'Transferência' && contaRem.value && contaDest.value && contaRem.value === contaDest.value) {
+            const msg = 'Conta de origem e destino devem ser diferentes.';
+            contaRem.setCustomValidity(msg);
+            contaDest.setCustomValidity(msg);
+            if (typeof _exibeToast === 'function') {
+              _exibeToast(msg, 'danger', 4000);
+            }
+            contaDest.reportValidity();
+          } else {
+            contaRem.setCustomValidity('');
+            contaDest.setCustomValidity('');
+          }
+        };
+
+        contaRem.addEventListener('change', validateAccounts);
+        contaDest.addEventListener('change', validateAccounts);
+      });
+    };
   
     // Initialize modals when opened
     const initializeModalOpening = () => {
@@ -355,26 +426,62 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize form validation
     const setupFormValidation = () => {
       const forms = document.querySelectorAll('form');
-      
+
       forms.forEach(form => {
         form.addEventListener('submit', function(event) {
+          const tipo = form.querySelector('input[name="tipoTransacao"]')?.value;
+          const contaRem = form.querySelector('[name="contaRemetente"]');
+          const contaDest = form.querySelector('[name="contaDestinataria"]');
+
+          // Custom check for transfer accounts being different
+          if (tipo === 'Transferência' && contaRem && contaDest && contaRem.value === contaDest.value) {
+            event.preventDefault();
+            event.stopPropagation();
+            const msg = 'Conta de origem e destino devem ser diferentes.';
+            contaRem.setCustomValidity(msg);
+            contaDest.setCustomValidity(msg);
+
+            [contaRem, contaDest].forEach(field => {
+              field.closest('.form-group').classList.add('shake');
+              setTimeout(() => field.closest('.form-group').classList.remove('shake'), 600);
+            });
+
+            // Ensure details tab is visible
+            const tabButton = form.closest('.modal').querySelector('.tab-btn[data-tab="details"]');
+            if (tabButton) tabButton.click();
+
+            contaDest.focus();
+            return;
+          } else {
+            if (contaRem) contaRem.setCustomValidity('');
+            if (contaDest) contaDest.setCustomValidity('');
+          }
+
           if (!form.checkValidity()) {
             event.preventDefault();
             event.stopPropagation();
-            
-            // Add visual feedback for invalid fields
+
+            const basicTabHasInvalidFields = !!form.querySelector('.tab-content[data-tab="basic"] :invalid');
+            const detailsTabHasInvalidFields = !!form.querySelector('.tab-content[data-tab="details"] :invalid');
+            let tabToShow = 'basic';
+            if (!basicTabHasInvalidFields && detailsTabHasInvalidFields) {
+              tabToShow = 'details';
+            }
+
+            const tabBtn = form.closest('.modal').querySelector(`.tab-btn[data-tab="${tabToShow}"]`);
+            if (tabBtn) tabBtn.click();
+
             const invalidFields = form.querySelectorAll(':invalid');
             invalidFields.forEach(field => {
               field.closest('.form-group').classList.add('shake');
-              setTimeout(() => {
-                field.closest('.form-group').classList.remove('shake');
-              }, 600);
+              setTimeout(() => field.closest('.form-group').classList.remove('shake'), 600);
             });
-            
-            // Focus on first invalid field
-            invalidFields[0].focus();
+
+            setTimeout(() => {
+              if (invalidFields[0]) invalidFields[0].focus();
+            }, 100);
           }
-          
+
           form.classList.add('was-validated');
         });
       });
@@ -411,6 +518,8 @@ document.addEventListener('DOMContentLoaded', function() {
       setupEditModal();
       setupDeleteModal();
       setupModalTabs();
+      setupTabValidation();
+      setupTransferAccountCheck();
       initializeModalOpening();
       setupFormValidation();
       setupResponsiveness();

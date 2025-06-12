@@ -118,7 +118,6 @@
 
   /* Hover Efeito de Botões (login e register) */
   .container__toggle-btn:hover {
-    background-color: var(--clr-btn-text);
     color: var(--hover-clr); /* Cor do texto em verde */
     border-radius: 30px;
   }

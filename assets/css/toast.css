@@ -52,7 +52,7 @@
 }
 
 .toast-message {
-    color: #666;
+    color: var(--text-clr);
     margin: 0;
 }
 

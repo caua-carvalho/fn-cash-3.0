@@ -164,7 +164,7 @@ $count = count($contas);
                 <p class="empty-state__description">
                     Comece a registrar suas contas financeiras para visualizá-las aqui.
                 </p>
-                <button class="btn btn-primary btn-icon" data-modal-open="#contaModal">
+                <button class="btn btn-primary btn-icon" data-modal-open="#modalNovaConta">
                     <i class="fas fa-plus me-2"></i> Criar Primeira Conta
                 </button>
             </div>

@@ -62,7 +62,7 @@ function obterTransacoes($dataInicio = null, $dataFim = null): array {
 }
 
 
-function obterSaldoTipo($tipo): float {
+function obterSaldoTipo($tipo, $dataInicio, $dataFim): float {
     global $conn;
 
     $sql = "
@@ -71,16 +71,39 @@ function obterSaldoTipo($tipo): float {
       WHERE ID_Usuario = ? 
         AND Tipo = ?
     ";
+
+    $types  = "is";  // Expecting integer for user id, and string for transaction type
+    $params = [$_SESSION['id_usuario'], $tipo]; // Adding the $tipo parameter for the query
+
+    // Filtros de data opcionais
+    if ($dataInicio !== null) {
+        $sql    .= " AND Data >= ?";
+        $types  .= "s";
+        $params[] = $dataInicio;
+    }
+    if ($dataFim !== null) {
+        $sql    .= " AND Data <= ?";
+        $types  .= "s";
+        $params[] = $dataFim;
+    }
+
+    // Prepara e executa
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('is', $_SESSION['id_usuario'], $tipo);
+    if (!$stmt) {
+        logErroConsole("Erro ao preparar consulta de transações: " . $conn->error);
+        return 0.0;  // Returning 0 if there's an error
+    }
+    $stmt->bind_param($types, ...$params);
     $stmt->execute();
 
+    // Coleta resultados
     $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    $row = $result->fetch_assoc();  // Only one row with the SUM, so use fetch_assoc() to get it.
 
-    // Aqui retorna só o número, não o array
-    return $row['valor'];
+    $stmt->close();
+    return (float)$row['valor'];  // Return the sum value
 }
+
 
 
 function obterTransacoesPorId($id_transacao){
@@ -144,6 +167,9 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPaga
         erro($msg);
         return false;
     }
+
+    // Converte o valor para float e garante que seja positivo
+    $valor = abs(floatval($valor));
 
     // Converte os valores para inteiros
     $idContaRemetente = intval($idContaRemetente);
@@ -246,7 +272,10 @@ function cadastrarTransacao($id_usuario, $titulo, $descricao, $valor, $formaPaga
 
 function editarTransacao($ID_Usuario, $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $ID_ContaRemetente, $ID_ContaDestinataria, $ID_Transacao) {
     global $conn;
-    $sql = "UPDATE TRANSACAO SET Titulo = ?, Descricao = ?, Valor = ?, Data = ?, Tipo = ?, Status = ?, ID_Categoria = ?, ID_ContaDestinataria = ?, ID_ContaRemetente = ?, ID_Usuario = ? 
+
+    // Garante que o valor seja tratado como positivo
+    $valor = abs(floatval($valor));
+    $sql = "UPDATE TRANSACAO SET Titulo = ?, Descricao = ?, Valor = ?, Data = ?, Tipo = ?, Status = ?, ID_Categoria = ?, ID_ContaDestinataria = ?, ID_ContaRemetente = ?, ID_Usuario = ?
             WHERE ID_Transacao = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssdsssiiiii", $titulo, $descricao, $valor, $data, $tipo, $status, $idCategoria, $ID_ContaDestinataria, $ID_ContaRemetente, $ID_Usuario, $ID_Transacao);

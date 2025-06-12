@@ -82,6 +82,10 @@
   color: var(--color-on-primary);
 }
 
+.btn {
+  border-radius: 50px !important;
+}
+
 .modal-header .btn-close {
   position: absolute;
   top: var(--spacing-3);

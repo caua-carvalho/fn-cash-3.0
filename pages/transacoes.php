@@ -5,8 +5,113 @@ error_reporting(E_ALL);
 
 
 require_once 'transacoes/funcoes.php';
+
+// Processamento do formulário deve ocorrer antes de qualquer saída HTML
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    session_start(); // garante que a sessão esteja ativa
+
+    $acao = $_POST['acao'] ?? null;
+    if (!$acao) {
+        erro("Ação não definida.");
+        exit;
+    }
+
+    if ($acao === 'excluirTransacao') {
+        if (empty($_POST['transacaoId'])) {
+            erro("ID da transação não fornecido.");
+            exit;
+        }
+
+        if (deletarTransacao($_POST['transacaoId'])) {
+            $_SESSION['toast_message'] = 'Transação excluída com sucesso!';
+            $_SESSION['toast_type'] = 'success';
+        } else {
+            $_SESSION['toast_message'] = 'Erro ao excluir transação. Verifique os dados e tente novamente.';
+            $_SESSION['toast_type'] = 'danger';
+        }
+        header('Location: transacoes.php');
+        exit;
+    }
+
+    if (!in_array($_POST['tipoTransacao'], ['Despesa', 'Receita', 'Transferência']) ||
+        !in_array($_POST['statusTransacao'], ['Pendente', 'Efetivada', 'Cancelada'])) {
+        erro("Dados inválidos fornecidos.");
+        exit;
+    }
+
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM CONTA WHERE ID_Conta = ?");
+    $stmt->bind_param("i", $_POST['ContaRemetente']);
+    $stmt->execute();
+    $stmt->bind_result($contaRemetenteExiste);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (!empty($_POST['categoriaTransacao'])) {
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM CATEGORIA WHERE ID_Categoria = ?");
+        $stmt->bind_param("i", $_POST['categoriaTransacao']);
+        $stmt->execute();
+        $stmt->bind_result($categoriaExiste);
+        $stmt->fetch();
+        $stmt->close();
+
+        if (!$categoriaExiste) {
+            erro("Categoria inválida.");
+            exit;
+        }
+    }
+
+    $success = false;
+    if ($acao === 'editarTransacao') {
+        $success = editarTransacao(
+            $_SESSION['id_usuario'] ?? null,
+            $_POST['tituloTransacao'],
+            $_POST['descricaoTransacao'],
+            $_POST['valorTransacao'],
+            $_POST['dataTransacao'],
+            $_POST['tipoTransacao'],
+            $_POST['statusTransacao'],
+            $_POST['categoriaTransacao'] ?? null,
+            $_POST['contaRemetente'],
+            ($_POST['tipoTransacao'] === 'Transferência') ? intval($_POST['contaDestinataria']) : null,
+            $_POST['idTransacao']
+        );
+    } elseif ($acao === 'cadastrarTransacao') {
+        $success = cadastrarTransacao(
+            $_SESSION['id_usuario'] ?? null,
+            $_POST['tituloTransacao'],
+            $_POST['descricaoTransacao'],
+            $_POST['valorTransacao'],
+            $_POST['formaPagamento'],
+            $_POST['dataTransacao'],
+            $_POST['tipoTransacao'],
+            $_POST['statusTransacao'],
+            $_POST['categoriaTransacao'] ?? null,
+            $_POST['contaRemetente'],
+            ($_POST['tipoTransacao'] === 'Transferência') ? intval($_POST['contaDestinataria']) : null
+        );
+    }
+
+    if ($success) {
+        $_SESSION['toast_message'] = 'Operação realizada com sucesso!';
+        $_SESSION['toast_type'] = 'success';
+    } else {
+        $_SESSION['toast_message'] = 'Erro ao processar a operação. Verifique os dados e tente novamente.';
+        $_SESSION['toast_type'] = 'danger';
+    }
+    header('Location: transacoes.php');
+    exit;
+}
+
 require_once 'header.php';
 require_once 'sidebar.php';
+// Exibe toast após redirecionamento
+if (isset($_SESSION['toast_message'])) {
+    $msg  = addslashes($_SESSION['toast_message']);
+    $type = addslashes($_SESSION['toast_type'] ?? 'success');
+    echo "<script>localStorage.setItem('toast_message','{$msg}');".
+         "localStorage.setItem('toast_type','{$type}');</script>";
+    unset($_SESSION['toast_message'], $_SESSION['toast_type']);
+}
 require_once 'transacoes/modal.php';
 require_once 'dialog.php';
 require_once '../conexao.php';
@@ -38,8 +143,8 @@ $intervaloDatas = ['inicio' => $dataInicio, 'fim' => $dataFim];
 // 2) Busca transações já filtradas
 $transacoes = obterTransacoes($dataInicio, $dataFim);
 
-$totalReceita = obterSaldoTipo(tipo: 'Receita');
-$totalDespesa = obterSaldoTipo(tipo: 'Despesa');
+$totalReceita = obterSaldoTipo(tipo: 'Receita', dataInicio: $dataInicio, dataFim: $dataFim);
+$totalDespesa = obterSaldoTipo(tipo: 'Despesa', dataInicio: $dataInicio, dataFim: $dataFim);
 $totalBalanco = $totalReceita - $totalDespesa;
 ?>
 
@@ -260,9 +365,11 @@ $totalBalanco = $totalReceita - $totalDespesa;
                                data-data='" . $transacao['Data'] . "'
                                data-tipo='" . htmlspecialchars($transacao['Tipo']) . "'
                                data-status='" . $transacao['Status'] . "'
-                               data-conta-remetente-id='" . htmlspecialchars($transacao['ID_ContaRemetente']) . "'
+                               data-categoria='" . $transacao['ID_Categoria'] . "'
+                               data-forma-pagamento='" . $transacao['FormaPagamento'] . "'
+                               data-conta-remetente='" . htmlspecialchars($transacao['ID_ContaRemetente']) . "'
                                data-conta-remetente-nome='" . htmlspecialchars($transacao['NomeContaRemetente']) . "'
-                               data-conta-destinataria-id='" . ($transacao['ID_ContaDestinataria'] !== null ? htmlspecialchars($transacao['ID_ContaDestinataria']) : '') . "'
+                               data-conta-destinataria='" . ($transacao['ID_ContaDestinataria'] !== null ? htmlspecialchars($transacao['ID_ContaDestinataria']) : '') . "'
                                data-conta-destinataria-nome='" . ($transacao['NomeContaDestinataria'] !== null ? htmlspecialchars($transacao['NomeContaDestinataria']) : '-') . "'>
                               <i class='fas fa-edit'></i>
                               </button>";
@@ -393,87 +500,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <?php
 require_once 'footer.php';
-
-// Processamento do formulário
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $acao = $_POST['acao'] ?? null;
-
-    if (!$acao) {
-        erro("Ação não definida.");
-        exit;
-    }
-
-    if ($acao === 'excluirTransacao') {
-        if (empty($_POST['transacaoId'])) {
-            erro("ID da transação não fornecido.");
-            exit;
-        }
-
-        deletarTransacao($_POST['transacaoId'])
-            ? confirmar("Transação excluída com sucesso!", "transacoes.php")
-            : erro("Erro ao excluir transação. Verifique os dados e tente novamente.");
-        exit;
-    }
-
-    if (!in_array($_POST['tipoTransacao'], ['Despesa', 'Receita', 'Transferência']) || !in_array($_POST['statusTransacao'], ['Pendente', 'Efetivada', 'Cancelada'])) {
-        erro("Dados inválidos fornecidos.");
-        exit;
-    }
-
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM CONTA WHERE ID_Conta = ?");
-    $stmt->bind_param("i", $_POST['ContaRemetente']);
-    $stmt->execute();
-    $stmt->bind_result($contaRemetenteExiste);
-    $stmt->fetch();
-    $stmt->close(); 
-
-    if (!empty($_POST['categoriaTransacao'])) {
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM CATEGORIA WHERE ID_Categoria = ?");
-        $stmt->bind_param("i", $_POST['categoriaTransacao']);
-        $stmt->execute();
-        $stmt->bind_result($categoriaExiste);
-        $stmt->fetch();
-        $stmt->close();
-
-        if (!$categoriaExiste) {
-            erro("Categoria inválida.");
-            exit;
-        }
-    }
-
-    $success = false;
-    if ($acao === 'editarTransacao') {
-        $success = editarTransacao(
-            $_SESSION['id_usuario'] ?? null,
-            $_POST['tituloTransacao'],
-            $_POST['descricaoTransacao'],
-            $_POST['valorTransacao'],
-            $_POST['dataTransacao'],
-            $_POST['tipoTransacao'],
-            $_POST['statusTransacao'],
-            $_POST['categoriaTransacao'] ?? null,
-            $_POST['contaRemetente'],
-            ($_POST['tipoTransacao'] === 'Transferência') ? intval($_POST['contaDestinataria']) : null,
-            $_POST['idTransacao']
-        );
-    } elseif ($acao === 'cadastrarTransacao') {
-        $success = cadastrarTransacao(
-            $_SESSION['id_usuario'] ?? null,
-            $_POST['tituloTransacao'],
-            $_POST['descricaoTransacao'],
-            $_POST['valorTransacao'],
-            $_POST['formaPagamento'],
-            $_POST['dataTransacao'],
-            $_POST['tipoTransacao'],
-            $_POST['statusTransacao'],
-            $_POST['categoriaTransacao'] ?? null,
-            $_POST['contaRemetente'],
-            ($_POST['tipoTransacao'] === 'Transferência') ? intval($_POST['contaDestinataria']) : null
-        );
-    }
-
-    $success
-        ? confirmar("Operação realizada com sucesso!", "transacoes.php")
-        : erro("Erro ao processar a operação. Verifique os dados e tente novamente.");
-}
 ?>

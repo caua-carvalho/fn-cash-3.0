@@ -382,31 +382,5 @@ function modalCreateConta(): string {
   </div>
 </div>
 
-<style>
-:root {
-  --base-clr: #0a0a0a;
-  --line-clr: #42434a;
-  --hover-clr: #053F27;
-  --text-clr: #e6e6ef;
-  --accent-clr: #07A362;
-  --secondary-text-clr: #b0b3c1;
-  --background-clr: #f5f5f5;
-  --input-bg-clr: #f5f5f5;
-  --box-shadow-clr: rgba(10, 10, 10, 0.5);
-  --hover-overlay-clr: rgba(10, 10, 10, 0.2);
-}
-
-/* Adicionar classe para animação de shake em campos com erro */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-5px); }
-  40%, 80% { transform: translateX(5px); }
-}
-
-.shake {
-  animation: shake 0.6s ease-in-out;
-}
-</style>
-
 <link rel="stylesheet" href="contas/modal/modal.css">
 <script src="contas/modal/modal.js"></script>

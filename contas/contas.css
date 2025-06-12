@@ -5,7 +5,7 @@
 
 /* 1. Estilo base do card */
 .account-card {
-  background-color: var(--color-bg-800); /* fundo escuro */
+  background-color: var(--color-surface); /* fundo escuro */
   color: var(--color-text-100);
   border-radius: 0.75rem;               /* 2xl rounded corners */
   overflow: hidden;
@@ -63,7 +63,7 @@
 .account-card__details {
   display: none;
   padding: 1rem;
-  border-top: 1px solid var(--color-bg-700);
+  border-top: 1px solid var(--color-background-alt);
   font-size: 0.875rem;        /* text-sm */
   line-height: 1.4;
 }

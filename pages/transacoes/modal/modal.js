@@ -362,6 +362,36 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       });
     };
+
+    // Warn if transfer uses same source and destination accounts
+    const setupTransferAccountCheck = () => {
+      document.querySelectorAll('form').forEach(form => {
+        const tipoInput = form.querySelector('input[name="tipoTransacao"]');
+        const contaRem = form.querySelector('[name="contaRemetente"]');
+        const contaDest = form.querySelector('[name="contaDestinataria"]');
+
+        if (!contaRem || !contaDest) return;
+
+        const validateAccounts = () => {
+          const tipo = tipoInput ? tipoInput.value : '';
+          if (tipo === 'Transferência' && contaRem.value && contaDest.value && contaRem.value === contaDest.value) {
+            const msg = 'Conta de origem e destino devem ser diferentes.';
+            contaRem.setCustomValidity(msg);
+            contaDest.setCustomValidity(msg);
+            if (typeof _exibeToast === 'function') {
+              _exibeToast(msg, 'danger', 4000);
+            }
+            contaDest.reportValidity();
+          } else {
+            contaRem.setCustomValidity('');
+            contaDest.setCustomValidity('');
+          }
+        };
+
+        contaRem.addEventListener('change', validateAccounts);
+        contaDest.addEventListener('change', validateAccounts);
+      });
+    };
   
     // Initialize modals when opened
     const initializeModalOpening = () => {
@@ -489,6 +519,7 @@ document.addEventListener('DOMContentLoaded', function() {
       setupDeleteModal();
       setupModalTabs();
       setupTabValidation();
+      setupTransferAccountCheck();
       initializeModalOpening();
       setupFormValidation();
       setupResponsiveness();

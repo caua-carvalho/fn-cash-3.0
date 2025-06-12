@@ -180,6 +180,7 @@ VALUES ('Ações Empresa X', 'Ações', 5000.00, 5500.00, '2025-01-10', 1, 1);
 INSERT INTO INVESTIMENTO (Nome, Tipo, ValorInicial, ValorAtual, DataInicio, ID_Conta, ID_Usuario) 
 VALUES ('Fundo Imobiliário Y', 'Fundos', 10000.00, 10500.00, '2025-01-10', 1, 1);
 
+DROP TRIGGER IF EXISTS atualiza_saldo_apos_insert;
 DELIMITER $$
 
 CREATE TRIGGER atualiza_saldo_apos_insert
@@ -244,6 +245,7 @@ FROM ORCAMENTO O
 LEFT JOIN GastoPorCategoria G ON O.ID_Categoria = G.ID_Categoria AND O.ID_Usuario = G.ID_Usuario
 WHERE O.Ativo = TRUE;
 
+DROP TRIGGER IF EXISTS atualiza_saldo_apos_update;
 DELIMITER $$
 
 CREATE TRIGGER atualiza_saldo_apos_update

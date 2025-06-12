@@ -68,6 +68,7 @@
     padding: 5px;
     border-radius: 2rem;
     overflow: clip;
+    /* Remover a transição de cor */
   }
 
   .container__buttons {
@@ -81,19 +82,23 @@
   }
 
   .container__btn-highlight {
-    background: var(--clr-highlight);
+    background: var(--hover-clr);
     position: absolute;
     inset: 0;
     width: 110px;
     height: 100%;
     border-radius: 30px;
-    transition: 0.5s;
+    /* Remover a transição */
+  }
+
+  .toast-container {
+    animation: fadeOut 3s forwards;
   }
 
   .container__toggle-btn {
     background: transparent;
     color: var(--clr-btn-text);
-    padding: 10px 30px;
+    padding: 10px 20px;
     width: 100%;
     cursor: pointer;
     border: 0;
@@ -101,13 +106,13 @@
     font-size: 14px;
     text-transform: capitalize;
     z-index: 99;
-    transition: 0.3s ease;
+    transition: 0.3s ease; /* Esse ainda mantém, mas pode ser removido se não precisar de animação no hover */
   }
 
   /* Hover Efeito de Botões (login e register) */
   .container__toggle-btn:hover {
-    background-color: var(--hover-clr);
-    color: #fff; /* Cor do texto em branco */
+    background-color: var(--clr-btn-text);
+    color: var(--hover-clr); /* Cor do texto em verde */
     border-radius: 30px;
   }
 
@@ -136,8 +141,8 @@
     position: absolute;
     left: 0;
     width: 100%;
-    transform: translateX(0%);
-    transition: transform 0.5s ease;
+    transform: translateX(0%); /* Remover animação */
+    /* Remover a transição de transformação */
   }
 
   .form__input {
@@ -151,10 +156,11 @@
     font-size: 1rem;
     color: var(--clr-input);
     caret-color: var(--clr-input-border);
+  }
 
-    &::placeholder {
-      color: var(--clr-input-placeholder);
-    }
+  .form__input-container {
+    position: relative;
+    width: 100%;
   }
 
   .form__submit-btn {
@@ -190,7 +196,7 @@
   }
 
   .form__terms {
-    color: var(--clr-terms);
+    color: var(--hover-clr);
     font-size: 14px;
     display: inline-block;
   }
@@ -209,6 +215,27 @@
     color: var(--clr-terms-link);
     font-size: 14px;
   }
+
+  /* Botão de visualizar a senha */
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 30%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--hover-clr);
+  }
+
+  .logo-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .logo-img {
+    width: 100px;
+    opacity: 0.8;
+  }
 }
 
 @layer utilities {
@@ -217,4 +244,17 @@
     align-items: center;
     justify-content: center;
   }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
 }

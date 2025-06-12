@@ -158,14 +158,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="container__social-icons center">
             <!-- Social media icons -->
-            <a href="#">...</a> <!-- Add Social media icons here -->
+            
         </div>
 
         <!-- Login -->
         <form id="login" class="form" action="index.php" method="POST">
             <input type="hidden" name="acao" value="login">
             <input type="text" class="form__input" name="usuario" placeholder="Username" required>
-            <input type="password" class="form__input" name="senha" placeholder="Password" required>
+            <div class="form__input-container">
+                <input type="password" class="form__input" name="senha" id="senhaLogin" placeholder="Password" required>
+                <span class="toggle-password" onclick="togglePassword('senhaLogin', this)">🔒</span>
+            </div>
             <div class="form__options">
                 <input type="checkbox" class="form__check-box" id="login">
                 <label for="login" class="form__terms">Remember me</label>
@@ -178,7 +181,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="hidden" name="acao" value="register">
             <input type="text" class="form__input" name="usuario" placeholder="Username" required>
             <input type="email" class="form__input" name="email" placeholder="Email" required>
-            <input type="password" class="form__input" name="senha" placeholder="Password" required>
+            <div class="form__input-container">
+                <input type="password" class="form__input" name="senha" id="senhaRegister" placeholder="Password" required>
+                <span class="toggle-password" onclick="togglePassword('senhaRegister', this)">🔒</span>
+            </div>
             <div class="form__options">
                 <input type="checkbox" class="form__check-box" id="register">
                 <label for="register" class="form__terms">
@@ -187,6 +193,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <button type="submit" class="form__submit-btn">register</button>
         </form>
+
+
+        <!-- Logo -->
+        <div class="logo-container">
+            <img src="logo/logo_escrita.svg" alt="Logo FN Cash" class="logo-img">
+        </div>
     </div>
 
     <script src="login/login.js"></script> <!-- Link para o JS -->

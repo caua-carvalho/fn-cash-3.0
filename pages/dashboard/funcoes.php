@@ -61,6 +61,33 @@ function obterSaldoTotal($idUsuario = null) {
 }
 
 /**
+ * Retorna o saldo total das contas do usuário em uma data específica.
+ */
+function obterSaldoTotalEmData($data, $idUsuario = null) {
+    global $conn;
+    $idUsuario = $idUsuario ?? ($_SESSION['id_usuario'] ?? null);
+    if (!$idUsuario) return 0;
+
+    $saldoAtual = obterSaldoTotal($idUsuario);
+
+    $sql = "SELECT SUM(CASE
+                    WHEN Tipo = 'Receita' THEN Valor
+                    WHEN Tipo = 'Despesa' THEN -Valor
+                    ELSE 0 END) AS ajuste
+            FROM TRANSACAO
+            WHERE ID_Usuario = ?
+              AND Data > ?
+              AND Status <> 'Cancelada'";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $idUsuario, $data);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    $ajuste = floatval($row['ajuste'] ?? 0);
+
+    return $saldoAtual - $ajuste;
+}
+
+/**
  * Retorna o total de receitas no período.
  */
 function obterReceita($intervalo = null, $idUsuario = null) {
@@ -384,8 +411,8 @@ function calcularVariacaoPercentual($tipo, $intervalo, $idUsuario = null) {
     $valorAnterior = 0;
     switch ($tipo) {
         case 'saldo':
-            $valorAtual = obterSaldoTotal($idUsuario);
-            $valorAnterior = 0.9 * $valorAtual; // Simulação
+            $valorAtual = obterSaldoTotalEmData($intervalo['fim'], $idUsuario);
+            $valorAnterior = obterSaldoTotalEmData($intervaloAnterior['fim'], $idUsuario);
             break;
         case 'receita':
             $valorAtual = obterReceita($intervalo, $idUsuario);

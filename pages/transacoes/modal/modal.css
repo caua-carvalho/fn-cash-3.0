@@ -341,15 +341,6 @@
   position: relative;
 }
 
-.value-container::before {
-  color: var(--secondary-text-clr);
-  content: 'R$';
-  font-size: 1rem;
-  left: 0.75rem;
-  position: absolute;
-  top: 1rem;
-}
-
 .value-container input {
   padding-left: 2rem;
 }

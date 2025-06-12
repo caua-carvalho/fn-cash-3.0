@@ -142,6 +142,9 @@ $count = count($contas);
         <div class="p-4 flex justify-between items-center border-bottom">
             <h4 class="font-semibold m-0">Suas Contas</h4>
             <div class="flex gap-2">
+                <button class="btn-action" id="toggleView" title="Alternar visualização">
+                    <i class="fas fa-list"></i>
+                </button>
                 <button class="btn-action" title="Exportar para Excel">
                     <i class="fas fa-file-excel"></i>
                 </button>
@@ -303,6 +306,8 @@ echo modalCreateConta();
         const searchInput = document.getElementById('searchConta');
         const filterSelect = document.getElementById('filterTipo');
         const cards = document.querySelectorAll('.account-card');
+        const contasGrid = document.getElementById('contasGrid');
+        const toggleViewBtn = document.getElementById('toggleView');
 
         function filtrarContas() {
             const termo = searchInput.value.toLowerCase();
@@ -320,10 +325,24 @@ echo modalCreateConta();
         searchInput.addEventListener('input', filtrarContas);
         filterSelect.addEventListener('change', filtrarContas);
 
+        // Alterna visualização entre grid e lista
+        toggleViewBtn.addEventListener('click', function() {
+            contasGrid.classList.toggle('list-view');
+            const icon = this.querySelector('i');
+            if (contasGrid.classList.contains('list-view')) {
+                icon.classList.remove('fa-list');
+                icon.classList.add('fa-th-large');
+            } else {
+                icon.classList.remove('fa-th-large');
+                icon.classList.add('fa-list');
+            }
+        });
+
         // Accordion: expande/retrai detalhes ao clicar no card
         cards.forEach(card => {
             card.addEventListener('click', function(e) {
                 if (e.target.closest('[data-modal-open]')) return;
+                if (contasGrid.classList.contains('list-view')) return;
                 card.classList.toggle('expanded');
             });
         });

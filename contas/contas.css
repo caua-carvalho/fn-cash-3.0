@@ -94,5 +94,16 @@
   opacity: 1;
 }
 
-/* === Outros ajustes globais (se necessário) === */
-/* … (seu CSS restante) … */
+
+/* List view adjustments */
+#contasGrid.list-view {
+  grid-template-columns: 1fr;
+}
+
+#contasGrid.list-view .account-card__details {
+  display: block;
+}
+
+#contasGrid.list-view .account-card {
+  cursor: default;
+}

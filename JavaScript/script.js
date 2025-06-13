@@ -90,7 +90,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const instituicao = this.getAttribute('data-instituicao');
             document.getElementById('editarContaId').value = id;
             document.getElementById('editarNomeConta').value = nome;
-            document.getElementById('editarTipoConta').value = tipo;
+            // Preenche o campo oculto que armazena o tipo de conta
+            const tipoHidden = document.getElementById('editarTipoContaHidden');
+            if (tipoHidden) {
+                tipoHidden.value = tipo;
+            }
             document.getElementById('editarSaldoConta').value = saldo;
             document.getElementById('editarInstituicaoConta').value = instituicao;
         });

@@ -20,6 +20,8 @@ function obterUsuario($idUsuario, $conn) {
 function atualizarUsuario($idUsuario, $nome, $email, $conn) {
     $stmt = $conn->prepare("UPDATE USUARIO SET Nome = ?, Email = ? WHERE ID_Usuario = ?");
     $stmt->bind_param("ssi", $nome, $email, $idUsuario);
+
+    $_SESSION['usuario'] = $nome;
     return $stmt->execute();
 }
 

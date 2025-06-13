@@ -55,6 +55,11 @@
   }
 }
 
+/* TESTE */
+#editarSaldoConta {
+  padding-left: 41px;
+}
+
 /* 5) MODAL-CONTENT */
 .modal-content {
   background-color: var(--base-clr);             /* fundo escuro opaco */

@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Handle edit account modal
   const setupEditModal = () => {
-    const editButtons = document.querySelectorAll('[data-target="#editarContaModal"]');
+    const editButtons = document.querySelectorAll('[data-modal-open="#editarContaModal"]');
     
     editButtons.forEach(button => {
       button.addEventListener('click', function() {
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Handle delete account modal
   const setupDeleteModal = () => {
-    const deleteButtons = document.querySelectorAll('[data-target="#excluirContaModal"]');
+    const deleteButtons = document.querySelectorAll('[data-modal-open="#excluirContaModal"]');
     
     deleteButtons.forEach(button => {
       button.addEventListener('click', function() {

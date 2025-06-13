@@ -74,8 +74,13 @@ if (isset($_SESSION['mensagem_erro'])) {
     unset($_SESSION['mensagem_erro']);
 }
 
-// Obtém as categorias
-$categorias = obterCategorias();
+// Filtros recebidos via GET ou POST
+$tipoFiltro = $_POST['tipoCategoria'] ?? $_GET['tipoCategoria'] ?? 'todos';
+$statusFiltro = $_POST['statusCategoria'] ?? $_GET['statusCategoria'] ?? 'todos';
+$buscaFiltro = $_POST['filtroBusca'] ?? $_GET['filtroBusca'] ?? '';
+
+// Obtém as categorias considerando os filtros
+$categorias = obterCategorias($tipoFiltro, $statusFiltro, $buscaFiltro);
 ?>
 
 <div class="content">
@@ -150,26 +155,26 @@ $categorias = obterCategorias();
             <div class="grid grid-cols-2 gap-3 mb-3">
                 <div class="form-group mb-3">
                     <label for="filtroTipo">Tipo</label>
-                    <select class="form-control" id="filtroTipo">
-                        <option value="todos">Todos os tipos</option>
-                        <option value="Receita">Receitas</option>
-                        <option value="Despesa">Despesas</option>
+                    <select class="form-control" id="filtroTipo" name="tipoCategoria">
+                        <option value="todos" <?php echo $tipoFiltro === 'todos' ? 'selected' : ''; ?>>Todos os tipos</option>
+                        <option value="Receita" <?php echo $tipoFiltro === 'Receita' ? 'selected' : ''; ?>>Receitas</option>
+                        <option value="Despesa" <?php echo $tipoFiltro === 'Despesa' ? 'selected' : ''; ?>>Despesas</option>
                     </select>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="filtroStatus">Status</label>
-                    <select class="form-control" id="filtroStatus">
-                        <option value="todos">Todos os status</option>
-                        <option value="ativas">Ativas</option>
-                        <option value="inativas">Inativas</option>
+                    <select class="form-control" id="filtroStatus" name="statusCategoria">
+                        <option value="todos" <?php echo $statusFiltro === 'todos' ? 'selected' : ''; ?>>Todos os status</option>
+                        <option value="ativas" <?php echo $statusFiltro === 'ativas' ? 'selected' : ''; ?>>Ativas</option>
+                        <option value="inativas" <?php echo $statusFiltro === 'inativas' ? 'selected' : ''; ?>>Inativas</option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group mb-3">
                 <label for="filtroBusca">Buscar</label>
-                <input type="text" class="form-control" id="filtroBusca" placeholder=" ">
+                <input type="text" class="form-control" id="filtroBusca" name="filtroBusca" value="<?php echo htmlspecialchars($buscaFiltro); ?>" placeholder=" ">
             </div>
 
             <div class="flex justify-end mt-3">
@@ -228,7 +233,11 @@ $categorias = obterCategorias();
                         $statusTexto = $categoria['Ativa'] ? 'Ativa' : 'Inativa';
                         $statusIcone = $categoria['Ativa'] ? 'fa-check-circle' : 'fa-times-circle';
 
-                        echo "<tr class='fade-in-up' style='animation-delay: {$delay}ms'>";
+                        $dataStatus = $categoria['Ativa'] ? 'ativa' : 'inativa';
+                        $dataNome = htmlspecialchars($categoria['Nome'], ENT_QUOTES);
+                        $descricaoCompleta = !empty($categoria['Descricao']) ? $categoria['Descricao'] : '-';
+                        $dataDescricao = htmlspecialchars($descricaoCompleta, ENT_QUOTES);
+                        echo "<tr class='fade-in-up categoria' style='animation-delay: {$delay}ms' data-nome='{$dataNome}' data-tipo='{$categoria['Tipo']}' data-status='{$dataStatus}' data-descricao='{$dataDescricao}'>";
                         echo "<td class='font-medium'>" . htmlspecialchars($categoria['Nome']) . "</td>";
 
                         // Badge para o tipo de categoria
@@ -237,7 +246,7 @@ $categorias = obterCategorias();
                             htmlspecialchars($categoria['Tipo']) . "</span></td>";
 
                         // Descrição (limitada a 50 caracteres)
-                        $descricao = !empty($categoria['Descricao']) ? $categoria['Descricao'] : '-';
+                        $descricao = $descricaoCompleta;
                         if (strlen($descricao) > 50) {
                             $descricao = substr($descricao, 0, 50) . '...';
                         }
@@ -284,7 +293,6 @@ $categorias = obterCategorias();
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Toggle filtro
         const toggleBtn = document.getElementById('toggleFilter');
         const filterContent = document.querySelector('.filter-content');
 
@@ -295,108 +303,6 @@ $categorias = obterCategorias();
                 toggleBtn.querySelector('i').classList.toggle('fa-chevron-down', isVisible);
                 toggleBtn.querySelector('i').classList.toggle('fa-chevron-up', !isVisible);
             });
-        }
-
-        // Filtros
-        const filtroTipo = document.getElementById('filtroTipo');
-        const filtroStatus = document.getElementById('filtroStatus');
-        const filtroBusca = document.getElementById('filtroBusca');
-        const limparFiltros = document.getElementById('limparFiltros');
-        const aplicarFiltros = document.getElementById('aplicarFiltros');
-
-        if (aplicarFiltros) {
-            aplicarFiltros.addEventListener('click', function () {
-                filtrarCategorias();
-            });
-        }
-
-        if (limparFiltros) {
-            limparFiltros.addEventListener('click', function () {
-                filtroTipo.value = 'todos';
-                filtroStatus.value = 'todos';
-                filtroBusca.value = '';
-                filtrarCategorias();
-            });
-        }
-
-        if (filtroBusca) {
-            filtroBusca.addEventListener('keyup', function (e) {
-                if (e.key === 'Enter') {
-                    filtrarCategorias();
-                }
-            });
-        }
-
-        function filtrarCategorias() {
-            const tipo = filtroTipo.value;
-            const status = filtroStatus.value;
-            const busca = filtroBusca.value.toLowerCase().trim();
-
-            const linhas = document.getElementById('tabelaCategorias').getElementsByTagName('tr');
-
-            let encontrado = false;
-
-            for (let i = 0; i < linhas.length; i++) {
-                const linha = linhas[i];
-
-                // Pula linha de estado vazio
-                if (linha.cells && linha.cells.length === 1 && linha.cells[0].colSpan === 5) {
-                    continue;
-                }
-
-                if (!linha.cells || linha.cells.length < 4) {
-                    continue;
-                }
-
-                const nome = linha.cells[0].innerText.toLowerCase();
-                const tipoCategoria = linha.cells[1].innerText.toLowerCase();
-                const descricao = linha.cells[2].innerText.toLowerCase();
-                const statusCategoria = linha.cells[3].innerText.toLowerCase();
-
-                // Verifica tipo
-                const passaTipo = tipo === 'todos' || tipoCategoria.includes(tipo.toLowerCase());
-
-                // Verifica status
-                let passaStatus = true;
-                if (status === 'ativas') {
-                    passaStatus = statusCategoria.includes('ativa');
-                } else if (status === 'inativas') {
-                    passaStatus = statusCategoria.includes('inativa');
-                }
-
-                // Verifica busca
-                const passaBusca = busca === '' ||
-                    nome.includes(busca) ||
-                    descricao.includes(busca);
-
-                // Exibe ou esconde linha
-                if (passaTipo && passaStatus && passaBusca) {
-                    linha.style.display = '';
-                    encontrado = true;
-                } else {
-                    linha.style.display = 'none';
-                }
-            }
-
-            // Exibe mensagem de nenhum resultado
-            const tbody = document.getElementById('tabelaCategorias');
-            const msgNaoEncontrado = document.getElementById('msgNaoEncontrado');
-
-            if (!encontrado) {
-                if (!msgNaoEncontrado) {
-                    const novaLinha = document.createElement('tr');
-                    novaLinha.id = 'msgNaoEncontrado';
-                    novaLinha.innerHTML = `
-                    <td colspan="5" class="text-center py-4">
-                        <i class="fas fa-search fa-2x text-muted mb-2"></i>
-                        <p class="text-muted">Nenhuma categoria encontrada com os filtros selecionados.</p>
-                    </td>
-                `;
-                    tbody.appendChild(novaLinha);
-                }
-            } else if (msgNaoEncontrado) {
-                msgNaoEncontrado.remove();
-            }
         }
     });
 </script>

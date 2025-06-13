@@ -103,4 +103,73 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('excluirContaId').value = id;
         });
     });
+
+    // ------ Filtros de categorias ------
+    const filtroTipo = document.getElementById('filtroTipo');
+    const filtroStatus = document.getElementById('filtroStatus');
+    const filtroBusca = document.getElementById('filtroBusca');
+    const btnLimpar = document.getElementById('limparFiltros');
+    const btnAplicar = document.getElementById('aplicarFiltros');
+
+    function filtrarCategorias() {
+        const tipo = filtroTipo ? filtroTipo.value : 'todos';
+        const status = filtroStatus ? filtroStatus.value : 'todos';
+        const busca = filtroBusca ? filtroBusca.value.toLowerCase().trim() : '';
+
+        const linhas = document.querySelectorAll('#tabelaCategorias tr.categoria');
+        let encontrado = false;
+
+        linhas.forEach(linha => {
+            const nome = linha.dataset.nome.toLowerCase();
+            const tipoCategoria = linha.dataset.tipo.toLowerCase();
+            const statusCategoria = linha.dataset.status.toLowerCase();
+            const descricao = (linha.dataset.descricao || '').toLowerCase();
+
+            const passaTipo = tipo === 'todos' || tipoCategoria === tipo.toLowerCase();
+            let passaStatus = true;
+            if (status === 'ativas') {
+                passaStatus = statusCategoria === 'ativa';
+            } else if (status === 'inativas') {
+                passaStatus = statusCategoria === 'inativa';
+            }
+
+            const passaBusca = busca === '' || nome.includes(busca) || descricao.includes(busca);
+
+            if (passaTipo && passaStatus && passaBusca) {
+                linha.style.display = '';
+                encontrado = true;
+            } else {
+                linha.style.display = 'none';
+            }
+        });
+
+        const tbody = document.getElementById('tabelaCategorias');
+        const msg = document.getElementById('msgNaoEncontrado');
+        if (!encontrado) {
+            if (!msg) {
+                const nova = document.createElement('tr');
+                nova.id = 'msgNaoEncontrado';
+                nova.innerHTML = `
+                    <td colspan="5" class="text-center py-4">
+                        <i class="fas fa-search fa-2x text-muted mb-2"></i>
+                        <p class="text-muted">Nenhuma categoria encontrada com os filtros selecionados.</p>
+                    </td>
+                `;
+                tbody.appendChild(nova);
+            }
+        } else if (msg) {
+            msg.remove();
+        }
+    }
+
+    if (btnAplicar) btnAplicar.addEventListener('click', filtrarCategorias);
+    if (btnLimpar) btnLimpar.addEventListener('click', () => {
+        if (filtroTipo) filtroTipo.value = 'todos';
+        if (filtroStatus) filtroStatus.value = 'todos';
+        if (filtroBusca) filtroBusca.value = '';
+        filtrarCategorias();
+    });
+    if (filtroTipo) filtroTipo.addEventListener('change', filtrarCategorias);
+    if (filtroStatus) filtroStatus.addEventListener('change', filtrarCategorias);
+    if (filtroBusca) filtroBusca.addEventListener('input', filtrarCategorias);
 });

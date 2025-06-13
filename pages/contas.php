@@ -203,7 +203,7 @@ $count = count($contas);
                     <p class="account-card__info">
                       <strong>Instituição:</strong> <?= htmlspecialchars($conta['Instituicao']) ?>
                     </p>
-                    <div class="flex justify-end gap-2 mt-4">
+                    <div class="flex flex-row justify-end gap-2 mt-4">
                       <button
                         class="btn-action download"
                         title="Baixar PDF"

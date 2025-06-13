@@ -6,29 +6,54 @@ require_once dirname(__FILE__, 3) . "/conexao.php";
  * Obtém todas as categorias do usuário atual
  * @return array Lista de categorias
  */
-function obterCategorias() {
+function obterCategorias($tipo = 'todos', $status = 'todos', $busca = '') {
     global $conn;
-    
+
     // Verifique se a sessão está ativa
     if (!isset($_SESSION['id_usuario'])) {
         return array();
     }
-    
+
     $idUsuario = $_SESSION['id_usuario'];
-    $sql = "SELECT * FROM CATEGORIA WHERE ID_Usuario = ? ORDER BY Ativa DESC, ID_Categoria DESC";
-    
+
+    $sql = "SELECT * FROM CATEGORIA WHERE ID_Usuario = ?";
+    $tipos = "i";
+    $params = [$idUsuario];
+
+    if ($tipo !== 'todos') {
+        $sql .= " AND Tipo = ?";
+        $tipos .= "s";
+        $params[] = $tipo;
+    }
+
+    if ($status !== 'todos') {
+        $sql .= " AND Ativa = ?";
+        $tipos .= "i";
+        $params[] = ($status === 'ativas') ? 1 : 0;
+    }
+
+    if ($busca !== '') {
+        $sql .= " AND Nome LIKE ?";
+        $tipos .= "s";
+        $params[] = '%' . $busca . '%';
+    }
+
+    $sql .= " ORDER BY Ativa DESC, ID_Categoria DESC";
+
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $idUsuario);
+    if ($params) {
+        $stmt->bind_param($tipos, ...$params);
+    }
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     $categorias = array();
     if ($result && $result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $categorias[] = $row;
         }
     }
-    
+
     return $categorias;
 }
 

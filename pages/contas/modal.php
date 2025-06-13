@@ -8,7 +8,7 @@ function modalCreateConta(): string {
                 
                 <div class="modal-header">
                   <h5 class="modal-title" id="modalNovaContaLabel">Cadastrar Nova Conta</h5>
-                  <button type="button" class="close" aria-label="Fechar" data-bs-dismiss="modal">
+                  <button type="button" class="close" aria-label="Fechar" data-bs-dismiss="modal" data-modal-close="#modalNovaContaLabel">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
@@ -55,6 +55,7 @@ function modalCreateConta(): string {
                     <!-- Saldo Inicial -->
                     <div class="form-group mb-3 value-container">
                       <input
+                        style="padding-left: 40px;"
                         type="number"
                         class="form-control"
                         id="novaSaldoConta"
@@ -81,7 +82,7 @@ function modalCreateConta(): string {
                   </div>
                   
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-modal-close="#modalNovaConta">Cancelar</button>
                     <button type="submit" class="btn btn-success">Salvar Conta</button>
                   </div>
                 </form>
@@ -97,7 +98,7 @@ function modalCreateConta(): string {
                 
                 <div class="modal-header">
                   <h5 class="modal-title" id="editarContaModalLabel">Editar Conta</h5>
-                  <button type="button" class="close" aria-label="Fechar" data-bs-dismiss="modal">
+                  <button type="button" class="close" aria-label="Fechar" data-bs-dismiss="modal" data-modal-close="#editarContaModal">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
@@ -171,7 +172,7 @@ function modalCreateConta(): string {
                   </div>
                   
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-modal-close="#editarContaModal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Atualizar</button>
                   </div>
                 </form>

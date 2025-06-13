@@ -177,6 +177,9 @@
     border-color var(--transition-duration-fast) var(--transition-timing),
     background-color var(--transition-duration-fast) var(--transition-timing),
     color var(--transition-duration-fast) var(--transition-timing);
+  padding: 8px;
+  padding-left: 17px;
+  padding-top:11px;
 }
 
 .modal-body .form-group .form-control:focus {
@@ -185,6 +188,9 @@
   background-color: var(--base-clr);
   color: var(--text-clr);
   box-shadow: 0 0 0 0.2rem rgba(7, 163, 98, 0.25);
+  padding-left: 8px;
+  padding-left: 17px;
+  padding-top:11px;
 }
 
 .modal-body .form-group label {
@@ -274,7 +280,7 @@
 .modal-footer .btn {
   min-width: 120px;
   padding: var(--spacing-2) var(--spacing-4);
-  border-radius: var(--border-radius-round); /* bordas bem arredondadas */
+  border-radius: 50px; /* bordas bem arredondadas */
   font-size: var(--font-size-base);
   font-weight: 500;
   transition: all var(--transition-duration-fast) var(--transition-timing);

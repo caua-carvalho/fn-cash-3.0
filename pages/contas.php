@@ -154,7 +154,7 @@ $count = count($contas);
                 </button>
             </div>
         <?php else: ?>
-            <div id="contasGrid" class="grid grid-cols-3 sm:grid-cols-1 lg:grid-cols-1 gap-6 p-4">
+            <div id="contasGrid" class="grid grid-cols-1 grid-md-cols-2 grid-lg-cols-3 gap-6 p-4">
                 <?php
                 $delay = 100;
                 foreach ($contas as $conta):
@@ -203,7 +203,7 @@ $count = count($contas);
                     <p class="account-card__info">
                       <strong>Instituição:</strong> <?= htmlspecialchars($conta['Instituicao']) ?>
                     </p>
-                    <div class="flex justify-end gap-2 mt-4">
+                    <div class="flex flex-row justify-end gap-2 mt-4">
                       <button
                         class="btn-action download"
                         title="Baixar PDF"

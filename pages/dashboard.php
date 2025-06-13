@@ -148,7 +148,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
         </div>
 
         <!-- Stats Row -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-1 grid-md-cols-2 grid-lg-cols-4 gap-4 mb-6">
             <!-- Saldo Total -->
             <div class="summary-card balance animation-delay-100 fade-in">
                 <span class="summary-label">Saldo Total</span>

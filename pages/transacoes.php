@@ -165,7 +165,7 @@ $totalBalanco = $totalReceita - $totalDespesa;
         </div>
         
         <!-- Cards de Resumo -->
-        <div class="d-flex justify-between gap-4 mt-5">
+        <div class="grid grid-cols-1 grid-md-cols-2 grid-lg-cols-4 gap-4 mb-6">
             <div class="summary-card income fade-in animation-delay-100 w-full">
                 <span class="summary-label">Receitas</span>
                 <div class="flex justify-between items-center">

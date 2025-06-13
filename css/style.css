@@ -1411,6 +1411,7 @@
   
   .value-container::before {
     color: var(--color-text-muted);
+    background-color: black;
     content: 'R$';
     font-size: var(--font-size-base);
     left: var(--spacing-3);
@@ -1429,7 +1430,7 @@
 .value-container .form-control:focus ~ label,
 .value-container .form-control:not(:placeholder-shown) ~ label {
     left: var(--spacing-3);
-    background-color: var(--color-surface);
+    background-color: #0a0a0a;
 }
   
   /* ==========================================================================

@@ -35,22 +35,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['logado'] = true;
                     $_SESSION['id_usuario'] = $user['ID_Usuario'];
                     $_SESSION['usuario'] = $user['Nome'];
-
+                    
+                    $stmt->close();
                     header('Location: pages/dashboard.php');
                     exit;
                 } else {
                     $_SESSION['error_message'] = 'Senha inválida!';
+                    $stmt->close();
                     header('Location: index.php');
                     exit;
                 }
             } else {
                 $_SESSION['error_message'] = 'Usuário não encontrado!';
+                $stmt->close();
                 header('Location: index.php');
                 exit;
             }
 
-            $stmt->close();
-        } else {
+            } else {
             $_SESSION['error_message'] = 'Erro ao preparar a consulta!';
             header('Location: index.php');
             exit;

@@ -110,42 +110,22 @@ $count = count($contas);
         </div>
     </div>
 
-    <!-- Filtro rápido -->
-    <div class="filter-container slide-in-left mb-6">
-        <div class="filter-header">
-            <h3 class="filter-title">
-                <i class="fas fa-filter me-2"></i> Filtros
-            </h3>
-            <button class="btn-action" id="toggleFilter">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </div>
-
-        <div class="filter-content mt-3" style="display: none;">
-            <div class="grid grid-cols-2 gap-3 mb-3">
-                <div class="form-group mb-3">
-                    <label for="searchConta">Buscar</label>
-                    <input type="text" id="searchConta" class="form-control" placeholder=" ">
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="filterTipo">Tipo</label>
-                    <select id="filterTipo" class="form-control">
-                        <option value="">Todos os tipos</option>
-                        <option value="Corrente">Corrente</option>
-                        <option value="Poupança">Poupança</option>
-                        <option value="Cartão de Crédito">Cartão de Crédito</option>
-                        <option value="Investimento">Investimento</option>
-                        <option value="Outros">Outros</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="flex justify-end mt-3">
-                <button class="btn btn-secondary me-2" id="limparFiltros">Limpar Filtros</button>
-                <button class="btn btn-primary" id="aplicarFiltros">Aplicar Filtros</button>
-            </div>
-        </div>
+    <!-- Barra de Pesquisa e Filtro por Tipo -->
+    <div class="flex justify-between items-center mb-6 px-4">
+        <input
+            type="search"
+            id="searchConta"
+            class="form-control w-64"
+            placeholder="🔍 Buscar conta"
+        />
+        <select id="filterTipo" class="form-control w-48">
+            <option value="">Todos os tipos</option>
+            <option value="Corrente">Corrente</option>
+            <option value="Poupança">Poupança</option>
+            <option value="Cartão de Crédito">Cartão de Crédito</option>
+            <option value="Investimento">Investimento</option>
+            <option value="Outros">Outros</option>
+        </select>
     </div>
 
     <!-- Grid de Cards de Contas -->
@@ -328,29 +308,6 @@ echo modalCreateConta();
 
         searchInput.addEventListener('input', filtrarContas);
         filterSelect.addEventListener('change', filtrarContas);
-
-        const toggleBtn = document.getElementById('toggleFilter');
-        const filterContent = document.querySelector('.filter-content');
-
-        if (toggleBtn && filterContent) {
-            toggleBtn.addEventListener('click', function () {
-                const isVisible = filterContent.style.display !== 'none';
-                filterContent.style.display = isVisible ? 'none' : 'block';
-                toggleBtn.querySelector('i').classList.toggle('fa-chevron-down', isVisible);
-                toggleBtn.querySelector('i').classList.toggle('fa-chevron-up', !isVisible);
-            });
-        }
-
-        const aplicarFiltros = document.getElementById('aplicarFiltros');
-        const limparFiltros  = document.getElementById('limparFiltros');
-
-        aplicarFiltros?.addEventListener('click', filtrarContas);
-
-        limparFiltros?.addEventListener('click', () => {
-            searchInput.value = '';
-            filterSelect.value = '';
-            filtrarContas();
-        });
 
         searchInput.addEventListener('keyup', e => {
             if (e.key === 'Enter') filtrarContas();

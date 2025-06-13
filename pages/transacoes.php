@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($acao === 'excluirTransacao') {
         if (empty($_POST['transacaoId'])) {
-            erro("ID da transação não fornecido.");
+            erro("ID d.modal-body .form-group .form-controla transação não fornecido.");
             exit;
         }
 

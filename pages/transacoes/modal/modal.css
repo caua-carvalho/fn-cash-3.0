@@ -62,7 +62,8 @@
   color: var(--text-clr);
   font-size: 1rem;
   height: auto;
-  padding: 1rem 0.75rem;
+  padding: 14px;
+  padding: 10px;
   transition: all 0.3s ease-in-out;
 }
 
@@ -341,17 +342,8 @@
   position: relative;
 }
 
-.value-container::before {
-  color: var(--secondary-text-clr);
-  content: 'R$';
-  font-size: 1rem;
-  left: 0.75rem;
-  position: absolute;
-  top: 1rem;
-}
-
 .value-container input {
-  padding-left: 2rem;
+  padding-left: 36px;
 }
 
 /* Date and form field styling improvements */

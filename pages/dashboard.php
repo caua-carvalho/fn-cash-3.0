@@ -87,7 +87,7 @@ $dadosGraficoCategoriasJSON = json_encode($dadosGraficoCategorias);
 <div class="content">
     <div class="container-fluid">
         <!-- Cabeçalho e botão Nova Transação -->
-        <div class="flex justify-between items-center my-4">
+        <div class="flex justify-between items-center">
             <div>
                 <h2><?php echo 'Olá, ' . $_SESSION['usuario'] . '!' ?></h2>
                 <p class="text-muted">Aqui está um resumo da sua situação financeira atual.</p>

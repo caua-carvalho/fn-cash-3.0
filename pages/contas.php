@@ -301,8 +301,8 @@ echo modalCreateConta();
                 const tipoConta = card.getAttribute('data-tipo');
                 const passaTexto = nome.includes(termo) || instituicao.includes(termo);
                 const passaTipo = (!tipoSelecionado || tipoConta === tipoSelecionado);
-                card.style.display = (passaTexto && passaTipo) ? '' : 'none';
-            });
+                card.style.display = (passaTexto && passaTipo) ? '' : 'none');
+            };
         });
 
         // Filtragem por pesquisa e tipo

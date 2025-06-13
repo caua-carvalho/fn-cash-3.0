@@ -373,7 +373,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                                 ?>
                             </select>
-                            <label for="contaRemetente">Conta <span class="transfer-only">Origem</span></label>
+                            <label for="contaRemetente" style="padding-left: 0; background-color: black;">Conta
+                                <span class="transfer-only" style="position: absolute; left: 43px; top: 1px; background-color: black; padding-inline: 3px;">Origem</span>
+                            </label>
                         </div>
 
                         <!-- Conta Destinatária (apenas para transferências) -->
